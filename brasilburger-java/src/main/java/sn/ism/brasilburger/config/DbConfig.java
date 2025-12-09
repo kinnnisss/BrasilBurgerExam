@@ -14,4 +14,10 @@ public class DbConfig {
             throw new RuntimeException("Driver PostgreSQL introuvable", e);
         }
     }
+    private DbConfig() {
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 }
