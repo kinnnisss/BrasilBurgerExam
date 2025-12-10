@@ -48,8 +48,33 @@ public class ComplementRepositoryJdbc implements IComplementRepository{
 
     @Override
     public Optional<Complement> findById(int id) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        String sql = """
+                SELECT id_complement, nom, type_complement, prix, image, is_archived
+                FROM COMPLEMENT
+                WHERE id_complement = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Complement c = new Complement();
+                    c.setId(rs.getInt("id_complement"));
+                    c.setNom(rs.getString("nom"));
+                    c.setType(TypeComplement.valueOf(rs.getString("type_complement")));
+                    c.setPrix(rs.getBigDecimal("prix"));
+                    c.setImage(rs.getString("image"));
+                    c.setArchived(rs.getBoolean("is_archived"));
+                    return Optional.of(c);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du complément " + id, e);
+        }
+
+        return Optional.empty();
     }
 
     @Override
