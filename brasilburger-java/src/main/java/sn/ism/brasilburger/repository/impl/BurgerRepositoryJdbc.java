@@ -134,6 +134,14 @@ public class BurgerRepositoryJdbc implements IBurgerRepository {
 
     @Override
     public void archive(int id) {
-        
+        String sql = "UPDATE BURGER SET is_archived = TRUE WHERE id_burger = ?";
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'archivage du burger " + id, e);
+        }
     }
 }
