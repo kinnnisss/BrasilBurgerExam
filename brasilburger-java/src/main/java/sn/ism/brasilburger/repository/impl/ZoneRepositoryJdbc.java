@@ -43,7 +43,30 @@ public class ZoneRepositoryJdbc implements IZoneRepository{
 
     @Override
     public Optional<Zone> findById(int id) {
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        String sql = """
+                SELECT id_zone, libelle, prix_livraison
+                FROM ZONE
+                WHERE id_zone = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Zone z = new Zone();
+                    z.setId(rs.getInt("id_zone"));
+                    z.setLibelle(rs.getString("libelle"));
+                    z.setPrixLivraison(rs.getBigDecimal("prix_livraison"));
+                    return Optional.of(z);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche de la zone " + id, e);
+        }
+
+        return Optional.empty();
     }
 
     @Override
