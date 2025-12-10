@@ -49,11 +49,18 @@ public class App {
             System.out.println("Burger trouvé : " + b.getNom())
         );
 
+
         complementRepo.findById(newComplement.getId()).ifPresent(c -> 
             System.out.println("Complément trouvé : " + c.getNom())
         );
 
         burgerRepo.archive(newBurger.getId());
         System.out.println("Burger archivé avec ID : " + newBurger.getId());
+
+         int testId = 1; 
+        menuRepo.findById(testId).ifPresentOrElse(
+            m -> System.out.println("Menu trouvé : " + m.getNom() + " - Prix : " + m.getPrix()),
+            () -> System.out.println("Aucun menu trouvé avec l'ID " + testId)
+        );
     }
 }
