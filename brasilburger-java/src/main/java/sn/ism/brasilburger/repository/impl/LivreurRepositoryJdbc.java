@@ -121,7 +121,10 @@ public class LivreurRepositoryJdbc implements ILivreurRepository{
     }
     @Override
     public Livreur save(Livreur livreur) {
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        if (livreur.getId() == 0) {
+            return insert(livreur);
+        }
+        return update(livreur);
     }
     
 }
