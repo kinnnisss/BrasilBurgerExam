@@ -44,6 +44,30 @@ public class BurgerRepositoryJdbc implements IBurgerRepository {
     }
     @Override
     public Optional<Burger> findById(int id) {
+            String sql = """
+                SELECT id_burger, nom, prix, image, is_archived
+                FROM BURGER
+                WHERE id_burger = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Burger b = new Burger();
+                    b.setId(rs.getInt("id_burger"));
+                    b.setNom(rs.getString("nom"));
+                    b.setPrix(rs.getBigDecimal("prix"));
+                    b.setImage(rs.getString("image"));
+                    b.setArchived(rs.getBoolean("is_archived"));
+                    return Optional.of(b);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du burger " + id, e);
+        }
         return Optional.empty();
     }
 
