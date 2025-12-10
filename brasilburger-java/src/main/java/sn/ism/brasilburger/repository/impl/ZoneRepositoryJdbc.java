@@ -68,6 +68,30 @@ public class ZoneRepositoryJdbc implements IZoneRepository{
 
         return Optional.empty();
     }
+    private Zone insert(Zone zone) {
+        String sql = """
+                INSERT INTO ZONE(libelle, prix_livraison)
+                VALUES (?, ?)
+                RETURNING id_zone
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, zone.getLibelle());
+            ps.setBigDecimal(2, zone.getPrixLivraison());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    zone.setId(rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'insertion de la zone", e);
+        }
+
+        return zone;
+    }
 
     @Override
     public Zone save(Zone zone) {
