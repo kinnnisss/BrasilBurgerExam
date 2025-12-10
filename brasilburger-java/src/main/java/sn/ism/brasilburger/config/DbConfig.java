@@ -3,9 +3,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 public class DbConfig {
-    private static final String URL = "jdbc:postgresql://localhost:5432/brasilburger_db";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "Cisco123@"; 
+    private static final String DEFAULT_URL = "jdbc:postgresql://localhost:5432/brasilburger_db";
+    private static final String DEFAULT_USER = "postgres";
+    private static final String DEFAULT_PASSWORD = "Cisco123@";
+
 
     static {
         try {
@@ -17,7 +18,5 @@ public class DbConfig {
     private DbConfig() {
     }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-    }
+  
 }
