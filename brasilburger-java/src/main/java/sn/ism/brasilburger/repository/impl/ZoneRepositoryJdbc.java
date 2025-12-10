@@ -93,6 +93,27 @@ public class ZoneRepositoryJdbc implements IZoneRepository{
         return zone;
     }
 
+    private Zone update(Zone zone) {
+        String sql = """
+                UPDATE ZONE
+                SET libelle = ?, prix_livraison = ?
+                WHERE id_zone = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, zone.getLibelle());
+            ps.setBigDecimal(2, zone.getPrixLivraison());
+            ps.setInt(3, zone.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour de la zone", e);
+        }
+
+        return zone;
+    }
     @Override
     public Zone save(Zone zone) {
         throw new UnsupportedOperationException("Unimplemented method 'save'");
