@@ -185,7 +185,10 @@ public class QuartierRepositoryJdbc implements IQuartierRepository{
 
     @Override
     public Quartier save(Quartier quartier) {
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        if (quartier.getId() == 0) {
+            return insert(quartier);
+        }
+        return update(quartier);
     }
     
 }
