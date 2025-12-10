@@ -7,6 +7,20 @@ public class DbConfig {
     private static final String DEFAULT_USER = "postgres";
     private static final String DEFAULT_PASSWORD = "Cisco123@";
 
+    private static final String URL = System.getenv().getOrDefault(
+            "BB_DB_URL",
+            DEFAULT_URL
+    );
+
+    private static final String USER = System.getenv().getOrDefault(
+            "BB_DB_USER",
+            DEFAULT_USER
+    );
+
+    private static final String PASSWORD = System.getenv().getOrDefault(
+            "BB_DB_PASSWORD",
+            DEFAULT_PASSWORD
+    );    
 
     static {
         try {
@@ -18,5 +32,7 @@ public class DbConfig {
     private DbConfig() {
     }
 
-  
+  public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 }
