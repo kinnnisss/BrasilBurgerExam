@@ -116,7 +116,10 @@ public class ZoneRepositoryJdbc implements IZoneRepository{
     }
     @Override
     public Zone save(Zone zone) {
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        if (zone.getId() == 0) {
+            return insert(zone);
+        }
+        return update(zone);
     }
     
 }
