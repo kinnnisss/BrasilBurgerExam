@@ -53,7 +53,42 @@ public class QuartierRepositoryJdbc implements IQuartierRepository{
 
     @Override
     public List<Quartier> findByZone(Zone zone) {
-        throw new UnsupportedOperationException("Unimplemented method 'findByZone'");
+        String sql = """
+                SELECT q.id_quartier, q.libelle AS lib_q,
+                       z.id_zone, z.libelle AS lib_z, z.prix_livraison
+                FROM QUARTIER q
+                JOIN ZONE z ON z.id_zone = q.id_zone
+                WHERE z.id_zone = ?
+                ORDER BY q.libelle
+                """;
+        List<Quartier> list = new ArrayList<>();
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, zone.getId());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Zone z = new Zone(
+                            rs.getInt("id_zone"),
+                            rs.getString("lib_z"),
+                            rs.getBigDecimal("prix_livraison")
+                    );
+                    Quartier q = new Quartier(
+                            rs.getInt("id_quartier"),
+                            rs.getString("lib_q"),
+                            z
+                    );
+                    list.add(q);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors du chargement des quartiers de la zone " + zone.getId(), e);
+        }
+
+        return list;
+
     }
 
     @Override
