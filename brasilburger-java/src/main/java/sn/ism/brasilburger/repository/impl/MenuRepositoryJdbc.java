@@ -74,6 +74,32 @@ public class MenuRepositoryJdbc implements IMenuRepository {
         return Optional.empty();
         }
 
+    private Menu insert(Menu menu) {
+        String sql = """
+                INSERT INTO MENU(nom, image, prix, is_archived)
+                VALUES (?, ?, ?, FALSE)
+                RETURNING id_menu
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, menu.getNom());
+            ps.setString(2, menu.getImage());
+            ps.setBigDecimal(3, menu.getPrix());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    menu.setId(rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'insertion du menu", e);
+        }
+
+        return menu;
+    }
+
     @Override
     public Menu save(Menu menu) {
         throw new UnsupportedOperationException("Unimplemented method 'save'");
