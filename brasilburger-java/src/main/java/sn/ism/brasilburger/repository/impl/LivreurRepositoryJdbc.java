@@ -71,6 +71,31 @@ public class LivreurRepositoryJdbc implements ILivreurRepository{
 
         return Optional.empty();
     }
+    private Livreur insert(Livreur livreur) {
+        String sql = """
+                INSERT INTO LIVREUR(nom, prenom, telephone)
+                VALUES (?, ?, ?)
+                RETURNING id_livreur
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, livreur.getNom());
+            ps.setString(2, livreur.getPrenom());
+            ps.setString(3, livreur.getTelephone());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    livreur.setId(rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'insertion du livreur", e);
+        }
+
+        return livreur;
+    }
 
     @Override
     public Livreur save(Livreur livreur) {
