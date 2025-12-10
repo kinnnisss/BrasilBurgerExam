@@ -71,6 +71,31 @@ public class BurgerRepositoryJdbc implements IBurgerRepository {
         return Optional.empty();
     }
 
+        private Burger insert(Burger burger) {
+        String sql = """
+                INSERT INTO BURGER(nom, prix, image, is_archived)
+                VALUES (?, ?, ?, FALSE)
+                RETURNING id_burger
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, burger.getNom());
+            ps.setBigDecimal(2, burger.getPrix());
+            ps.setString(3, burger.getImage());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    burger.setId(rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'insertion du burger", e);
+        }
+        return burger;
+    }
+
     @Override
     public Burger save(Burger burger) {
        return burger;
