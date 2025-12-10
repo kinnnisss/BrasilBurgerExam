@@ -123,7 +123,11 @@ public class BurgerRepositoryJdbc implements IBurgerRepository {
 
     @Override
     public Burger save(Burger burger) {
-       return burger;
+           if (burger.getId() == 0) {
+            return insert(burger);
+        } else {
+            return update(burger);
+        }
     }
 
    
