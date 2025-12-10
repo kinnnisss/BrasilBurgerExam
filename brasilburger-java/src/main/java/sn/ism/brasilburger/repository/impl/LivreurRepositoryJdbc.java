@@ -44,7 +44,32 @@ public class LivreurRepositoryJdbc implements ILivreurRepository{
 
     @Override
     public Optional<Livreur> findById(int id) {
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        String sql = """
+                SELECT id_livreur, nom, prenom, telephone
+                FROM LIVREUR
+                WHERE id_livreur = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Livreur l = new Livreur();
+                    l.setId(rs.getInt("id_livreur"));
+                    l.setNom(rs.getString("nom"));
+                    l.setPrenom(rs.getString("prenom"));
+                    l.setTelephone(rs.getString("telephone"));
+                    return Optional.of(l);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du livreur " + id, e);
+        }
+
+        return Optional.empty();
     }
 
     @Override

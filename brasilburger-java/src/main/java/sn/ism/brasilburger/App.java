@@ -64,7 +64,6 @@ public class App {
             m -> System.out.println("Menu trouvé : " + m.getNom() + " (archivé = " + m.isArchived() + ")"),
             () -> System.out.println("Aucun menu trouvé avec l'ID " + testId)
         );
-
         burgerRepo.findById(newBurger.getId()).ifPresent(b -> 
             System.out.println("Burger trouvé : " + b.getNom())
         );
