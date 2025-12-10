@@ -5,6 +5,7 @@ import sn.ism.brasilburger.model.Complement;
 import sn.ism.brasilburger.model.TypeComplement;
 import sn.ism.brasilburger.repository.impl.BurgerRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.ComplementRepositoryJdbc;
+import sn.ism.brasilburger.repository.impl.MenuRepositoryJdbc;
 
 import java.math.BigDecimal;
 
@@ -38,6 +39,12 @@ public class App {
         complementRepo.save(newComplement);
         System.out.println("Complément inséré avec ID : " + newComplement.getId());
 
+        MenuRepositoryJdbc menuRepo = new MenuRepositoryJdbc();
+
+        System.out.println("=== Liste des menus actifs ===");
+        menuRepo.findAllActive().forEach(m -> 
+            System.out.println(m.getId() + " - " + m.getNom() + " : " + m.getPrix())
+        );
         burgerRepo.findById(newBurger.getId()).ifPresent(b -> 
             System.out.println("Burger trouvé : " + b.getNom())
         );
