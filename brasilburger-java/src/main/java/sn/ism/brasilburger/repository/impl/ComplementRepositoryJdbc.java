@@ -131,7 +131,10 @@ public class ComplementRepositoryJdbc implements IComplementRepository{
 
     @Override
     public Complement save(Complement complement) {
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        if (complement.getId() == 0) {
+            return insert(complement);
+        }
+        return update(complement);
     }
 
     @Override
