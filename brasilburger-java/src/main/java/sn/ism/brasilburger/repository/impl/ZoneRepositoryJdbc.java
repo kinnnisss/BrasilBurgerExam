@@ -66,7 +66,6 @@ public class ZoneRepositoryJdbc implements IZoneRepository{
             throw new RuntimeException("Erreur lors de la recherche de la zone " + id, e);
         }
 
-    
         return Optional.empty();
     }
     private Zone insert(Zone zone) {
