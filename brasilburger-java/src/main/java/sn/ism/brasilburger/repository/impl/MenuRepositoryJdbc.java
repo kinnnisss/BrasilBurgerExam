@@ -125,8 +125,10 @@ public class MenuRepositoryJdbc implements IMenuRepository {
     }
     @Override
     public Menu save(Menu menu) {
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
-    }
+        if (menu.getId() == 0) {
+            return insert(menu);
+        }
+        return update(menu);    }
 
     @Override
     public void archive(int id) {
