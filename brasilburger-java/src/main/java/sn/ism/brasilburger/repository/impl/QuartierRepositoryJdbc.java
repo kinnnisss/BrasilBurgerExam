@@ -157,6 +157,32 @@ public class QuartierRepositoryJdbc implements IQuartierRepository{
         return quartier;
     }
 
+    private Quartier update(Quartier quartier) {
+        if (quartier.getZone() == null || quartier.getZone().getId() == 0) {
+            throw new IllegalArgumentException("Le quartier doit être associé à une zone existante (id_zone != 0)");
+        }
+
+        String sql = """
+                UPDATE QUARTIER
+                SET libelle = ?, id_zone = ?
+                WHERE id_quartier = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, quartier.getLibelle());
+            ps.setInt(2, quartier.getZone().getId());
+            ps.setInt(3, quartier.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour du quartier", e);
+        }
+
+        return quartier;
+    }
+
     @Override
     public Quartier save(Quartier quartier) {
         throw new UnsupportedOperationException("Unimplemented method 'save'");
