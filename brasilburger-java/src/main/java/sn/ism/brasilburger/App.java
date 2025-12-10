@@ -10,6 +10,7 @@ import sn.ism.brasilburger.repository.impl.ComplementRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.LivreurRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.MenuRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.QuartierRepositoryJdbc;
+import sn.ism.brasilburger.repository.impl.ZoneRepositoryJdbc;
 
 import java.math.BigDecimal;
 
@@ -101,29 +102,56 @@ import sn.ism.brasilburger.repository.impl.QuartierRepositoryJdbc;
 
 public class App {
     public static void main(String[] args) {
-        QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
+        // QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
 
-        System.out.println("=== Liste des quartiers ===");
-        quartierRepo.findAll().forEach(q ->
-            System.out.println(q.getId() + " - " + q.getLibelle() +
-                               " (Zone: " + q.getZone().getLibelle() +
-                               ", Prix livraison: " + q.getZone().getPrixLivraison() + ")")
-        );
+        // System.out.println("=== Liste des quartiers ===");
+        // quartierRepo.findAll().forEach(q ->
+        //     System.out.println(q.getId() + " - " + q.getLibelle() +
+        //                        " (Zone: " + q.getZone().getLibelle() +
+        //                        ", Prix livraison: " + q.getZone().getPrixLivraison() + ")")
+        // );
 
-        Zone zoneTest = new Zone();
-        zoneTest.setId(1); 
-        System.out.println("\n=== Quartiers de la zone " + zoneTest.getId() + " ===");
-        quartierRepo.findByZone(zoneTest).forEach(q ->
-            System.out.println(q.getId() + " - " + q.getLibelle())
+        // Zone zoneTest = new Zone();
+        // zoneTest.setId(1); 
+        // System.out.println("\n=== Quartiers de la zone " + zoneTest.getId() + " ===");
+        // quartierRepo.findByZone(zoneTest).forEach(q ->
+        //     System.out.println(q.getId() + " - " + q.getLibelle())
+        // );
+
+        // int testId = 1; 
+        // System.out.println("\n=== Recherche du quartier avec ID " + testId + " ===");
+        // quartierRepo.findById(testId).ifPresentOrElse(
+        //     q -> System.out.println("Quartier trouvé : " + q.getLibelle() +
+        //                             " (Zone: " + q.getZone().getLibelle() + ")"),
+        //     () -> System.out.println("Aucun quartier trouvé avec l'ID " + testId)
+        // );
+          ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
+
+        System.out.println("=== Liste des zones ===");
+        zoneRepo.findAll().forEach(z ->
+            System.out.println(z.getId() + " - " + z.getLibelle() +
+                               " (Prix livraison: " + z.getPrixLivraison() + ")")
         );
 
         int testId = 1; 
-        System.out.println("\n=== Recherche du quartier avec ID " + testId + " ===");
-        quartierRepo.findById(testId).ifPresentOrElse(
-            q -> System.out.println("Quartier trouvé : " + q.getLibelle() +
-                                    " (Zone: " + q.getZone().getLibelle() + ")"),
-            () -> System.out.println("Aucun quartier trouvé avec l'ID " + testId)
+        System.out.println("\n=== Recherche de la zone avec ID " + testId + " ===");
+        zoneRepo.findById(testId).ifPresentOrElse(
+            z -> System.out.println("Zone trouvée : " + z.getLibelle() +
+                                    " (Prix livraison: " + z.getPrixLivraison() + ")"),
+            () -> System.out.println("Aucune zone trouvée avec l'ID " + testId)
         );
+
+        Zone newZone = new Zone();
+        newZone.setLibelle("Zone Test");
+        newZone.setPrixLivraison(BigDecimal.valueOf(1500));
+        zoneRepo.save(newZone);
+        System.out.println("\nZone insérée avec ID : " + newZone.getId());
+
+        newZone.setLibelle("Zone Test Modifiée");
+        newZone.setPrixLivraison(BigDecimal.valueOf(2000));
+        zoneRepo.save(newZone);
+        System.out.println("Zone mise à jour : " + newZone.getLibelle() +
+                           " (Prix livraison: " + newZone.getPrixLivraison() + ")");
     }
 }
    
