@@ -146,7 +146,36 @@ public class MenuRepositoryJdbc implements IMenuRepository {
 
     @Override
     public void updatePrix(int idMenu) {
-        throw new UnsupportedOperationException("Unimplemented method 'updatePrix'");
+        String sql = """
+                UPDATE MENU
+                SET prix = (
+                    COALESCE((
+                        SELECT SUM(b.prix)
+                        FROM MENU_BURGER mb
+                        JOIN BURGER b ON b.id_burger = mb.id_burger
+                        WHERE mb.id_menu = ?
+                    ), 0)
+                    +
+                    COALESCE((
+                        SELECT SUM(c.prix)
+                        FROM MENU_COMPLEMENT mc
+                        JOIN COMPLEMENT c ON c.id_complement = mc.id_complement
+                        WHERE mc.id_menu = ?
+                    ), 0)
+                )
+                WHERE id_menu = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idMenu);
+            ps.setInt(2, idMenu);
+            ps.setInt(3, idMenu);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors du recalcul du prix du menu " + idMenu, e);
+        }
     }
     
 }
