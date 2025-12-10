@@ -93,7 +93,40 @@ public class QuartierRepositoryJdbc implements IQuartierRepository{
 
     @Override
     public Optional<Quartier> findById(int id) {
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        String sql = """
+                SELECT q.id_quartier, q.libelle AS lib_q,
+                       z.id_zone, z.libelle AS lib_z, z.prix_livraison
+                FROM QUARTIER q
+                JOIN ZONE z ON z.id_zone = q.id_zone
+                WHERE q.id_quartier = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Zone z = new Zone(
+                            rs.getInt("id_zone"),
+                            rs.getString("lib_z"),
+                            rs.getBigDecimal("prix_livraison")
+                    );
+                    Quartier q = new Quartier(
+                            rs.getInt("id_quartier"),
+                            rs.getString("lib_q"),
+                            z
+                    );
+                    return Optional.of(q);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du quartier " + id, e);
+        }
+
+        return Optional.empty();
+
     }
 
     @Override
