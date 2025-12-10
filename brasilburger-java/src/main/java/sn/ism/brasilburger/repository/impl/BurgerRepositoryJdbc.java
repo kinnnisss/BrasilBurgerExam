@@ -96,6 +96,31 @@ public class BurgerRepositoryJdbc implements IBurgerRepository {
         return burger;
     }
 
+    private Burger update(Burger burger) {
+        String sql = """
+                UPDATE BURGER
+                SET nom = ?, prix = ?, image = ?, is_archived = ?
+                WHERE id_burger = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, burger.getNom());
+            ps.setBigDecimal(2, burger.getPrix());
+            ps.setString(3, burger.getImage());
+            ps.setBoolean(4, burger.isArchived());
+            ps.setInt(5, burger.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour du burger", e);
+        }
+
+        return burger;
+    }
+
+
     @Override
     public Burger save(Burger burger) {
        return burger;
