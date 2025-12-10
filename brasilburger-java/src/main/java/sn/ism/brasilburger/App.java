@@ -64,6 +64,23 @@ public class App {
             m -> System.out.println("Menu trouvé : " + m.getNom() + " (archivé = " + m.isArchived() + ")"),
             () -> System.out.println("Aucun menu trouvé avec l'ID " + testId)
         );
+
+        Livreur livreur = new Livreur();
+        livreur.setNom("Doe");
+        livreur.setPrenom("John");
+        livreur.setTelephone("123456789");
+        LivreurRepositoryJdbc livreurRepo = new LivreurRepositoryJdbc();
+        livreurRepo.save(livreur);
+        System.out.println("Livreur inséré avec ID : " + livreur.getId());
+        int testLivreurId = 1;
+        livreurRepo.findById(testLivreurId).ifPresentOrElse(
+            l -> System.out.println("Livreur trouvé : " + l.getNom() + " " + l.getPrenom()),
+            () -> System.out.println("Aucun livreur trouvé avec l'ID " + testLivreurId)
+        );
+        livreurRepo.findAll().forEach(l -> 
+            System.out.println(l.getId() + " - " + l.getNom() + " " + l.getPrenom() + " : " + l.getTelephone())
+        );
+        
         burgerRepo.findById(newBurger.getId()).ifPresent(b -> 
             System.out.println("Burger trouvé : " + b.getNom())
         );
