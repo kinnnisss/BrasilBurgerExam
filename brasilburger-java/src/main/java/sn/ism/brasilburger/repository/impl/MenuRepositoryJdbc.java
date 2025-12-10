@@ -132,7 +132,16 @@ public class MenuRepositoryJdbc implements IMenuRepository {
 
     @Override
     public void archive(int id) {
-        throw new UnsupportedOperationException("Unimplemented method 'archive'");
+        String sql = "UPDATE MENU SET is_archived = TRUE WHERE id_menu = ?";
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'archivage du menu " + id, e);
+        }
     }
 
     @Override
