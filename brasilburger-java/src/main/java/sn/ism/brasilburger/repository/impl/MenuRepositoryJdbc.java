@@ -46,8 +46,33 @@ public class MenuRepositoryJdbc implements IMenuRepository {
 
     @Override
     public Optional<Menu> findById(int id) {
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
-    }
+        String sql = """
+                SELECT id_menu, nom, image, prix, is_archived
+                FROM MENU
+                WHERE id_menu = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Menu m = new Menu();
+                    m.setId(rs.getInt("id_menu"));
+                    m.setNom(rs.getString("nom"));
+                    m.setImage(rs.getString("image"));
+                    m.setPrix(rs.getBigDecimal("prix"));
+                    m.setArchived(rs.getBoolean("is_archived"));
+                    return Optional.of(m);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du menu " + id, e);
+        }
+
+        return Optional.empty();
+        }
 
     @Override
     public Menu save(Menu menu) {
