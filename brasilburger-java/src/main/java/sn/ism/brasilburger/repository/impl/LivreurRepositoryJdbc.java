@@ -97,6 +97,28 @@ public class LivreurRepositoryJdbc implements ILivreurRepository{
         return livreur;
     }
 
+    private Livreur update(Livreur livreur) {
+        String sql = """
+                UPDATE LIVREUR
+                SET nom = ?, prenom = ?, telephone = ?
+                WHERE id_livreur = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, livreur.getNom());
+            ps.setString(2, livreur.getPrenom());
+            ps.setString(3, livreur.getTelephone());
+            ps.setInt(4, livreur.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour du livreur", e);
+        }
+
+        return livreur;
+    }
     @Override
     public Livreur save(Livreur livreur) {
         throw new UnsupportedOperationException("Unimplemented method 'save'");
