@@ -103,6 +103,32 @@ public class ComplementRepositoryJdbc implements IComplementRepository{
 
         return complement;
     }
+
+    private Complement update(Complement complement) {
+        String sql = """
+                UPDATE COMPLEMENT
+                SET nom = ?, type_complement = ?, prix = ?, image = ?, is_archived = ?
+                WHERE id_complement = ?
+                """;
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, complement.getNom());
+            ps.setString(2, complement.getType().name());
+            ps.setBigDecimal(3, complement.getPrix());
+            ps.setString(4, complement.getImage());
+            ps.setBoolean(5, complement.isArchived());
+            ps.setInt(6, complement.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour du complément", e);
+        }
+
+        return complement;
+    }
+
     @Override
     public Complement save(Complement complement) {
         throw new UnsupportedOperationException("Unimplemented method 'save'");
