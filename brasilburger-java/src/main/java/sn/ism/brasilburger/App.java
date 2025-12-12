@@ -5,20 +5,19 @@ import sn.ism.brasilburger.model.Complement;
 import sn.ism.brasilburger.model.Livreur;
 import sn.ism.brasilburger.model.Menu;
 import sn.ism.brasilburger.model.TypeComplement;
-import sn.ism.brasilburger.repository.impl.BurgerRepositoryJdbc;
-import sn.ism.brasilburger.repository.impl.ComplementRepositoryJdbc;
-import sn.ism.brasilburger.repository.impl.LivreurRepositoryJdbc;
-import sn.ism.brasilburger.repository.impl.MenuRepositoryJdbc;
-import sn.ism.brasilburger.repository.impl.QuartierRepositoryJdbc;
-import sn.ism.brasilburger.repository.impl.ZoneRepositoryJdbc;
+import sn.ism.brasilburger.repository.*;
+import sn.ism.brasilburger.repository.impl.*;
+
 import sn.ism.brasilburger.service.impl.BurgerServiceImpl;
 import sn.ism.brasilburger.service.impl.ComplementServiceImpl;
 import sn.ism.brasilburger.service.impl.ImageServiceImpl;
 import sn.ism.brasilburger.service.impl.LivreurServiceImpl;
+import sn.ism.brasilburger.service.impl.MenuServiceImpl;
 import sn.ism.brasilburger.service.impl.QuartierServiceImpl;
 import sn.ism.brasilburger.service.impl.ZoneServiceImpl;
-
+import sn.ism.brasilburger.service.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 import sn.ism.brasilburger.model.Quartier;
 import sn.ism.brasilburger.model.Zone;
@@ -158,33 +157,77 @@ public class App {
         // zoneRepo.save(newZone);
         // System.out.println("Zone mise à jour : " + newZone.getLibelle() +
         //                    " (Prix livraison: " + newZone.getPrixLivraison() + ")");
-         BurgerRepositoryJdbc burgerRepo = new BurgerRepositoryJdbc();
-        ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
-        QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
-        LivreurRepositoryJdbc livreurRepo = new LivreurRepositoryJdbc();
-        ComplementRepositoryJdbc complementRepo = new ComplementRepositoryJdbc();
-        ImageServiceImpl imageService = new ImageServiceImpl();
-        ComplementServiceImpl complementService = new ComplementServiceImpl(complementRepo, imageService);
+        //  BurgerRepositoryJdbc burgerRepo = new BurgerRepositoryJdbc();
+        // ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
+        // QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
+        // LivreurRepositoryJdbc livreurRepo = new LivreurRepositoryJdbc();
+        // ComplementRepositoryJdbc complementRepo = new ComplementRepositoryJdbc();
+//    IMenuRepository menuRepo = new MenuRepositoryJdbc();
+//         IMenuBurgerRepository  menuBurgerRepo = new MenuBurgerRepositoryJdbc();
+//         IMenuComplementRepository menuComplementRepo = new MenuComplementRepositoryJdbc();
+//         IImageService imageService = new ImageServiceImpl();
 
-        BurgerServiceImpl burgerService = new BurgerServiceImpl(burgerRepo, imageService);
-        ZoneServiceImpl zoneService = new ZoneServiceImpl(zoneRepo);
-        QuartierServiceImpl quartierService = new QuartierServiceImpl(quartierRepo, zoneRepo);
-        LivreurServiceImpl livreurService = new LivreurServiceImpl(livreurRepo);
+//         // Création du service
+//         MenuServiceImpl menuService = new MenuServiceImpl(menuRepo, menuBurgerRepo, menuComplementRepo, imageService);
 
-        System.out.println("=== Burgers actifs ===");
-        burgerService.lister().forEach(b -> System.out.println(b.getNom() + " : " + b.getPrix()));
+//         // === Test 1 : Lister les menus actifs ===
+//         System.out.println("=== Liste des menus actifs ===");
+//         menuService.lister().forEach(m ->
+//             System.out.println(m.getId() + " - " + m.getNom() + " : " + m.getPrix())
+//         );
 
-        Burger b = burgerService.creer("Brasil Burger", BigDecimal.valueOf(3500), "C:/images/burger.png");
-        System.out.println("Burger créé avec ID : " + b.getId() + " et image : " + b.getImage());
-        Complement c = complementService.creer("Frites", TypeComplement.FRITE, BigDecimal.valueOf(1000), "C:/images/frites.png");
-        System.out.println("Complément créé : " + c.getNom() + " - " + c.getPrix());
-        zoneService.lister().forEach(z -> System.out.println("Zone : " + z.getLibelle()));
-        Zone z = zoneRepo.findById(1).orElseThrow();
-        Quartier q = quartierService.creer("Quartier Test", z);
-        System.out.println("Quartier créé : " + q.getLibelle() + " dans zone " + q.getZone().getLibelle());
+//         // === Test 2 : Créer un menu simple ===
+//         try {
+//             Menu simpleMenu = menuService.creerMenuSimple("Menu Étudiant", "C:/images/menu.png");
+//             System.out.println("Menu simple créé avec ID : " + simpleMenu.getId() +
+//                                " et image : " + simpleMenu.getImage());
+//         } catch (Exception e) {
+//             System.err.println("Erreur lors de la création du menu simple : " + e.getMessage());
+//         }
 
-        Livreur l = livreurService.creer("Diop", "Mamadou", "770000000");
-        System.out.println("Livreur créé : " + l.getNom() + " " + l.getPrenom());
-    }
+//         // === Test 3 : Créer un menu composé ===
+//         try {
+//             // Exemple : menu avec burgers ID 1 et 2, compléments ID 3
+//             Menu composeMenu = menuService.creerMenuCompose(
+//                 "Menu Complet",
+//                 "C:/images/menuComplet.png",
+//                 List.of(1, 2),
+//                 List.of(3)
+//             );
+//             System.out.println("Menu composé créé avec ID : " + composeMenu.getId() +
+//                                " et prix recalculé : " + composeMenu.getPrix());
+//         } catch (Exception e) {
+//             System.err.println("Erreur lors de la création du menu composé : " + e.getMessage());
+//         }
+
+//         // === Test 4 : Archiver un menu ===
+//         try {
+//             menuService.archiver(1); // exemple avec l’ID 1
+//             System.out.println("Menu avec ID 1 archivé.");
+//         } catch (Exception e) {
+//             System.err.println("Erreur lors de l’archivage du menu : " + e.getMessage());
+//         }
+    //     ComplementServiceImpl complementService = new ComplementServiceImpl(complementRepo, imageService);
+
+    //     BurgerServiceImpl burgerService = new BurgerServiceImpl(burgerRepo, imageService);
+    //     ZoneServiceImpl zoneService = new ZoneServiceImpl(zoneRepo);
+    //     QuartierServiceImpl quartierService = new QuartierServiceImpl(quartierRepo, zoneRepo);
+    //     LivreurServiceImpl livreurService = new LivreurServiceImpl(livreurRepo);
+
+    //     System.out.println("=== Burgers actifs ===");
+    //     burgerService.lister().forEach(b -> System.out.println(b.getNom() + " : " + b.getPrix()));
+
+    //     Burger b = burgerService.creer("Brasil Burger", BigDecimal.valueOf(3500), "C:/images/burger.png");
+    //     System.out.println("Burger créé avec ID : " + b.getId() + " et image : " + b.getImage());
+    //     Complement c = complementService.creer("Frites", TypeComplement.FRITE, BigDecimal.valueOf(1000), "C:/images/frites.png");
+    //     System.out.println("Complément créé : " + c.getNom() + " - " + c.getPrix());
+    //     zoneService.lister().forEach(z -> System.out.println("Zone : " + z.getLibelle()));
+    //     Zone z = zoneRepo.findById(1).orElseThrow();
+    //     Quartier q = quartierService.creer("Quartier Test", z);
+    //     System.out.println("Quartier créé : " + q.getLibelle() + " dans zone " + q.getZone().getLibelle());
+
+    //     Livreur l = livreurService.creer("Diop", "Mamadou", "770000000");
+    //     System.out.println("Livreur créé : " + l.getNom() + " " + l.getPrenom());
+     }
 }
    
