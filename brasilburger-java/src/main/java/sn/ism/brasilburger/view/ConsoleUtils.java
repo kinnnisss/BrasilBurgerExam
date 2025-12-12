@@ -29,5 +29,15 @@ public final class ConsoleUtils {
             }
         }
     }
+
+    public static String readString(Scanner sc, String label, boolean required) {
+        while (true) {
+            System.out.print(label);
+            String s = sc.nextLine();
+            if (!required) return s;
+            if (s != null && !s.isBlank()) return s;
+            System.out.println("Champ obligatoire.");
+        }
+    }
     
 }
