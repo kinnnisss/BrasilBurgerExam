@@ -61,8 +61,52 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
-    public Menu creerMenuCompose(String nom, String image, List<Integer> burgerIds, List<Integer> complementIds) {
-        throw new UnsupportedOperationException("Unimplemented method 'creerMenuCompose'");
+    public Menu creerMenuCompose(String nom, String imagePath, List<Integer> burgerIds, List<Integer> complementIds) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du menu est obligatoire");
+        }
+        if ((burgerIds == null || burgerIds.isEmpty()) &&
+            (complementIds == null || complementIds.isEmpty())) {
+            throw new IllegalArgumentException("Un menu doit contenir au moins un burger ou un complément");
+        }
+
+        String finalImageValue = null;
+
+        if (imagePath != null && !imagePath.isBlank()) {
+            File file = new File(imagePath);
+            if (!file.exists() || !file.isFile()) {
+                finalImageValue = imagePath;
+            } else {
+                try {
+                    String url = imageService.uploadAndGetUrl(file);
+                    finalImageValue = url;
+                } catch (IOException e) {
+                    throw new RuntimeException("Erreur lors du traitement de l'image du menu", e);
+                }
+            }
+        }
+
+        Menu menu = new Menu(nom, finalImageValue, BigDecimal.ZERO);
+        menu = menuRepository.save(menu);
+
+        int menuId = menu.getId();
+
+        if (burgerIds != null) {
+            for (Integer idBurger : burgerIds) {
+                menuBurgerRepository.addBurgerToMenu(menuId, idBurger);
+            }
+        }
+
+        if (complementIds != null) {
+            for (Integer idComplement : complementIds) {
+                menuComplementRepository.addComplementToMenu(menuId, idComplement);
+            }
+        }
+
+        menuRepository.updatePrix(menuId);
+
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalStateException("Menu non trouvé après création"));
     }
 
     @Override
