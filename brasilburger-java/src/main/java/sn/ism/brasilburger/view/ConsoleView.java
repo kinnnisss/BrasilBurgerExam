@@ -11,20 +11,21 @@ public class ConsoleView {
     private final QuartierView quartierView;
     private final LivreurView livreurView;
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
     public ConsoleView(BurgerView burgerView,
                        ComplementView complementView,
                        MenuView menuView,
                        ZoneView zoneView,
                        QuartierView quartierView,
-                       LivreurView livreurView) {
+                       LivreurView livreurView,Scanner scanner) {
         this.burgerView = burgerView;
         this.complementView = complementView;
         this.menuView = menuView;
         this.zoneView = zoneView;
         this.quartierView = quartierView;
         this.livreurView = livreurView;
+        this.scanner = scanner;
     }
 
     public void run() {
