@@ -20,5 +20,12 @@ public class ZoneView {
         System.out.println("---- Zones ----");
         zoneService.lister().forEach(System.out::println);
     }
+    public void creer() {
+        String libelle = ConsoleUtils.readString(scanner, "Libellé de la zone : ", true);
+        BigDecimal prixLivraison = ConsoleUtils.readBigDecimal(scanner, "Prix de livraison : ");
+
+        var zone = zoneService.creer(libelle, prixLivraison);
+        System.out.println("Zone créée : " + zone);
+    }
 
 }
