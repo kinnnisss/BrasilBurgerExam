@@ -31,4 +31,11 @@ public final class RepositoryFactory {
         return complementRepository;
     }
 
+    public static IMenuRepository getMenuRepository() {
+        if (menuRepository == null) {
+            menuRepository = new MenuRepositoryJdbc();
+        }
+        return menuRepository;
+    }
+
 }
