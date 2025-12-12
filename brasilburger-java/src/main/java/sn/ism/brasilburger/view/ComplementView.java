@@ -20,7 +20,6 @@ public class ComplementView {
         System.out.println("---- Compléments actifs ----");
         complementService.lister().forEach(System.out::println);
     }
-
     public void creer() {
         String nom = ConsoleUtils.readString(scanner, "Nom du complément : ", true);
 
@@ -38,5 +37,6 @@ public class ComplementView {
         var c = complementService.creer(nom, type, prix, image);
         System.out.println("Complément créé : " + c);
     }
+
 
 }
