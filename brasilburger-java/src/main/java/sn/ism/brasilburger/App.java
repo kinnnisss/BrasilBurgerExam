@@ -162,7 +162,9 @@ public class App {
         ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
         QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
         LivreurRepositoryJdbc livreurRepo = new LivreurRepositoryJdbc();
+        ComplementRepositoryJdbc complementRepo = new ComplementRepositoryJdbc();
         ImageServiceImpl imageService = new ImageServiceImpl();
+        ComplementServiceImpl complementService = new ComplementServiceImpl(complementRepo, imageService);
 
         BurgerServiceImpl burgerService = new BurgerServiceImpl(burgerRepo, imageService);
         ZoneServiceImpl zoneService = new ZoneServiceImpl(zoneRepo);
@@ -174,8 +176,8 @@ public class App {
 
         Burger b = burgerService.creer("Brasil Burger", BigDecimal.valueOf(3500), "C:/images/burger.png");
         System.out.println("Burger créé avec ID : " + b.getId() + " et image : " + b.getImage());
-
-
+        Complement c = complementService.creer("Frites", TypeComplement.FRITE, BigDecimal.valueOf(1000), "C:/images/frites.png");
+        System.out.println("Complément créé : " + c.getNom() + " - " + c.getPrix());
         zoneService.lister().forEach(z -> System.out.println("Zone : " + z.getLibelle()));
         Zone z = zoneRepo.findById(1).orElseThrow();
         Quartier q = quartierService.creer("Quartier Test", z);
