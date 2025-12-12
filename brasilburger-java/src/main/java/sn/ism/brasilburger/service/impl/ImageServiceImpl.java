@@ -2,6 +2,7 @@ package sn.ism.brasilburger.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import com.cloudinary.Cloudinary;
 
@@ -25,7 +26,7 @@ public class ImageServiceImpl implements IImageService{
 
     @Override
     public byte[] readImageAsBytes(File file) throws IOException {
-        throw new UnsupportedOperationException("Unimplemented method 'readImageAsBytes'");
+        return Files.readAllBytes(file.toPath());
     }
 
     @Override
