@@ -52,5 +52,13 @@ public final class ServiceFactory {
         return menuService;
     }
 
+    public static IZoneService getZoneService() {
+        if (zoneService == null) {
+            zoneService = new ZoneServiceImpl(
+                    RepositoryFactory.getZoneRepository()
+            );
+        }
+        return zoneService;
+    }
 
 }
