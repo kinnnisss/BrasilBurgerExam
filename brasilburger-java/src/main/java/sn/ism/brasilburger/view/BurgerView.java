@@ -17,4 +17,12 @@ public final class BurgerView {
         burgerService.lister().forEach(System.out::println);
     }
 
+    public void creer() {
+        String nom = ConsoleUtils.readString(scanner, "Nom du burger : ", true);
+        BigDecimal prix = ConsoleUtils.readBigDecimal(scanner, "Prix : ");
+        String image = ConsoleUtils.readString(scanner, "Image (chemin/URL, optionnel) : ", false);
+
+        var burger = burgerService.creer(nom, prix, image);
+        System.out.println("Burger créé : " + burger);
+    }
 }
