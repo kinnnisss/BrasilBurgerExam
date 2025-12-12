@@ -49,6 +49,12 @@ public final class RepositoryFactory {
         }
         return menuComplementRepository;
     }
+    public static IZoneRepository getZoneRepository() {
+        if (zoneRepository == null) {
+            zoneRepository = new ZoneRepositoryJdbc();
+        }
+        return zoneRepository;
+    }
 
 
 }
