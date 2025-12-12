@@ -31,7 +31,7 @@ public class ImageServiceImpl implements IImageService{
 
     @Override
     public void writeBytesToImage(byte[] data, File destination) throws IOException {
-        throw new UnsupportedOperationException("Unimplemented method 'writeBytesToImage'");
+        Files.write(destination.toPath(), data);
     }
 
     @Override
