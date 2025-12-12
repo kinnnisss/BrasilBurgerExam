@@ -62,7 +62,7 @@ public class ComplementServiceImpl implements IComplementService{
 
     @Override
     public void archiver(int idComplement) {
-        throw new UnsupportedOperationException("Unimplemented method 'archiver'");
+        complementRepository.archive(idComplement);
     }
 
 }
