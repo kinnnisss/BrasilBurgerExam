@@ -1,5 +1,7 @@
 package sn.ism.brasilburger.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -27,8 +29,35 @@ public class ComplementServiceImpl implements IComplementService{
     }
 
     @Override
-    public Complement creer(String nom, TypeComplement type, BigDecimal prix, String image) {
-        throw new UnsupportedOperationException("Unimplemented method 'creer'");
+    public Complement creer(String nom, TypeComplement type, BigDecimal prix, String imagePath) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du complément est obligatoire");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Le type du complément est obligatoire");
+        }
+        if (prix == null || prix.signum() <= 0) {
+            throw new IllegalArgumentException("Le prix du complément doit être > 0");
+        }
+
+        String finalImageValue = null;
+
+        if (imagePath != null && !imagePath.isBlank()) {
+            File file = new File(imagePath);
+            if (!file.exists() || !file.isFile()) {
+                finalImageValue = imagePath;
+            } else {
+                try {
+                    String url = imageService.uploadAndGetUrl(file);
+                    finalImageValue = url;
+                } catch (IOException e) {
+                    throw new RuntimeException("Erreur lors du traitement de l'image du complément", e);
+                }
+            }
+        }
+
+        Complement complement = new Complement(nom, type, prix, finalImageValue);
+        return complementRepository.save(complement);
     }
 
     @Override
