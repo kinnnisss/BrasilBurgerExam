@@ -111,7 +111,7 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public void archiver(int idMenu) {
-        throw new UnsupportedOperationException("Unimplemented method 'archiver'");
+        menuRepository.archive(idMenu);
     }
     
 }
