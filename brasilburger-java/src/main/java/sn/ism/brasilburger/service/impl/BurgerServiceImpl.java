@@ -1,5 +1,7 @@
 package sn.ism.brasilburger.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -26,8 +28,32 @@ public class BurgerServiceImpl implements IBurgerService {
     }
 
     @Override
-    public Burger creer(String nom, BigDecimal prix, String image) {
-        throw new UnsupportedOperationException("Unimplemented method 'creer'");
+    public Burger creer(String nom, BigDecimal prix, String imagePath) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du burger est obligatoire");
+        }
+        if (prix == null || prix.signum() <= 0) {
+            throw new IllegalArgumentException("Le prix du burger doit être > 0");
+        }
+
+        String finalImageValue = null;
+
+        if (imagePath != null && !imagePath.isBlank()) {
+            File file = new File(imagePath);
+            if (!file.exists() || !file.isFile()) {
+                finalImageValue = imagePath;
+            } else {
+                try {
+                    String url = imageService.uploadAndGetUrl(file);
+                    finalImageValue = url;
+                } catch (IOException e) {
+                    throw new RuntimeException("Erreur lors du traitement de l'image du burger", e);
+                }
+            }
+        }
+
+        Burger burger = new Burger(nom, prix, finalImageValue);
+        return burgerRepository.save(burger);
     }
 
     @Override
