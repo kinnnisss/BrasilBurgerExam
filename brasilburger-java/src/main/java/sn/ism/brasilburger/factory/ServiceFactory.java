@@ -61,4 +61,15 @@ public final class ServiceFactory {
         return zoneService;
     }
 
+    public static IQuartierService getQuartierService() {
+        if (quartierService == null) {
+            quartierService = new QuartierServiceImpl(
+                    RepositoryFactory.getQuartierRepository(),
+                    RepositoryFactory.getZoneRepository()
+            );
+        }
+        return quartierService;
+    }
+
+
 }
