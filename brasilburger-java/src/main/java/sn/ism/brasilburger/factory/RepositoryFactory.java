@@ -24,6 +24,11 @@ public final class RepositoryFactory {
         return burgerRepository;
     }
 
-
+    public static IComplementRepository getComplementRepository() {
+        if (complementRepository == null) {
+            complementRepository = new ComplementRepositoryJdbc();
+        }
+        return complementRepository;
+    }
 
 }
