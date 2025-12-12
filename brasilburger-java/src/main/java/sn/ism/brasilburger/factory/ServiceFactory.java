@@ -41,5 +41,16 @@ public final class ServiceFactory {
         return complementService;
     }
 
+    public static IMenuService getMenuService() {
+        if (menuService == null) {
+            menuService = new MenuServiceImpl(
+                    RepositoryFactory.getMenuRepository(),
+                    RepositoryFactory.getMenuBurgerRepository(),
+                    RepositoryFactory.getMenuComplementRepository(),getImageService()
+            );
+        }
+        return menuService;
+    }
+
 
 }
