@@ -18,5 +18,13 @@ public class LivreurView {
         System.out.println("---- Livreurs ----");
         livreurService.lister().forEach(System.out::println);
     }
-    
+        public void creer() {
+        String nom = ConsoleUtils.readString(scanner, "Nom du livreur : ", true);
+        String prenom = ConsoleUtils.readString(scanner, "Prénom du livreur : ", true);
+        String telephone = ConsoleUtils.readString(scanner, "Téléphone du livreur : ", true);
+
+        var livreur = livreurService.creer(nom, prenom, telephone);
+        System.out.println("Livreur créé : " + livreur);
+    }
+
 }
