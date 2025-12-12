@@ -23,4 +23,13 @@ public final class ServiceFactory {
         return imageService;
     }
 
+    public static IBurgerService getBurgerService() {
+        if (burgerService == null) {
+            burgerService = new BurgerServiceImpl(
+                    RepositoryFactory.getBurgerRepository(),getImageService()
+            );
+        }
+        return burgerService;
+    }
+
 }
