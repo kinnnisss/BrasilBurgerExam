@@ -162,51 +162,46 @@ public class App {
         // QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
         // LivreurRepositoryJdbc livreurRepo = new LivreurRepositoryJdbc();
         // ComplementRepositoryJdbc complementRepo = new ComplementRepositoryJdbc();
-//    IMenuRepository menuRepo = new MenuRepositoryJdbc();
-//         IMenuBurgerRepository  menuBurgerRepo = new MenuBurgerRepositoryJdbc();
-//         IMenuComplementRepository menuComplementRepo = new MenuComplementRepositoryJdbc();
-//         IImageService imageService = new ImageServiceImpl();
+   IMenuRepository menuRepo = new MenuRepositoryJdbc();
+        IMenuBurgerRepository  menuBurgerRepo = new MenuBurgerRepositoryJdbc();
+        IMenuComplementRepository menuComplementRepo = new MenuComplementRepositoryJdbc();
+        IImageService imageService = new ImageServiceImpl();
 
-//         // Création du service
-//         MenuServiceImpl menuService = new MenuServiceImpl(menuRepo, menuBurgerRepo, menuComplementRepo, imageService);
+        
+        MenuServiceImpl menuService = new MenuServiceImpl(menuRepo, menuBurgerRepo, menuComplementRepo, imageService);
 
-//         // === Test 1 : Lister les menus actifs ===
-//         System.out.println("=== Liste des menus actifs ===");
-//         menuService.lister().forEach(m ->
-//             System.out.println(m.getId() + " - " + m.getNom() + " : " + m.getPrix())
-//         );
+        System.out.println("=== Liste des menus actifs ===");
+        menuService.lister().forEach(m ->
+            System.out.println(m.getId() + " - " + m.getNom() + " : " + m.getPrix())
+        );
 
-//         // === Test 2 : Créer un menu simple ===
-//         try {
-//             Menu simpleMenu = menuService.creerMenuSimple("Menu Étudiant", "C:/images/menu.png");
-//             System.out.println("Menu simple créé avec ID : " + simpleMenu.getId() +
-//                                " et image : " + simpleMenu.getImage());
-//         } catch (Exception e) {
-//             System.err.println("Erreur lors de la création du menu simple : " + e.getMessage());
-//         }
+        try {
+            Menu simpleMenu = menuService.creerMenuSimple("Menu Étudiant", "C:/images/menu.png");
+            System.out.println("Menu simple créé avec ID : " + simpleMenu.getId() +
+                               " et image : " + simpleMenu.getImage());
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la création du menu simple : " + e.getMessage());
+        }
 
-//         // === Test 3 : Créer un menu composé ===
-//         try {
-//             // Exemple : menu avec burgers ID 1 et 2, compléments ID 3
-//             Menu composeMenu = menuService.creerMenuCompose(
-//                 "Menu Complet",
-//                 "C:/images/menuComplet.png",
-//                 List.of(1, 2),
-//                 List.of(3)
-//             );
-//             System.out.println("Menu composé créé avec ID : " + composeMenu.getId() +
-//                                " et prix recalculé : " + composeMenu.getPrix());
-//         } catch (Exception e) {
-//             System.err.println("Erreur lors de la création du menu composé : " + e.getMessage());
-//         }
+        try {
+            Menu composeMenu = menuService.creerMenuCompose(
+                "Menu Complet",
+                "C:/images/menuComplet.png",
+                List.of(1, 2),
+                List.of(3)
+            );
+            System.out.println("Menu composé créé avec ID : " + composeMenu.getId() +
+                               " et prix recalculé : " + composeMenu.getPrix());
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la création du menu composé : " + e.getMessage());
+        }
 
-//         // === Test 4 : Archiver un menu ===
-//         try {
-//             menuService.archiver(1); // exemple avec l’ID 1
-//             System.out.println("Menu avec ID 1 archivé.");
-//         } catch (Exception e) {
-//             System.err.println("Erreur lors de l’archivage du menu : " + e.getMessage());
-//         }
+        try {
+            menuService.archiver(1); 
+            System.out.println("Menu avec ID 1 archivé.");
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l’archivage du menu : " + e.getMessage());
+        }
     //     ComplementServiceImpl complementService = new ComplementServiceImpl(complementRepo, imageService);
 
     //     BurgerServiceImpl burgerService = new BurgerServiceImpl(burgerRepo, imageService);
