@@ -27,7 +27,7 @@ public class QuartierServiceImpl implements IQuartierService {
 
     @Override
     public List<Quartier> listerParZone(Zone zone) {
-        throw new UnsupportedOperationException("Unimplemented method 'listerParZone'");
+        return quartierRepository.findByZone(zone);
     }
 
     @Override
