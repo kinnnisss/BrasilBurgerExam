@@ -56,5 +56,11 @@ public final class RepositoryFactory {
         return zoneRepository;
     }
 
+    public static IQuartierRepository getQuartierRepository() {
+        if (quartierRepository == null) {
+            quartierRepository = new QuartierRepositoryJdbc();
+        }
+        return quartierRepository;
+    }
 
 }
