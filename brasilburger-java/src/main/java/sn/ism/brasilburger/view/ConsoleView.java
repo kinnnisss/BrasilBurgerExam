@@ -26,6 +26,50 @@ public class ConsoleView {
         this.quartierView = quartierView;
         this.livreurView = livreurView;
     }
+
+    public void run() {
+        boolean running = true;
+
+        while (running) {
+            afficherMenu();
+            System.out.print("Votre choix : ");
+            String choix = scanner.nextLine();
+
+            try {
+                switch (choix) {
+                    case "1" -> burgerView.lister();
+                    case "2" -> burgerView.creer();
+                    case "3" -> burgerView.archiver();
+
+                    case "4" -> complementView.lister();
+                    case "5" -> complementView.creer();
+                    case "6" -> complementView.archiver();
+
+                    case "7" -> menuView.lister();
+                    case "8" -> menuView.creerMenuCompose();
+                    case "15" -> menuView.archiver(); // optionnel
+
+                    case "9"  -> zoneView.lister();
+                    case "10" -> zoneView.creer();
+
+                    case "11" -> quartierView.lister();
+                    case "12" -> quartierView.creer();
+
+                    case "13" -> livreurView.lister();
+                    case "14" -> livreurView.creer();
+
+                    case "0" -> running = false;
+                    default -> System.out.println("Choix invalide.");
+                }
+            } catch (Exception e) {
+                System.out.println("Erreur : " + e.getMessage());
+            }
+            System.out.println();
+        }
+
+        System.out.println("Au revoir !");
+    }
+
     private void afficherMenu() {
         System.out.println("==== BRASIL BURGER - GESTION RESSOURCES ====");
         System.out.println("---- Burgers / Compléments / Menus ----");
