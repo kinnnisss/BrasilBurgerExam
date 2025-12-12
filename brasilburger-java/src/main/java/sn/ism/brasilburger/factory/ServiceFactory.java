@@ -32,4 +32,14 @@ public final class ServiceFactory {
         return burgerService;
     }
 
+    public static IComplementService getComplementService() {
+        if (complementService == null) {
+            complementService = new ComplementServiceImpl(
+                    RepositoryFactory.getComplementRepository(),getImageService()
+            );
+        }
+        return complementService;
+    }
+
+
 }
