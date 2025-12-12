@@ -32,7 +32,16 @@ public class QuartierServiceImpl implements IQuartierService {
 
     @Override
     public Quartier creer(String libelle, Zone zone) {
-        throw new UnsupportedOperationException("Unimplemented method 'creer'");
+        if (libelle == null || libelle.isBlank()) {
+            throw new IllegalArgumentException("Le libellé du quartier est obligatoire");
+        }
+        if (zone == null || zone.getId() == 0 ||
+                zoneRepository.findById(zone.getId()).isEmpty()) {
+            throw new IllegalArgumentException("La zone associée doit exister en base");
+        }
+
+        Quartier quartier = new Quartier(libelle, zone);
+        return quartierRepository.save(quartier);
     }
     
 }
