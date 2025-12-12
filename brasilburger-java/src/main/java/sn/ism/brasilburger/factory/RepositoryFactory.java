@@ -43,6 +43,12 @@ public final class RepositoryFactory {
         }
         return menuBurgerRepository;
     }
+    public static IMenuComplementRepository getMenuComplementRepository() {
+        if (menuComplementRepository == null) {
+            menuComplementRepository = new MenuComplementRepositoryJdbc();
+        }
+        return menuComplementRepository;
+    }
 
 
 }
