@@ -57,5 +57,13 @@ public class ConsoleView {
         System.out.println("0.  Quitter");
     }
 
+    // ---------- B U R G E R ----------
+
+    private void listerBurgers() {
+        System.out.println("---- Burgers actifs ----");
+        burgerService.lister().forEach(System.out::println);
+    }
+
+
 
 }
