@@ -11,6 +11,12 @@ import sn.ism.brasilburger.repository.impl.LivreurRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.MenuRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.QuartierRepositoryJdbc;
 import sn.ism.brasilburger.repository.impl.ZoneRepositoryJdbc;
+import sn.ism.brasilburger.service.impl.BurgerServiceImpl;
+import sn.ism.brasilburger.service.impl.ComplementServiceImpl;
+import sn.ism.brasilburger.service.impl.ImageServiceImpl;
+import sn.ism.brasilburger.service.impl.LivreurServiceImpl;
+import sn.ism.brasilburger.service.impl.QuartierServiceImpl;
+import sn.ism.brasilburger.service.impl.ZoneServiceImpl;
 
 import java.math.BigDecimal;
 
@@ -125,33 +131,58 @@ public class App {
         //                             " (Zone: " + q.getZone().getLibelle() + ")"),
         //     () -> System.out.println("Aucun quartier trouvé avec l'ID " + testId)
         // );
-          ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
+        //   ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
 
-        System.out.println("=== Liste des zones ===");
-        zoneRepo.findAll().forEach(z ->
-            System.out.println(z.getId() + " - " + z.getLibelle() +
-                               " (Prix livraison: " + z.getPrixLivraison() + ")")
-        );
+        // System.out.println("=== Liste des zones ===");
+        // zoneRepo.findAll().forEach(z ->
+        //     System.out.println(z.getId() + " - " + z.getLibelle() +
+        //                        " (Prix livraison: " + z.getPrixLivraison() + ")")
+        // );
 
-        int testId = 1; 
-        System.out.println("\n=== Recherche de la zone avec ID " + testId + " ===");
-        zoneRepo.findById(testId).ifPresentOrElse(
-            z -> System.out.println("Zone trouvée : " + z.getLibelle() +
-                                    " (Prix livraison: " + z.getPrixLivraison() + ")"),
-            () -> System.out.println("Aucune zone trouvée avec l'ID " + testId)
-        );
+        // int testId = 1; 
+        // System.out.println("\n=== Recherche de la zone avec ID " + testId + " ===");
+        // zoneRepo.findById(testId).ifPresentOrElse(
+        //     z -> System.out.println("Zone trouvée : " + z.getLibelle() +
+        //                             " (Prix livraison: " + z.getPrixLivraison() + ")"),
+        //     () -> System.out.println("Aucune zone trouvée avec l'ID " + testId)
+        // );
 
-        Zone newZone = new Zone();
-        newZone.setLibelle("Zone Test");
-        newZone.setPrixLivraison(BigDecimal.valueOf(1500));
-        zoneRepo.save(newZone);
-        System.out.println("\nZone insérée avec ID : " + newZone.getId());
+        // Zone newZone = new Zone();
+        // newZone.setLibelle("Zone Test");
+        // newZone.setPrixLivraison(BigDecimal.valueOf(1500));
+        // zoneRepo.save(newZone);
+        // System.out.println("\nZone insérée avec ID : " + newZone.getId());
 
-        newZone.setLibelle("Zone Test Modifiée");
-        newZone.setPrixLivraison(BigDecimal.valueOf(2000));
-        zoneRepo.save(newZone);
-        System.out.println("Zone mise à jour : " + newZone.getLibelle() +
-                           " (Prix livraison: " + newZone.getPrixLivraison() + ")");
+        // newZone.setLibelle("Zone Test Modifiée");
+        // newZone.setPrixLivraison(BigDecimal.valueOf(2000));
+        // zoneRepo.save(newZone);
+        // System.out.println("Zone mise à jour : " + newZone.getLibelle() +
+        //                    " (Prix livraison: " + newZone.getPrixLivraison() + ")");
+         BurgerRepositoryJdbc burgerRepo = new BurgerRepositoryJdbc();
+        ZoneRepositoryJdbc zoneRepo = new ZoneRepositoryJdbc();
+        QuartierRepositoryJdbc quartierRepo = new QuartierRepositoryJdbc();
+        LivreurRepositoryJdbc livreurRepo = new LivreurRepositoryJdbc();
+        ImageServiceImpl imageService = new ImageServiceImpl();
+
+        BurgerServiceImpl burgerService = new BurgerServiceImpl(burgerRepo, imageService);
+        ZoneServiceImpl zoneService = new ZoneServiceImpl(zoneRepo);
+        QuartierServiceImpl quartierService = new QuartierServiceImpl(quartierRepo, zoneRepo);
+        LivreurServiceImpl livreurService = new LivreurServiceImpl(livreurRepo);
+
+        System.out.println("=== Burgers actifs ===");
+        burgerService.lister().forEach(b -> System.out.println(b.getNom() + " : " + b.getPrix()));
+
+        Burger b = burgerService.creer("Brasil Burger", BigDecimal.valueOf(3500), "C:/images/burger.png");
+        System.out.println("Burger créé avec ID : " + b.getId() + " et image : " + b.getImage());
+
+
+        zoneService.lister().forEach(z -> System.out.println("Zone : " + z.getLibelle()));
+        Zone z = zoneRepo.findById(1).orElseThrow();
+        Quartier q = quartierService.creer("Quartier Test", z);
+        System.out.println("Quartier créé : " + q.getLibelle() + " dans zone " + q.getZone().getLibelle());
+
+        Livreur l = livreurService.creer("Diop", "Mamadou", "770000000");
+        System.out.println("Livreur créé : " + l.getNom() + " " + l.getPrenom());
     }
 }
    
