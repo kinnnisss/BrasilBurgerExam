@@ -58,7 +58,7 @@ public class BurgerServiceImpl implements IBurgerService {
 
     @Override
     public void archiver(int idBurger) {
-        throw new UnsupportedOperationException("Unimplemented method 'archiver'");
+        burgerRepository.archive(idBurger);
     }
     
 }
