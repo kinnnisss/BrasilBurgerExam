@@ -37,5 +37,12 @@ public final class RepositoryFactory {
         }
         return menuRepository;
     }
+    public static IMenuBurgerRepository getMenuBurgerRepository() {
+        if (menuBurgerRepository == null) {
+            menuBurgerRepository = new MenuBurgerRepositoryJdbc();
+        }
+        return menuBurgerRepository;
+    }
+
 
 }
