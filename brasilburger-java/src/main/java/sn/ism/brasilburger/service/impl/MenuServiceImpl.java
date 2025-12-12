@@ -1,5 +1,8 @@
 package sn.ism.brasilburger.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,8 +35,29 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
-    public Menu creerMenuSimple(String nom, String image) {
-        throw new UnsupportedOperationException("Unimplemented method 'creerMenuSimple'");
+    public Menu creerMenuSimple(String nom, String imagePath) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du menu est obligatoire");
+        }
+
+        String finalImageValue = null;
+
+        if (imagePath != null && !imagePath.isBlank()) {
+            File file = new File(imagePath);
+            if (!file.exists() || !file.isFile()) {
+                finalImageValue = imagePath;
+            } else {
+                try {
+                    String url = imageService.uploadAndGetUrl(file);
+                    finalImageValue = url;
+                } catch (IOException e) {
+                    throw new RuntimeException("Erreur lors du traitement de l'image du menu", e);
+                }
+            }
+        }
+
+        Menu menu = new Menu(nom, finalImageValue, BigDecimal.ZERO);
+        return menuRepository.save(menu);
     }
 
     @Override
