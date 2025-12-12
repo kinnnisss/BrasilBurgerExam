@@ -38,5 +38,10 @@ public class ComplementView {
         System.out.println("Complément créé : " + c);
     }
 
+    public void archiver() {
+        int id = ConsoleUtils.readInt(scanner, "ID du complément à archiver : ");
+        complementService.archiver(id);
+        System.out.println("Complément archivé.");
+    }
 
 }
