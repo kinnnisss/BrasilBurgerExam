@@ -62,5 +62,11 @@ public final class RepositoryFactory {
         }
         return quartierRepository;
     }
+        public static ILivreurRepository getLivreurRepository() {
+        if (livreurRepository == null) {
+            livreurRepository = new LivreurRepositoryJdbc();
+        }
+        return livreurRepository;
+    }
 
 }
