@@ -20,7 +20,17 @@ public class LivreurServiceImpl implements ILivreurService {
 
     @Override
     public Livreur creer(String nom, String prenom, String telephone) {
-        throw new UnsupportedOperationException("Unimplemented method 'creer'");
-    }
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du livreur est obligatoire");
+        }
+        if (prenom == null || prenom.isBlank()) {
+            throw new IllegalArgumentException("Le prénom du livreur est obligatoire");
+        }
+        if (telephone == null || telephone.isBlank()) {
+            throw new IllegalArgumentException("Le téléphone du livreur est obligatoire");
+        }
+
+        Livreur livreur = new Livreur(nom, prenom, telephone);
+        return livreurRepository.save(livreur);    }
     
 }
