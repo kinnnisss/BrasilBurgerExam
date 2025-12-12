@@ -43,5 +43,10 @@ public class MenuView {
         var menu = menuService.creerMenuCompose(nom, image, burgerIds, complementIds);
         System.out.println("Menu créé : " + menu);
     }
+    public void archiver() {
+        int id = ConsoleUtils.readInt(scanner, "ID du menu à archiver : ");
+        menuService.archiver(id);
+        System.out.println("Menu archivé.");
+    }
 
 }
