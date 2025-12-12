@@ -71,5 +71,13 @@ public final class ServiceFactory {
         return quartierService;
     }
 
+    public static ILivreurService getLivreurService() {
+        if (livreurService == null) {
+            livreurService = new LivreurServiceImpl(
+                    RepositoryFactory.getLivreurRepository()
+            );
+        }
+        return livreurService;
+    }
 
 }
