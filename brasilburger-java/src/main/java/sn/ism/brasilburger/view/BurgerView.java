@@ -25,4 +25,10 @@ public final class BurgerView {
         var burger = burgerService.creer(nom, prix, image);
         System.out.println("Burger créé : " + burger);
     }
+
+    public void archiver() {
+        int id = ConsoleUtils.readInt(scanner, "ID du burger à archiver : ");
+        burgerService.archiver(id);
+        System.out.println("Burger archivé.");
+    }
 }
