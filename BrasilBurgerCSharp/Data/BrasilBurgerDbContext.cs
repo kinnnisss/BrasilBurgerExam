@@ -228,5 +228,5 @@ private static void ConfigureQuartier(ModelBuilder modelBuilder)
         e.HasOne(q => q.Zone)
             .WithMany(z => z.Quartiers)
             .HasForeignKey(q => q.IdZone);
-    });
+    });}
 }
