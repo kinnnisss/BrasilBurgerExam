@@ -42,5 +42,13 @@ public class BrasilBurgerDbContext : DbContext
         ConfigureMenuComplement(modelBuilder);
     }
 
+private static void ConfigureEnums(ModelBuilder modelBuilder)
+{
+    modelBuilder.HasPostgresEnum<TypeComplement>("type_complement_enum");
+    modelBuilder.HasPostgresEnum<EtatCommande>("etat_commande_enum");
+    modelBuilder.HasPostgresEnum<TypeConsommation>("type_consommation_enum");
+    modelBuilder.HasPostgresEnum<TypeArticle>("type_article_enum");
+    modelBuilder.HasPostgresEnum<ModePaiement>("mode_paiement_enum");
+}
 
 }
