@@ -82,5 +82,23 @@ private static void ConfigureBurger(ModelBuilder modelBuilder)
     });
 }
 
+private static void ConfigureComplement(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Complement>(e =>
+    {
+        e.ToTable("COMPLEMENT");
+        e.HasKey(c => c.IdComplement);
+
+        e.Property(c => c.IdComplement).HasColumnName("id_complement");
+        e.Property(c => c.Nom).HasColumnName("nom").HasMaxLength(150).IsRequired();
+        e.Property(c => c.TypeComplement)
+            .HasColumnName("type_complement")
+            .HasColumnType("type_complement_enum");
+        e.Property(c => c.Prix).HasColumnName("prix").HasColumnType("numeric(10,2)");
+        e.Property(c => c.Image).HasColumnName("image");
+        e.Property(c => c.IsArchived).HasColumnName("is_archived");
+    });
+}
+
 
 }
