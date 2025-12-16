@@ -114,6 +114,44 @@ private static void ConfigureMenu(ModelBuilder modelBuilder)
         e.Property(m => m.IsArchived).HasColumnName("is_archived");
     });
 }
+private static void ConfigureCommande(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Commande>(e =>
+    {
+        e.ToTable("COMMANDE");
+        e.HasKey(c => c.IdCommande);
+
+        e.Property(c => c.IdCommande).HasColumnName("id_commande");
+        e.Property(c => c.Reference).HasColumnName("reference").HasMaxLength(50);
+        e.Property(c => c.DateCommande).HasColumnName("date_commande");
+        e.Property(c => c.Etat).HasColumnName("etat").HasColumnType("etat_commande_enum");
+        e.Property(c => c.TypeConsommation)
+            .HasColumnName("type_consommation")
+            .HasColumnType("type_consommation_enum");
+        e.Property(c => c.MontantTotal).HasColumnName("montant_total").HasColumnType("numeric(10,2)");
+
+        e.Property(c => c.IdClient).HasColumnName("id_client");
+        e.Property(c => c.IdZone).HasColumnName("id_zone");
+        e.Property(c => c.IdQuartier).HasColumnName("id_quartier");
+        e.Property(c => c.IdLivreur).HasColumnName("id_livreur");
+
+        e.HasOne(c => c.Client)
+            .WithMany(c => c.Commandes)
+            .HasForeignKey(c => c.IdClient);
+
+        e.HasOne(c => c.Zone)
+            .WithMany(z => z.Commandes)
+            .HasForeignKey(c => c.IdZone);
+
+        e.HasOne(c => c.Quartier)
+            .WithMany(q => q.Commandes)
+            .HasForeignKey(c => c.IdQuartier);
+
+        e.HasOne(c => c.Livreur)
+            .WithMany(l => l.Commandes)
+            .HasForeignKey(c => c.IdLivreur);
+    });
+}
 
 
 }
