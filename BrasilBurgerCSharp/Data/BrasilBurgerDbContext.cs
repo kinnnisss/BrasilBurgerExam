@@ -153,5 +153,30 @@ private static void ConfigureCommande(ModelBuilder modelBuilder)
     });
 }
 
+private static void ConfigureLigneCommande(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<LigneCommande>(e =>
+    {
+        e.ToTable("LIGNE_COMMANDE");
+        e.HasKey(l => l.IdLigneCommande);
+
+        e.Property(l => l.IdLigneCommande).HasColumnName("id_ligne_commande");
+        e.Property(l => l.IdCommande).HasColumnName("id_commande");
+        e.Property(l => l.TypeArticle)
+            .HasColumnName("type_article")
+            .HasColumnType("type_article_enum");
+        e.Property(l => l.IdBurger).HasColumnName("id_burger");
+        e.Property(l => l.IdMenu).HasColumnName("id_menu");
+        e.Property(l => l.IdComplement).HasColumnName("id_complement");
+        e.Property(l => l.Quantite).HasColumnName("quantite");
+        e.Property(l => l.PrixUnitaire).HasColumnName("prix_unitaire").HasColumnType("numeric(10,2)");
+        e.Property(l => l.PrixTotal).HasColumnName("prix_total").HasColumnType("numeric(10,2)");
+
+        e.HasOne(l => l.Commande)
+            .WithMany(c => c.Lignes)
+            .HasForeignKey(l => l.IdCommande);
+    });
+}
+
 
 }
