@@ -201,4 +201,16 @@ private static void ConfigurePaiement(ModelBuilder modelBuilder)
     });
 }
 
+private static void ConfigureZone(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Zone>(e =>
+    {
+        e.ToTable("ZONE");
+        e.HasKey(z => z.IdZone);
+
+        e.Property(z => z.IdZone).HasColumnName("id_zone");
+        e.Property(z => z.Libelle).HasColumnName("libelle").HasMaxLength(150);
+        e.Property(z => z.PrixLivraison).HasColumnName("prix_livraison").HasColumnType("numeric(10,2)");
+    });
+}
 }
