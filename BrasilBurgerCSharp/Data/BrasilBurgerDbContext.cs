@@ -241,4 +241,16 @@ private static void ConfigureMenuBurger(ModelBuilder modelBuilder)
         e.Property(x => x.IdBurger).HasColumnName("id_burger");
     });
 }
+
+private static void ConfigureMenuComplement(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<MenuComplement>(e =>
+    {
+        e.ToTable("MENU_COMPLEMENT");
+        e.HasKey(x => new { x.IdMenu, x.IdComplement });
+
+        e.Property(x => x.IdMenu).HasColumnName("id_menu");
+        e.Property(x => x.IdComplement).HasColumnName("id_complement");
+    });
+}
 }
