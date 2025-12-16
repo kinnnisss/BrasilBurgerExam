@@ -213,4 +213,20 @@ private static void ConfigureZone(ModelBuilder modelBuilder)
         e.Property(z => z.PrixLivraison).HasColumnName("prix_livraison").HasColumnType("numeric(10,2)");
     });
 }
+
+private static void ConfigureQuartier(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Quartier>(e =>
+    {
+        e.ToTable("QUARTIER");
+        e.HasKey(q => q.IdQuartier);
+
+        e.Property(q => q.IdQuartier).HasColumnName("id_quartier");
+        e.Property(q => q.Libelle).HasColumnName("libelle").HasMaxLength(150);
+        e.Property(q => q.IdZone).HasColumnName("id_zone");
+
+        e.HasOne(q => q.Zone)
+            .WithMany(z => z.Quartiers)
+            .HasForeignKey(q => q.IdZone);
+    });
 }
