@@ -253,4 +253,20 @@ private static void ConfigureMenuComplement(ModelBuilder modelBuilder)
         e.Property(x => x.IdComplement).HasColumnName("id_complement");
     });
 }
+    private static void ConfigureLivreur(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Livreur>(e =>
+        {
+            e.ToTable("LIVREUR");
+            e.HasKey(l => l.IdLivreur);
+
+            e.Property(l => l.IdLivreur).HasColumnName("id_livreur");
+            e.Property(l => l.Nom).HasColumnName("nom").HasMaxLength(100).IsRequired();
+            e.Property(l => l.Prenom).HasColumnName("prenom").HasMaxLength(100).IsRequired();
+            e.Property(l => l.Telephone).HasColumnName("telephone").HasMaxLength(20).IsRequired();
+
+            e.HasIndex(l => l.Telephone).IsUnique();
+        });
+    }
 }
+
