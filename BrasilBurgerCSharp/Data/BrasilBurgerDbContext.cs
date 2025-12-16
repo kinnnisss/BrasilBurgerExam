@@ -229,4 +229,16 @@ private static void ConfigureQuartier(ModelBuilder modelBuilder)
             .WithMany(z => z.Quartiers)
             .HasForeignKey(q => q.IdZone);
     });}
+
+private static void ConfigureMenuBurger(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<MenuBurger>(e =>
+    {
+        e.ToTable("MENU_BURGER");
+        e.HasKey(x => new { x.IdMenu, x.IdBurger });
+
+        e.Property(x => x.IdMenu).HasColumnName("id_menu");
+        e.Property(x => x.IdBurger).HasColumnName("id_burger");
+    });
+}
 }
