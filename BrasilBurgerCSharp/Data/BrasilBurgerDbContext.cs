@@ -178,5 +178,27 @@ private static void ConfigureLigneCommande(ModelBuilder modelBuilder)
     });
 }
 
+private static void ConfigurePaiement(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Paiement>(e =>
+    {
+        e.ToTable("PAIEMENT");
+        e.HasKey(p => p.IdPaiement);
+
+        e.Property(p => p.IdPaiement).HasColumnName("id_paiement");
+        e.Property(p => p.DatePaiement).HasColumnName("date_paiement");
+        e.Property(p => p.Montant).HasColumnName("montant").HasColumnType("numeric(10,2)");
+        e.Property(p => p.ModePaiement)
+            .HasColumnName("mode_paiement")
+            .HasColumnType("mode_paiement_enum");
+        e.Property(p => p.IdCommande).HasColumnName("id_commande");
+
+        e.HasIndex(p => p.IdCommande).IsUnique();
+
+        e.HasOne(p => p.Commande)
+            .WithOne(c => c.Paiement)
+            .HasForeignKey<Paiement>(p => p.IdCommande);
+    });
+}
 
 }
