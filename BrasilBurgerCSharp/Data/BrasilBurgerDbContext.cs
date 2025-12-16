@@ -51,4 +51,23 @@ private static void ConfigureEnums(ModelBuilder modelBuilder)
     modelBuilder.HasPostgresEnum<ModePaiement>("mode_paiement_enum");
 }
 
+private static void ConfigureClient(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Client>(e =>
+    {
+        e.ToTable("CLIENT");
+        e.HasKey(c => c.IdClient);
+
+        e.Property(c => c.IdClient).HasColumnName("id_client");
+        e.Property(c => c.Nom).HasColumnName("nom").HasMaxLength(100).IsRequired();
+        e.Property(c => c.Prenom).HasColumnName("prenom").HasMaxLength(100).IsRequired();
+        e.Property(c => c.Telephone).HasColumnName("telephone").HasMaxLength(20).IsRequired();
+        e.Property(c => c.Login).HasColumnName("login").HasMaxLength(100).IsRequired();
+        e.Property(c => c.Password).HasColumnName("password").HasMaxLength(255).IsRequired();
+
+        e.HasIndex(c => c.Telephone).IsUnique();
+        e.HasIndex(c => c.Login).IsUnique();
+    });
+}
+
 }
