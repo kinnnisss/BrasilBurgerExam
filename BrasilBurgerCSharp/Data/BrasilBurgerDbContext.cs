@@ -100,5 +100,20 @@ private static void ConfigureComplement(ModelBuilder modelBuilder)
     });
 }
 
+private static void ConfigureMenu(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Menu>(e =>
+    {
+        e.ToTable("MENU");
+        e.HasKey(m => m.IdMenu);
+
+        e.Property(m => m.IdMenu).HasColumnName("id_menu");
+        e.Property(m => m.Nom).HasColumnName("nom").HasMaxLength(150).IsRequired();
+        e.Property(m => m.Image).HasColumnName("image");
+        e.Property(m => m.Prix).HasColumnName("prix").HasColumnType("numeric(10,2)");
+        e.Property(m => m.IsArchived).HasColumnName("is_archived");
+    });
+}
+
 
 }
