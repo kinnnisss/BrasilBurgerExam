@@ -9,7 +9,6 @@ public class BrasilBurgerDbContext : DbContext
         : base(options) { }
 
     public DbSet<Client> Clients => Set<Client>();
-    public DbSet<Gestionnaire> Gestionnaires => Set<Gestionnaire>();
     public DbSet<Burger> Burgers => Set<Burger>();
     public DbSet<Menu> Menus => Set<Menu>();
     public DbSet<Complement> Complements => Set<Complement>();
@@ -26,9 +25,7 @@ public class BrasilBurgerDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ConfigureEnums(modelBuilder);
-
         ConfigureClient(modelBuilder);
-        ConfigureGestionnaire(modelBuilder);
         ConfigureBurger(modelBuilder);
         ConfigureComplement(modelBuilder);
         ConfigureMenu(modelBuilder);
@@ -69,5 +66,21 @@ private static void ConfigureClient(ModelBuilder modelBuilder)
         e.HasIndex(c => c.Login).IsUnique();
     });
 }
+
+private static void ConfigureBurger(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Burger>(e =>
+    {
+        e.ToTable("BURGER");
+        e.HasKey(b => b.IdBurger);
+
+        e.Property(b => b.IdBurger).HasColumnName("id_burger");
+        e.Property(b => b.Nom).HasColumnName("nom").HasMaxLength(150).IsRequired();
+        e.Property(b => b.Prix).HasColumnName("prix").HasColumnType("numeric(10,2)");
+        e.Property(b => b.Image).HasColumnName("image");
+        e.Property(b => b.IsArchived).HasColumnName("is_archived");
+    });
+}
+
 
 }
