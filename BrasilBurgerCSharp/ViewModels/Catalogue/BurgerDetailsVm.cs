@@ -8,4 +8,7 @@ public class BurgerDetailsVm
     public string? Image { get; set; }
 
     public int Quantite { get; set; } = 1;
+    public List<ComplementVm> Complements { get; set; } = new();
+    public List<int> SelectedComplementIds { get; set; } = new();
+
 }
