@@ -95,15 +95,21 @@ public sealed class CatalogueController : Controller
             Quantite = 1,
             Burgers = res.Data.Burgers.Select(b => new BurgerCardVm
             {
-                Id = b.Id, Nom = b.Nom, Prix = b.Prix, Image = b.Image
+                Id = b.Id,
+                Nom = b.Nom,
+                Prix = b.Prix,
+                Image = b.Image
             }).ToList(),
             Complements = res.Data.Complements.Select(c => new ComplementVm
             {
-                Id = c.Id, Nom = c.Nom, Prix = c.Prix, Image = c.Image, TypeComplement = c.TypeComplement
+                Id = c.Id,
+                Nom = c.Nom,
+                Prix = c.Prix,
+                Image = c.Image,
+                TypeComplement = c.TypeComplement
             }).ToList()
         };
 
         return View(vm);
     }
-
 }
