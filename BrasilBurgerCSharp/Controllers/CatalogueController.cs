@@ -32,5 +32,21 @@ public sealed class CatalogueController : Controller
         return View(vm);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Burger(int id, CancellationToken ct = default)
+    {
+        var res = await _catalog.GetBurgerAsync(id, ct);
+        if (!res.Success || res.Data is null) return NotFound();
+
+        return View(new BurgerDetailsVm
+        {
+            Id = res.Data.Id,
+            Nom = res.Data.Nom,
+            Prix = res.Data.Prix,
+            Image = res.Data.Image,
+            Quantite = 1
+        });
+    }
+
 
 }
