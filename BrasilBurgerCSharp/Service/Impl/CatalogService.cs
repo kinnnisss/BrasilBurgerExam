@@ -51,8 +51,24 @@ public sealed class CatalogService : ICatalogService
         return ServiceResult<List<ComplementDto>>.Ok(dto);
     }
 
-    public Task<ServiceResult<MenuDetailsDto>> GetMenuDetailsAsync(int id, CancellationToken ct = default)
+    public async Task<ServiceResult<MenuDetailsDto>> GetMenuDetailsAsync(int id, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var menu = await _catalogRepo.GetMenuDetailsByIdAsync(id, true, ct);
+        if (menu is null) return ServiceResult<MenuDetailsDto>.Fail(ServiceError.NotFound, "Menu introuvable.");
+
+        var burgers = menu.MenuBurgers
+            .Where(x => x.Burger is not null && !x.Burger.IsArchived)
+            .Select(x => x.Burger!)
+            .Select(b => new BurgerDto(b.IdBurger, b.Nom, b.Prix, b.Image))
+            .ToList();
+
+        var complements = menu.MenuComplements
+            .Where(x => x.Complement is not null && !x.Complement.IsArchived)
+            .Select(x => x.Complement!)
+            .Select(c => new ComplementDto(c.IdComplement, c.Nom, c.Prix, c.Image, c.TypeComplement.ToString()))
+            .ToList();
+
+        var dto = new MenuDetailsDto(menu.IdMenu, menu.Nom, menu.Prix, menu.Image, burgers, complements);
+        return ServiceResult<MenuDetailsDto>.Ok(dto);
     }
 }
