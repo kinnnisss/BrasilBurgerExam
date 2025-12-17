@@ -29,4 +29,39 @@ public sealed class CommandeController : Controller
 
         panier.Total = panier.Items.Sum(x => x.PrixTotal);
     }
+
+    private static void AddOrIncrement(
+        PanierVm panier,
+        string typeArticle,
+        int articleId,
+        string libelle,
+        string? image,
+        int quantite,
+        decimal prixUnitaire)
+    {
+        var item = panier.Items.FirstOrDefault(i =>
+            i.ArticleId == articleId &&
+            string.Equals(i.TypeArticle, typeArticle, StringComparison.OrdinalIgnoreCase));
+
+        if (item is null)
+        {
+            item = new PanierItemVm
+            {
+                TypeArticle = typeArticle.ToUpperInvariant(),
+                ArticleId = articleId,
+                Libelle = libelle,
+                Image = image,
+                Quantite = quantite,
+                PrixUnitaire = prixUnitaire
+            };
+            panier.Items.Add(item);
+        }
+        else
+        {
+            item.Quantite += quantite;
+        }
+
+        item.PrixTotal = item.PrixUnitaire * item.Quantite;
+        Recalc(panier);
+    }
 }
