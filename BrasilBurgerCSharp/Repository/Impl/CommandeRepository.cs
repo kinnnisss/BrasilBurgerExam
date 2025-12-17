@@ -47,7 +47,9 @@ public sealed class CommandeRepository : ICommandeRepository
             .ToListAsync(ct);
 
     public Task<List<Commande>> GetHistoriqueByClientAsync(int clientId, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
+        => _db.Commandes.AsNoTracking()
+            .Where(c => c.IdClient == clientId)
+            .OrderByDescending(c => c.DateCommande)
+            .Include(c => c.Paiement)
+            .ToListAsync(ct);
 }
