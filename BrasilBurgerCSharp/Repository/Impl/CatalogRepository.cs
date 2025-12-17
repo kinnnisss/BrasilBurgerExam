@@ -32,8 +32,11 @@ public sealed class CatalogRepository : ICatalogRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<Menu>> GetMenusAsync(bool onlyActive = true, CancellationToken ct = default)
+    public async Task<List<Menu>> GetMenusAsync(bool onlyActive = true, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var q = _db.Menus.AsNoTracking();
+        if (onlyActive) q = q.Where(m => !m.IsArchived);
+        return await q.OrderBy(m => m.Nom).ToListAsync(ct);
     }
+
 }
