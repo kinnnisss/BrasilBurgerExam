@@ -140,4 +140,31 @@ public sealed class CommandeController : Controller
         ClientSession.SavePanier(HttpContext, panier);
         return RedirectToAction(nameof(Panier));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddComplement(int id, int quantite = 1, CancellationToken ct = default)
+    {
+        if (quantite <= 0) quantite = 1;
+
+        var compRes = await _catalog.GetComplementsAsync(ct);
+        if (!compRes.Success || compRes.Data is null) return NotFound();
+
+        var comp = compRes.Data.FirstOrDefault(c => c.Id == id);
+        if (comp is null) return NotFound();
+
+        var panier = ClientSession.GetPanier(HttpContext);
+
+        AddOrIncrement(
+            panier,
+            typeArticle: "COMPLEMENT",
+            articleId: comp.Id,
+            libelle: comp.Nom,
+            image: comp.Image,
+            quantite: quantite,
+            prixUnitaire: comp.Prix);
+
+        ClientSession.SavePanier(HttpContext, panier);
+        return RedirectToAction(nameof(Panier));
+    }
 }
