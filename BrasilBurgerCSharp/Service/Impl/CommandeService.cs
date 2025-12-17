@@ -161,6 +161,16 @@ public sealed class CommandeService : ICommandeService
         }
     }
 
+    private static (string libelle, string? image) GetLibelleImage(LigneCommande l)
+    {
+        return l.TypeArticle switch
+        {
+            TypeArticle.BURGER => (l.Burger?.Nom ?? "Burger", l.Burger?.Image),
+            TypeArticle.MENU => (l.Menu?.Nom ?? "Menu", l.Menu?.Image),
+            TypeArticle.COMPLEMENT => (l.Complement?.Nom ?? "Complément", l.Complement?.Image),
+            _ => ("Article", null)
+        };
+    }
     public Task<ServiceResult<CommandeDetailsDto>> GetCommandeDetailsAsync(int commandeId, int clientId, CancellationToken ct = default)
     {
         throw new NotImplementedException();
