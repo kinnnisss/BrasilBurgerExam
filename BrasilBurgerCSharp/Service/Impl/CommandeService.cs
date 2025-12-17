@@ -13,17 +13,21 @@ public sealed class CommandeService : ICommandeService
     private readonly ICommandeRepository _commandeRepo;
     private readonly ICatalogRepository _catalogRepo;
     private readonly ILivraisonRepository _livraisonRepo;
+    private readonly IClientRepository _clientRepo;
+
 
     public CommandeService(
         BrasilBurgerDbContext db,
         ICommandeRepository commandeRepo,
         ICatalogRepository catalogRepo,
-        ILivraisonRepository livraisonRepo)
+        ILivraisonRepository livraisonRepo,
+        IClientRepository clientRepo)
     {
         _db = db;
         _commandeRepo = commandeRepo;
         _catalogRepo = catalogRepo;
         _livraisonRepo = livraisonRepo;
+        _clientRepo = clientRepo;
     }
 
     public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(CommandeCreateDto dto, CancellationToken ct = default)
@@ -43,6 +47,10 @@ public sealed class CommandeService : ICommandeService
         {
             dto = dto with { ZoneId = null, QuartierId = null };
         }
+
+        var client = await _clientRepo.GetByIdAsync(dto.ClientId, ct);
+        if (client is null)
+            return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, "Client introuvable.");
 
         var lignesEntities = new List<LigneCommande>();
         decimal sousTotal = 0m;
