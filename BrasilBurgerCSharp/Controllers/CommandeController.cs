@@ -246,17 +246,6 @@ public sealed class CommandeController : Controller
         return RedirectToAction(nameof(Panier));
     }
 
-    [HttpGet]
-    public IActionResult Checkout()
-    {
-        var clientId = ClientSession.GetClientId(HttpContext);
-        if (clientId is null)
-        {
-            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Checkout), "Commande") });
-        }
-        return View();
-    }
-
     private async Task LoadZonesQuartiersAsync(CheckoutVm vm, CancellationToken ct)
     {
         var zones = await _livraisonRepo.GetZonesAsync(ct);
