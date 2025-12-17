@@ -8,4 +8,7 @@ public class CommandeRowVm
     public string Etat { get; set; } = "";
     public decimal MontantTotal { get; set; }
     public bool EstPayee { get; set; }
+    public string TypeConsommation { get; set; } = "";
+    public List<string> ResumeArticles { get; set; } = new();
+
 }
