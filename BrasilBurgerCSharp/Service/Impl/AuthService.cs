@@ -21,11 +21,20 @@ public sealed class AuthService : IAuthService
         return ServiceResult<ClientDto>.Ok(new ClientDto(client.IdClient, client.Nom, client.Prenom, client.Telephone, client.Login));
     }
 
-    public Task<ServiceResult<ClientDto>> LoginAsync(LoginDto dto, CancellationToken ct = default)
+    public async Task<ServiceResult<ClientDto>> LoginAsync(LoginDto dto, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
-    }
+        var login = dto.Login.Trim();
+        var client = await _clientRepo.GetByLoginAsync(login, ct);
 
+        if (client is null)
+            return ServiceResult<ClientDto>.Fail(ServiceError.Unauthorized, "Login ou mot de passe incorrect.");
+
+        var res = _hasher.VerifyHashedPassword(client, client.Password, dto.Password);
+        if (res == PasswordVerificationResult.Failed)
+            return ServiceResult<ClientDto>.Fail(ServiceError.Unauthorized, "Login ou mot de passe incorrect.");
+
+        return ServiceResult<ClientDto>.Ok(new ClientDto(client.IdClient, client.Nom, client.Prenom, client.Telephone, client.Login));
+    }
     public Task<ServiceResult<ClientDto>> RegisterAsync(RegisterDto dto, CancellationToken ct = default)
     {
         throw new NotImplementedException();
