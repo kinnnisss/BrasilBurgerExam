@@ -196,4 +196,19 @@ public sealed class CommandeController : Controller
         return RedirectToAction(nameof(Panier));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Remove(string typeArticle, int articleId)
+    {
+        var panier = ClientSession.GetPanier(HttpContext);
+
+        panier.Items.RemoveAll(i =>
+            i.ArticleId == articleId &&
+            string.Equals(i.TypeArticle, typeArticle, StringComparison.OrdinalIgnoreCase));
+
+        Recalc(panier);
+        ClientSession.SavePanier(HttpContext, panier);
+
+        return RedirectToAction(nameof(Panier));
+    }
 }
