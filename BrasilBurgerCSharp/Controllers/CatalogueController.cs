@@ -15,8 +15,11 @@ public sealed class CatalogueController : Controller
     {
         filtre = (filtre ?? "ALL").Trim().ToUpperInvariant();
 
+        if (filtre is not ("ALL" or "BURGER" or "MENU" or "COMPLEMENT"))
+            filtre = "ALL";
+
         var catRes = await _catalog.GetCatalogueAsync(
-            filtre is "ALL" or "BURGER" or "MENU" ? (filtre == "ALL" ? null : filtre) : null,
+            filtre is "BURGER" or "MENU" ? filtre : null,
             ct);
 
         var compRes = (filtre is "ALL" or "COMPLEMENT")
@@ -64,20 +67,35 @@ public sealed class CatalogueController : Controller
 
         return View(vm);
     }
+
     [HttpGet]
     public async Task<IActionResult> Burger(int id, CancellationToken ct = default)
     {
-        var res = await _catalog.GetBurgerAsync(id, ct);
-        if (!res.Success || res.Data is null) return NotFound();
+        var burgerRes = await _catalog.GetBurgerAsync(id, ct);
+        if (!burgerRes.Success || burgerRes.Data is null) return NotFound();
 
-        return View(new BurgerDetailsVm
+        var compRes = await _catalog.GetComplementsAsync(ct);
+
+        var vm = new BurgerDetailsVm
         {
-            Id = res.Data.Id,
-            Nom = res.Data.Nom,
-            Prix = res.Data.Prix,
-            Image = res.Data.Image,
-            Quantite = 1
-        });
+            Id = burgerRes.Data.Id,
+            Nom = burgerRes.Data.Nom,
+            Prix = burgerRes.Data.Prix,
+            Image = burgerRes.Data.Image,
+            Quantite = 1,
+            Complements = (compRes.Success && compRes.Data is not null)
+                ? compRes.Data.Select(c => new ComplementVm
+                {
+                    Id = c.Id,
+                    Nom = c.Nom,
+                    Prix = c.Prix,
+                    Image = c.Image,
+                    TypeComplement = c.TypeComplement
+                }).ToList()
+                : new()
+        };
+
+        return View(vm);
     }
 
     [HttpGet]
