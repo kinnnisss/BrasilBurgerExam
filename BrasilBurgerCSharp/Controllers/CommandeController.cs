@@ -36,6 +36,10 @@ public sealed class CommandeController : Controller
             QuartierId = quartierId
         };
 
+        vm.TypeConsommation = vm.TypeConsommation.Trim().ToUpperInvariant();
+        if (vm.TypeConsommation is not ("SUR_PLACE" or "A_EMPORTER" or "LIVRAISON"))
+            vm.TypeConsommation = "SUR_PLACE";
+
         await LoadZonesQuartiersAsync(vm, ct);
 
         if (!vm.TypeConsommation.Equals("LIVRAISON", StringComparison.OrdinalIgnoreCase))
@@ -313,7 +317,9 @@ public sealed class CommandeController : Controller
         {
             model.ZoneId = null;
             model.QuartierId = null;
+            model.Quartiers = new();
         }
+
 
         var lignes = panier.Items.Select(i => new LigneCommandeCreateDto(
             TypeArticle: i.TypeArticle,
