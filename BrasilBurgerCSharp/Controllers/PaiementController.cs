@@ -52,5 +52,26 @@ public sealed class PaiementController : Controller
         return View(detailsRes.Data);
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Payer(PaymentVm model, CancellationToken ct = default)
+    {
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Index), "Paiement", new { commandeId = model.CommandeId }) });
+
+        var res = await _paiementService.PayerAsync(
+            clientId.Value,
+            new PaiementCreateDto(model.CommandeId, model.ModePaiement),
+            ct);
+
+        if (!res.Success || res.Data is null)
+        {
+            model.ErrorMessage = res.Message ?? "Paiement impossible.";
+            return View("Index", model);
+        }
+
+        return RedirectToAction(nameof(Success), new { commandeId = model.CommandeId });
+    }
 
 }
