@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BrasilBurgerCSharp.Core;                 // SessionExtensions + ClientSession
 using BrasilBurgerCSharp.Service;
+using BrasilBurgerCSharp.DTOs;
 using BrasilBurgerCSharp.Repository;
 using BrasilBurgerCSharp.ViewModels.Commande;
 using BrasilBurgerCSharp.ViewModels.Catalogue;
@@ -282,5 +283,73 @@ public sealed class CommandeController : Controller
                 vm.QuartierId = null;
             }
         }
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Confirmer(CheckoutVm model, CancellationToken ct = default)
+    {
+        var panier = ClientSession.GetPanier(HttpContext);
+        model.Panier = panier;
+
+        if (panier.Items.Count == 0)
+        {
+            model.ErrorMessage = "Votre panier est vide.";
+            await LoadZonesQuartiersAsync(model, ct);
+            return View("Panier", model);
+        }
+
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+        {
+            var returnUrl = Url.Action(nameof(Panier), "Commande", new
+            {
+                type = model.TypeConsommation,
+                zoneId = model.ZoneId,
+                quartierId = model.QuartierId
+            });
+
+            return RedirectToAction("Login", "Auth", new { returnUrl });
+        }
+
+        if (model.TypeConsommation.Equals("LIVRAISON", StringComparison.OrdinalIgnoreCase))
+        {
+            if (model.ZoneId is null || model.QuartierId is null)
+            {
+                model.ErrorMessage = "Zone et quartier obligatoires pour une livraison.";
+                await LoadZonesQuartiersAsync(model, ct);
+                return View("Panier", model);
+            }
+        }
+        else
+        {
+            model.ZoneId = null;
+            model.QuartierId = null;
+        }
+
+        var lignes = panier.Items.Select(i => new LigneCommandeCreateDto(
+            TypeArticle: i.TypeArticle,
+            ArticleId: i.ArticleId,
+            Quantite: i.Quantite
+        )).ToList();
+
+        var dto = new CommandeCreateDto(
+            ClientId: clientId.Value,
+            Lignes: lignes,
+            TypeConsommation: model.TypeConsommation,
+            ZoneId: model.ZoneId,
+            QuartierId: model.QuartierId
+        );
+
+        var res = await _commandeService.CreerCommandeAsync(dto, ct);
+        if (!res.Success || res.Data is null)
+        {
+            model.ErrorMessage = res.Message ?? "Impossible de confirmer la commande.";
+            await LoadZonesQuartiersAsync(model, ct);
+            return View("Panier", model);
+        }
+
+        ClientSession.ClearPanier(HttpContext);
+
+        return RedirectToAction("Index", "Paiement", new { commandeId = res.Data.Id });
     }
 }
