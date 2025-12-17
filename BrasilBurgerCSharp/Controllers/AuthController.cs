@@ -45,7 +45,12 @@ public sealed class AuthController : Controller
         return RedirectToAction("Index", "Catalogue");
     }
 
-
+    [HttpGet]
+    public IActionResult Register(string? returnUrl = null)
+    {
+        ViewBag.ReturnUrl = returnUrl;
+        return View(new RegisterVm());
+    }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Logout()
