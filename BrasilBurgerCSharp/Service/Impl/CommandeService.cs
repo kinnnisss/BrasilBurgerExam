@@ -30,145 +30,164 @@ public sealed class CommandeService : ICommandeService
         _clientRepo = clientRepo;
     }
 
-    public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(CommandeCreateDto dto, CancellationToken ct = default)
+public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
+    CommandeCreateDto dto,
+    CancellationToken ct = default)
+{
+    if (dto.Lignes is null || dto.Lignes.Count == 0)
+        return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "La commande doit contenir au moins un article.");
+
+    if (!Enum.TryParse<TypeConsommation>(dto.TypeConsommation, true, out var typeCons))
+        return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Type de consommation invalide.");
+
+    int? zoneId = dto.ZoneId;
+    int? quartierId = dto.QuartierId;
+
+    if (typeCons == TypeConsommation.LIVRAISON)
     {
-        if (dto.Lignes is null || dto.Lignes.Count == 0)
-            return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "La commande doit contenir au moins un article.");
+        if (zoneId is null || quartierId is null)
+            return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Zone et quartier obligatoires pour une livraison.");
+    }
+    else
+    {
+        zoneId = null;
+        quartierId = null;
+    }
 
-        if (!Enum.TryParse<TypeConsommation>(dto.TypeConsommation, true, out var typeCons))
-            return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Type de consommation invalide.");
+    var client = await _clientRepo.GetByIdAsync(dto.ClientId, ct);
+    if (client is null)
+        return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, "Client introuvable.");
 
-        if (typeCons == TypeConsommation.LIVRAISON)
+    var lignesEntities = new List<LigneCommande>();
+    decimal sousTotal = 0m;
+
+    foreach (var l in dto.Lignes)
+    {
+        if (l.Quantite <= 0)
+            return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Quantité invalide.");
+
+        if (!Enum.TryParse<TypeArticle>(l.TypeArticle, true, out var typeArticle))
+            return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "TypeArticle invalide.");
+
+        decimal prixUnitaire;
+
+        var entity = new LigneCommande
         {
-            if (dto.ZoneId is null || dto.QuartierId is null)
-                return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Zone et quartier obligatoires pour une livraison.");
-        }
-        else
-        {
-            dto = dto with { ZoneId = null, QuartierId = null };
-        }
-
-        var client = await _clientRepo.GetByIdAsync(dto.ClientId, ct);
-        if (client is null)
-            return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, "Client introuvable.");
-
-        var lignesEntities = new List<LigneCommande>();
-        decimal sousTotal = 0m;
-
-        foreach (var l in dto.Lignes)
-        {
-            if (l.Quantite <= 0)
-                return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Quantité invalide.");
-
-            if (!Enum.TryParse<TypeArticle>(l.TypeArticle, true, out var typeArticle))
-                return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "TypeArticle invalide.");
-
-            decimal prixUnitaire;
-            var entity = new LigneCommande
-            {
-                TypeArticle = typeArticle,
-                Quantite = l.Quantite
-            };
-
-            switch (typeArticle)
-            {
-                case TypeArticle.BURGER:
-                {
-                    var burger = await _catalogRepo.GetBurgerByIdAsync(l.ArticleId, true, ct);
-                    if (burger is null) return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Burger {l.ArticleId} introuvable.");
-                    entity.IdBurger = burger.IdBurger;
-                    entity.IdMenu = null;
-                    entity.IdComplement = null;
-                    prixUnitaire = burger.Prix;
-                    break;
-                }
-                case TypeArticle.MENU:
-                {
-                    var menu = await _catalogRepo.GetMenuDetailsByIdAsync(l.ArticleId, true, ct);
-                    if (menu is null) return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Menu {l.ArticleId} introuvable.");
-                    entity.IdMenu = menu.IdMenu;
-                    entity.IdBurger = null;
-                    entity.IdComplement = null;
-                    prixUnitaire = menu.Prix;
-                    break;
-                }
-                case TypeArticle.COMPLEMENT:
-                {
-                    var comp = await _catalogRepo.GetComplementByIdAsync(l.ArticleId, true, ct);
-                    if (comp is null)
-                        return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Complément {l.ArticleId} introuvable.");
-
-                    entity.IdComplement = comp.IdComplement;
-                    entity.IdBurger = null;
-                    entity.IdMenu = null;
-                    prixUnitaire = comp.Prix;
-                    break;
-                }
-                default:
-                    return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "TypeArticle invalide.");
-            }
-
-            entity.PrixUnitaire = prixUnitaire;
-            entity.PrixTotal = prixUnitaire * l.Quantite;
-            sousTotal += entity.PrixTotal;
-
-            lignesEntities.Add(entity);
-        }
-
-        decimal fraisLivraison = 0m;
-        if (typeCons == TypeConsommation.LIVRAISON && dto.ZoneId is not null)
-        {
-            var zones = await _livraisonRepo.GetZonesAsync(ct);
-            var zone = zones.FirstOrDefault(z => z.IdZone == dto.ZoneId.Value);
-            if (zone is null) return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, "Zone introuvable.");
-
-            var quartiers = await _livraisonRepo.GetQuartiersByZoneAsync(zone.IdZone, ct);
-            if (dto.QuartierId is null || !quartiers.Any(q => q.IdQuartier == dto.QuartierId.Value))
-                return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Quartier invalide pour cette zone.");
-
-            fraisLivraison = zone.PrixLivraison;
-        }
-
-        var montantTotal = sousTotal + fraisLivraison;
-
-        var commande = new Commande
-        {
-            Reference = $"BB-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}",
-            DateCommande = DateTime.UtcNow,
-            Etat = EtatCommande.ENCOURS,
-            TypeConsommation = typeCons,
-            MontantTotal = montantTotal,
-            IdClient = dto.ClientId,
-            IdZone = dto.ZoneId,
-            IdQuartier = dto.QuartierId
+            TypeArticle = typeArticle,
+            Quantite = l.Quantite
         };
 
-        await using var trx = await _db.Database.BeginTransactionAsync(ct);
-        try
+        switch (typeArticle)
         {
-            var created = await _commandeRepo.CreateCommandeAsync(commande, ct);
-            await _commandeRepo.AddLignesAsync(created.IdCommande, lignesEntities, ct);
+            case TypeArticle.BURGER:
+            {
+                var burger = await _catalogRepo.GetBurgerByIdAsync(l.ArticleId, true, ct);
+                if (burger is null)
+                    return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Burger {l.ArticleId} introuvable.");
 
-            await trx.CommitAsync(ct);
+                entity.IdBurger = burger.IdBurger;
+                entity.IdMenu = null;
+                entity.IdComplement = null;
 
-            var dtoResult = new CommandeDto(
-                created.IdCommande,
-                created.Reference,
-                created.DateCommande,
-                created.Etat.ToString(),
-                created.TypeConsommation.ToString(),
-                created.MontantTotal,
-                EstPayee: false
-            );
+                prixUnitaire = burger.Prix;
+                break;
+            }
 
-            return ServiceResult<CommandeDto>.Ok(dtoResult);
+            case TypeArticle.MENU:
+            {
+                var menu = await _catalogRepo.GetMenuDetailsByIdAsync(l.ArticleId, true, ct);
+                if (menu is null)
+                    return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Menu {l.ArticleId} introuvable.");
+
+                entity.IdMenu = menu.IdMenu;
+                entity.IdBurger = null;
+                entity.IdComplement = null;
+
+                prixUnitaire = menu.Prix;
+                break;
+            }
+
+            case TypeArticle.COMPLEMENT:
+            {
+                var comp = await _catalogRepo.GetComplementByIdAsync(l.ArticleId, true, ct);
+                if (comp is null)
+                    return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Complément {l.ArticleId} introuvable.");
+
+                entity.IdComplement = comp.IdComplement;
+                entity.IdBurger = null;
+                entity.IdMenu = null;
+
+                prixUnitaire = comp.Prix;
+                break;
+            }
+
+            default:
+                return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "TypeArticle invalide.");
         }
-        catch
-        {
-            await trx.RollbackAsync(ct);
-            return ServiceResult<CommandeDto>.Fail(ServiceError.Unexpected, "Erreur lors de la création de la commande.");
-        }
+
+        entity.PrixUnitaire = prixUnitaire;
+        entity.PrixTotal = prixUnitaire * l.Quantite;
+
+        sousTotal += entity.PrixTotal;
+        lignesEntities.Add(entity);
     }
+
+    decimal fraisLivraison = 0m;
+    if (typeCons == TypeConsommation.LIVRAISON && zoneId is not null)
+    {
+        var zones = await _livraisonRepo.GetZonesAsync(ct);
+        var zone = zones.FirstOrDefault(z => z.IdZone == zoneId.Value);
+        if (zone is null)
+            return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, "Zone introuvable.");
+
+        var quartiers = await _livraisonRepo.GetQuartiersByZoneAsync(zone.IdZone, ct);
+        if (quartierId is null || !quartiers.Any(q => q.IdQuartier == quartierId.Value))
+            return ServiceResult<CommandeDto>.Fail(ServiceError.Validation, "Quartier invalide pour cette zone.");
+
+        fraisLivraison = zone.PrixLivraison;
+    }
+
+    var montantTotal = sousTotal + fraisLivraison;
+
+    var commande = new Commande
+    {
+        Reference = $"BB-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}",
+        DateCommande = DateTime.UtcNow,
+        Etat = EtatCommande.ENCOURS,
+        TypeConsommation = typeCons,
+        MontantTotal = montantTotal,
+        IdClient = dto.ClientId,
+
+        IdZone = zoneId,
+        IdQuartier = quartierId
+    };
+
+    await using var trx = await _db.Database.BeginTransactionAsync(ct);
+    try
+    {
+        var created = await _commandeRepo.CreateCommandeAsync(commande, ct);
+        await _commandeRepo.AddLignesAsync(created.IdCommande, lignesEntities, ct);
+
+        await trx.CommitAsync(ct);
+
+        var dtoResult = new CommandeDto(
+            created.IdCommande,
+            created.Reference,
+            created.DateCommande,
+            created.Etat.ToString(),
+            created.TypeConsommation.ToString(),
+            created.MontantTotal,
+            EstPayee: false
+        );
+
+        return ServiceResult<CommandeDto>.Ok(dtoResult);
+    }
+    catch (Exception)
+    {
+        await trx.RollbackAsync(ct);
+        return ServiceResult<CommandeDto>.Fail(ServiceError.Unexpected, "Erreur lors de la création de la commande.");
+    }
+}
 
     private static (string libelle, string? image) GetLibelleImage(LigneCommande l)
     {
