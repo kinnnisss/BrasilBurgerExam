@@ -17,5 +17,8 @@ public static class ClientSession
     public static void ClearClient(HttpContext http)
         => http.Session.Remove(ClientIdKey);
 
+    public static PanierVm GetPanier(HttpContext http)
+        => http.Session.GetJson<PanierVm>(PanierKey) ?? new PanierVm();
+
 
 }
