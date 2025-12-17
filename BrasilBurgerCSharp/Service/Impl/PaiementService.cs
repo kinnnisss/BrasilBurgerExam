@@ -5,7 +5,7 @@ using BrasilBurgerCSharp.Service.Common;
 using BrasilBurgerCSharp.Service.Payments;
 using BrasilBurgerCSharp.Data;
 using Microsoft.EntityFrameworkCore;
-
+using Npgsql;
 namespace BrasilBurgerCSharp.Service.Impl;
 
 public sealed class PaiementService : IPaiementService
@@ -64,5 +64,16 @@ public sealed class PaiementService : IPaiementService
             await trx.RollbackAsync(ct);
             return ServiceResult<PaiementDto>.Fail(ServiceError.Unexpected, "Erreur lors du paiement.");
         }
+    }
+    private static bool IsUniqueViolation(DbUpdateException ex)
+    {
+        if (ex.InnerException is PostgresException pg && pg.SqlState == PostgresErrorCodes.UniqueViolation)
+            return true;
+
+        var inner = ex.InnerException?.InnerException;
+        if (inner is PostgresException pg2 && pg2.SqlState == PostgresErrorCodes.UniqueViolation)
+            return true;
+
+        return false;
     }
 }
