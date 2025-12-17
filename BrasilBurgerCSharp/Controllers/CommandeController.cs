@@ -167,4 +167,33 @@ public sealed class CommandeController : Controller
         ClientSession.SavePanier(HttpContext, panier);
         return RedirectToAction(nameof(Panier));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateQuantity(string typeArticle, int articleId, int quantite)
+    {
+        var panier = ClientSession.GetPanier(HttpContext);
+
+        var item = panier.Items.FirstOrDefault(i =>
+            i.ArticleId == articleId &&
+            string.Equals(i.TypeArticle, typeArticle, StringComparison.OrdinalIgnoreCase));
+
+        if (item is null) return RedirectToAction(nameof(Panier));
+
+        if (quantite <= 0)
+        {
+            panier.Items.Remove(item);
+        }
+        else
+        {
+            item.Quantite = quantite;
+            item.PrixTotal = item.PrixUnitaire * item.Quantite;
+        }
+
+        Recalc(panier);
+        ClientSession.SavePanier(HttpContext, panier);
+
+        return RedirectToAction(nameof(Panier));
+    }
+
 }
