@@ -20,20 +20,21 @@ public sealed class AuthController : Controller
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginVm vm, string? returnUrl = null, CancellationToken ct = default)
+    public async Task<IActionResult> Login(LoginVm model, string? returnUrl = null, CancellationToken ct = default)
     {
-        if (string.IsNullOrWhiteSpace(vm.Login) || string.IsNullOrWhiteSpace(vm.Password))
+        ViewBag.ReturnUrl = returnUrl;
+
+        if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Password))
         {
-            vm.ErrorMessage = "Login et mot de passe obligatoires.";
-            return View(vm);
+            model.ErrorMessage = "Login et mot de passe obligatoires.";
+            return View(model);
         }
 
-        var res = await _auth.LoginAsync(new LoginDto(vm.Login, vm.Password), ct);
-
+        var res = await _auth.LoginAsync(new LoginDto(model.Login, model.Password), ct);
         if (!res.Success || res.Data is null)
         {
-            vm.ErrorMessage = res.Message ?? "Connexion impossible.";
-            return View(vm);
+            model.ErrorMessage = res.Message ?? "Login ou mot de passe incorrect.";
+            return View(model);
         }
 
         ClientSession.SetClientId(HttpContext, res.Data.Id);
