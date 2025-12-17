@@ -18,9 +18,8 @@ public sealed class PaiementRepository : IPaiementRepository
     }
 
     public Task<Paiement?> GetByCommandeAsync(int commandeId, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
+        => _db.Paiements.AsNoTracking().SingleOrDefaultAsync(p => p.IdCommande == commandeId, ct);
+
 
     public Task<bool> HasPaiementAsync(int commandeId, CancellationToken ct = default)
     {
