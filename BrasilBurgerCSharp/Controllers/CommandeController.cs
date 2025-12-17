@@ -23,10 +23,28 @@ public sealed class CommandeController : Controller
         _livraisonRepo = livraisonRepo;
     }
     [HttpGet]
-    public IActionResult Panier()
+    public async Task<IActionResult> Panier(string? type = null, int? zoneId = null, int? quartierId = null, CancellationToken ct = default)
     {
         var panier = ClientSession.GetPanier(HttpContext);
-        return View(panier);
+
+        var vm = new CheckoutVm
+        {
+            Panier = panier,
+            TypeConsommation = string.IsNullOrWhiteSpace(type) ? "SUR_PLACE" : type!,
+            ZoneId = zoneId,
+            QuartierId = quartierId
+        };
+
+        await LoadZonesQuartiersAsync(vm, ct);
+
+        if (!vm.TypeConsommation.Equals("LIVRAISON", StringComparison.OrdinalIgnoreCase))
+        {
+            vm.ZoneId = null;
+            vm.QuartierId = null;
+            vm.Quartiers = new();
+        }
+
+        return View(vm);
     }
 
     private static void Recalc(PanierVm panier)
