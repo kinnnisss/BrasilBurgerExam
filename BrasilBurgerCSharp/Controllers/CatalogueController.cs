@@ -48,5 +48,30 @@ public sealed class CatalogueController : Controller
         });
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Menu(int id, CancellationToken ct = default)
+    {
+        var res = await _catalog.GetMenuDetailsAsync(id, ct);
+        if (!res.Success || res.Data is null) return NotFound();
+
+        var vm = new MenuDetailsVm
+        {
+            Id = res.Data.Id,
+            Nom = res.Data.Nom,
+            Prix = res.Data.Prix,
+            Image = res.Data.Image,
+            Quantite = 1,
+            Burgers = res.Data.Burgers.Select(b => new BurgerCardVm
+            {
+                Id = b.Id, Nom = b.Nom, Prix = b.Prix, Image = b.Image
+            }).ToList(),
+            Complements = res.Data.Complements.Select(c => new ComplementVm
+            {
+                Id = c.Id, Nom = c.Nom, Prix = c.Prix, Image = c.Image, TypeComplement = c.TypeComplement
+            }).ToList()
+        };
+
+        return View(vm);
+    }
 
 }
