@@ -51,4 +51,27 @@ public sealed class SuiviController : Controller
             ResumeArticles = resume
         };
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Index(CancellationToken ct = default)
+    {
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Index), "Suivi") });
+
+        var res = await _commandeService.GetCommandesEnCoursAsync(clientId.Value, ct);
+        if (!res.Success || res.Data is null) return View(new SuiviVm());
+
+        var vm = new SuiviVm();
+
+        foreach (var c in res.Data)
+        {
+            var row = await BuildRowAsync(clientId.Value, c.Id, ct, fallback: c);
+            vm.CommandesEnCours.Add(row);
+        }
+
+        return View(vm);
+    }
+
+ 
 }
