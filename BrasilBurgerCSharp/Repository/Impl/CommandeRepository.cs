@@ -19,11 +19,12 @@ public sealed class CommandeRepository : ICommandeRepository
     }
 
 
-    public Task<Commande> CreateCommandeAsync(Commande commande, CancellationToken ct = default)
+    public async Task<Commande> CreateCommandeAsync(Commande commande, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        _db.Commandes.Add(commande);
+        await _db.SaveChangesAsync(ct);
+        return commande;
     }
-
     public Task<Commande?> GetCommandeDetailsAsync(int commandeId, int clientId, CancellationToken ct = default)
     {
         throw new NotImplementedException();
