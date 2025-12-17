@@ -22,9 +22,11 @@ public sealed class CatalogRepository : ICatalogRepository
         return await q.OrderBy(b => b.Nom).ToListAsync(ct);
     }
 
-    public Task<List<Complement>> GetComplementsAsync(bool onlyActive = true, CancellationToken ct = default)
+    public async Task<List<Complement>> GetComplementsAsync(bool onlyActive = true, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var q = _db.Complements.AsNoTracking();
+        if (onlyActive) q = q.Where(c => !c.IsArchived);
+        return await q.OrderBy(c => c.Nom).ToListAsync(ct);
     }
 
     public Task<Menu?> GetMenuDetailsByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default)
