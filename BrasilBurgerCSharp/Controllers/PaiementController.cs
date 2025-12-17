@@ -39,6 +39,18 @@ public sealed class PaiementController : Controller
 
         return View(vm);
     }
+    [HttpGet]
+    public async Task<IActionResult> Success(int commandeId, CancellationToken ct = default)
+    {
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Success), "Paiement", new { commandeId }) });
+
+        var detailsRes = await _commandeService.GetCommandeDetailsAsync(commandeId, clientId.Value, ct);
+        if (!detailsRes.Success || detailsRes.Data is null) return NotFound();
+
+        return View(detailsRes.Data);
+    }
 
 
 }
