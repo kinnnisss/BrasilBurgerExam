@@ -171,10 +171,41 @@ public sealed class CommandeService : ICommandeService
             _ => ("Article", null)
         };
     }
-    public Task<ServiceResult<CommandeDetailsDto>> GetCommandeDetailsAsync(int commandeId, int clientId, CancellationToken ct = default)
+    public async Task<ServiceResult<CommandeDetailsDto>> GetCommandeDetailsAsync(int commandeId, int clientId, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var cmd = await _commandeRepo.GetCommandeDetailsAsync(commandeId, clientId, ct);
+        if (cmd is null) return ServiceResult<CommandeDetailsDto>.Fail(ServiceError.NotFound, "Commande introuvable.");
+
+        var commandeDto = new CommandeDto(
+            cmd.IdCommande,
+            cmd.Reference,
+            cmd.DateCommande,
+            cmd.Etat.ToString(),
+            cmd.TypeConsommation.ToString(),
+            cmd.MontantTotal,
+            EstPayee: cmd.Paiement is not null
+        );
+
+        var lignes = cmd.Lignes.Select(l =>
+        {
+            var (lib, img) = GetLibelleImage(l);
+            return new LigneCommandeDto(
+                l.TypeArticle.ToString(),
+                l.Quantite,
+                l.PrixUnitaire,
+                l.PrixTotal,
+                lib,
+                img
+            );
+        }).ToList();
+
+        var zone = cmd.Zone?.Libelle;
+        var quartier = cmd.Quartier?.Libelle;
+        var livreur = cmd.Livreur is null ? null : $"{cmd.Livreur.Prenom} {cmd.Livreur.Nom} ({cmd.Livreur.Telephone})";
+
+        return ServiceResult<CommandeDetailsDto>.Ok(new CommandeDetailsDto(commandeDto, lignes, zone, quartier, livreur));
     }
+
 
     public Task<ServiceResult<List<CommandeDto>>> GetCommandesEnCoursAsync(int clientId, CancellationToken ct = default)
     {
