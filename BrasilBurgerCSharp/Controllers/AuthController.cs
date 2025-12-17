@@ -98,4 +98,10 @@ public sealed class AuthController : Controller
         ClientSession.ClearPanier(HttpContext);
         return RedirectToAction("Index", "Catalogue");
     }
+
+    [HttpGet]
+    public IActionResult Gestionnaire()
+    {
+        return Redirect("https://example.com/gestion");
+    }
 }
