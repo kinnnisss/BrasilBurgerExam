@@ -14,8 +14,10 @@ public sealed class AuthController : Controller
 
     [HttpGet]
     public IActionResult Login(string? returnUrl = null)
-        => View(new LoginVm { });
-
+    {
+        ViewBag.ReturnUrl = returnUrl;
+        return View(new LoginVm());
+    }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginVm vm, string? returnUrl = null, CancellationToken ct = default)
