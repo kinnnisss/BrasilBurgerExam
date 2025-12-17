@@ -219,4 +219,15 @@ public sealed class CommandeController : Controller
         ClientSession.ClearPanier(HttpContext);
         return RedirectToAction(nameof(Panier));
     }
+
+    [HttpGet]
+    public IActionResult Checkout()
+    {
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+        {
+            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Checkout), "Commande") });
+        }
+        return View();
+    }
 }
