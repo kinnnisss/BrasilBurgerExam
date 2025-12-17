@@ -40,9 +40,11 @@ public sealed class CommandeRepository : ICommandeRepository
                 .ThenInclude(l => l.Complement)
             .SingleOrDefaultAsync(ct);
     public Task<List<Commande>> GetEnCoursByClientAsync(int clientId, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
+        => _db.Commandes.AsNoTracking()
+            .Where(c => c.IdClient == clientId && (c.Etat == EtatCommande.ENCOURS || c.Etat == EtatCommande.VALIDEE))
+            .OrderByDescending(c => c.DateCommande)
+            .Include(c => c.Paiement)
+            .ToListAsync(ct);
 
     public Task<List<Commande>> GetHistoriqueByClientAsync(int clientId, CancellationToken ct = default)
     {
