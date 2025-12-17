@@ -207,9 +207,16 @@ public sealed class CommandeService : ICommandeService
     }
 
 
-    public Task<ServiceResult<List<CommandeDto>>> GetCommandesEnCoursAsync(int clientId, CancellationToken ct = default)
+    public async Task<ServiceResult<List<CommandeDto>>> GetCommandesEnCoursAsync(int clientId, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var list = await _commandeRepo.GetEnCoursByClientAsync(clientId, ct);
+        var dto = list.Select(c => new CommandeDto(
+            c.IdCommande, c.Reference, c.DateCommande,
+            c.Etat.ToString(), c.TypeConsommation.ToString(),
+            c.MontantTotal, c.Paiement is not null
+        )).ToList();
+
+        return ServiceResult<List<CommandeDto>>.Ok(dto);
     }
 
     public Task<ServiceResult<List<CommandeDto>>> GetHistoriqueAsync(int clientId, CancellationToken ct = default)
