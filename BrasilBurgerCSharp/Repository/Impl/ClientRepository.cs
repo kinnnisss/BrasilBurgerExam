@@ -15,9 +15,7 @@ public sealed class ClientRepository : IClientRepository
     }
 
     public Task<bool> ExistsLoginAsync(string login, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
+        => _db.Clients.AsNoTracking().AnyAsync(c => c.Login == login, ct);
 
     public Task<bool> ExistsTelephoneAsync(string telephone, CancellationToken ct = default)
     {
