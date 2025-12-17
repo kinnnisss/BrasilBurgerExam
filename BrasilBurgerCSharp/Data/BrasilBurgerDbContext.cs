@@ -82,6 +82,7 @@ private static void ConfigureBurger(ModelBuilder modelBuilder)
     });
 }
 
+
 private static void ConfigureComplement(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Complement>(e =>
