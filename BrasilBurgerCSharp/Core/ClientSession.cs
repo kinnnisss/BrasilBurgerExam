@@ -14,5 +14,8 @@ public static class ClientSession
     public static void SetClientId(HttpContext http, int clientId)
         => http.Session.SetInt32(ClientIdKey, clientId);
 
+    public static void ClearClient(HttpContext http)
+        => http.Session.Remove(ClientIdKey);
+
 
 }
