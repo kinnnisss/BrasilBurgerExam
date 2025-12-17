@@ -99,6 +99,16 @@ public sealed class SuiviController : Controller
         return View(vm);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Details(int id, CancellationToken ct = default)
+    {
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Details), "Suivi", new { id }) });
 
+        var res = await _commandeService.GetCommandeDetailsAsync(id, clientId.Value, ct);
+        if (!res.Success || res.Data is null) return NotFound();
+        return View(res.Data);
+    }
  
 }
