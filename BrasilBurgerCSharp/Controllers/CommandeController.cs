@@ -22,4 +22,11 @@ public sealed class CommandeController : Controller
         return View(panier);
     }
 
+    private static void Recalc(PanierVm panier)
+    {
+        foreach (var i in panier.Items)
+            i.PrixTotal = i.PrixUnitaire * i.Quantite;
+
+        panier.Total = panier.Items.Sum(x => x.PrixTotal);
+    }
 }
