@@ -9,9 +9,11 @@ public sealed class ClientRepository : IClientRepository
     private readonly BrasilBurgerDbContext _db;
     public ClientRepository(BrasilBurgerDbContext db) => _db = db;
 
-    public Task<Client> CreateAsync(Client client, CancellationToken ct = default)
+    public async Task<Client> CreateAsync(Client client, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        _db.Clients.Add(client);
+        await _db.SaveChangesAsync(ct);
+        return client;
     }
 
     public Task<bool> ExistsLoginAsync(string login, CancellationToken ct = default)
