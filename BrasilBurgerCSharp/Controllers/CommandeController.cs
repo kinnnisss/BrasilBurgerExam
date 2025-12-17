@@ -88,4 +88,56 @@ public sealed class CommandeController : Controller
         ClientSession.SavePanier(HttpContext, panier);
         return RedirectToAction(nameof(Panier));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddBurger(
+        int id,
+        int quantite = 1,
+        List<int>? selectedComplementIds = null,
+        CancellationToken ct = default)
+    {
+        if (quantite <= 0) quantite = 1;
+
+        var burgerRes = await _catalog.GetBurgerAsync(id, ct);
+        if (!burgerRes.Success || burgerRes.Data is null) return NotFound();
+
+        var panier = ClientSession.GetPanier(HttpContext);
+
+        AddOrIncrement(
+            panier,
+            typeArticle: "BURGER",
+            articleId: burgerRes.Data.Id,
+            libelle: burgerRes.Data.Nom,
+            image: burgerRes.Data.Image,
+            quantite: quantite,
+            prixUnitaire: burgerRes.Data.Prix);
+
+        if (selectedComplementIds is { Count: > 0 })
+        {
+            var compRes = await _catalog.GetComplementsAsync(ct);
+
+            if (compRes.Success && compRes.Data is not null)
+            {
+                var selected = compRes.Data
+                    .Where(c => selectedComplementIds.Contains(c.Id))
+                    .ToList();
+
+                foreach (var c in selected)
+                {
+                    AddOrIncrement(
+                        panier,
+                        typeArticle: "COMPLEMENT",
+                        articleId: c.Id,
+                        libelle: c.Nom,
+                        image: c.Image,
+                        quantite: quantite,
+                        prixUnitaire: c.Prix);
+                }
+            }
+        }
+
+        ClientSession.SavePanier(HttpContext, panier);
+        return RedirectToAction(nameof(Panier));
+    }
 }
