@@ -31,9 +31,28 @@ public sealed class CatalogRepository : ICatalogRepository
         return await q.OrderBy(c => c.Nom).ToListAsync(ct);
     }
 
-    public Task<Menu?> GetMenuDetailsByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default)
+    public async Task<Menu?> GetMenuDetailsByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var menuQuery = _db.Menus
+            .AsNoTracking()
+            .Where(m => m.IdMenu == id);
+
+        if (onlyActive) menuQuery = menuQuery.Where(m => !m.IsArchived);
+
+        var menu = await menuQuery.SingleOrDefaultAsync(ct);
+        if (menu is null) return null;
+        menu.MenuBurgers = await _db.MenuBurgers
+            .AsNoTracking()
+            .Where(mb => mb.IdMenu == id)
+            .Include(mb => mb.Burger)
+            .ToListAsync(ct);
+        menu.MenuComplements = await _db.MenuComplements
+            .AsNoTracking()
+            .Where(mc => mc.IdMenu == id)
+            .Include(mc => mc.Complement)
+            .ToListAsync(ct);
+
+        return menu;
     }
 
     public async Task<List<Menu>> GetMenusAsync(bool onlyActive = true, CancellationToken ct = default)
