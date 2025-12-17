@@ -41,9 +41,14 @@ public sealed class CatalogService : ICatalogService
 
         return ServiceResult<CatalogueDto>.Ok(new CatalogueDto(burgers, menus));
     }
-    public Task<ServiceResult<List<ComplementDto>>> GetComplementsAsync(CancellationToken ct = default)
+    public async Task<ServiceResult<List<ComplementDto>>> GetComplementsAsync(CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var complements = await _catalogRepo.GetComplementsAsync(true, ct);
+        var dto = complements
+            .Select(c => new ComplementDto(c.IdComplement, c.Nom, c.Prix, c.Image, c.TypeComplement.ToString()))
+            .ToList();
+
+        return ServiceResult<List<ComplementDto>>.Ok(dto);
     }
 
     public Task<ServiceResult<MenuDetailsDto>> GetMenuDetailsAsync(int id, CancellationToken ct = default)
