@@ -23,5 +23,6 @@ public static class ClientSession
     public static void SavePanier(HttpContext http, PanierVm panier)
         => http.Session.SetJson(PanierKey, panier);
 
-
+    public static void ClearPanier(HttpContext http)
+        => http.Session.Remove(PanierKey);
 }
