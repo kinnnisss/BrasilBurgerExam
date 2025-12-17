@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BrasilBurgerCSharp.Core;                 // SessionExtensions + ClientSession
 using BrasilBurgerCSharp.Service;
+using BrasilBurgerCSharp.Repository;
 using BrasilBurgerCSharp.ViewModels.Commande;
 using BrasilBurgerCSharp.ViewModels.Catalogue;
 
@@ -9,12 +10,18 @@ namespace BrasilBurgerCSharp.Controllers;
 public sealed class CommandeController : Controller
 {
     private readonly ICatalogService _catalog;
+    private readonly ICommandeService _commandeService;
+    private readonly ILivraisonRepository _livraisonRepo;
 
-    public CommandeController(ICatalogService catalog)
+    public CommandeController(
+        ICatalogService catalog,
+        ICommandeService commandeService,
+        ILivraisonRepository livraisonRepo)
     {
         _catalog = catalog;
+        _commandeService = commandeService;
+        _livraisonRepo = livraisonRepo;
     }
-
     [HttpGet]
     public IActionResult Panier()
     {
@@ -229,5 +236,33 @@ public sealed class CommandeController : Controller
             return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Checkout), "Commande") });
         }
         return View();
+    }
+
+    private async Task LoadZonesQuartiersAsync(CheckoutVm vm, CancellationToken ct)
+    {
+        var zones = await _livraisonRepo.GetZonesAsync(ct);
+        vm.Zones = zones.Select(z => new ZoneOptionVm
+        {
+            Id = z.IdZone,
+            Libelle = z.Libelle,
+            PrixLivraison = z.PrixLivraison
+        }).ToList();
+
+        vm.Quartiers = new();
+
+        if (vm.ZoneId is not null)
+        {
+            var quartiers = await _livraisonRepo.GetQuartiersByZoneAsync(vm.ZoneId.Value, ct);
+            vm.Quartiers = quartiers.Select(q => new QuartierOptionVm
+            {
+                Id = q.IdQuartier,
+                Libelle = q.Libelle
+            }).ToList();
+
+            if (vm.QuartierId is not null && !vm.Quartiers.Any(x => x.Id == vm.QuartierId.Value))
+            {
+                vm.QuartierId = null;
+            }
+        }
     }
 }
