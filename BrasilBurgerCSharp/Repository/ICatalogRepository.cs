@@ -9,4 +9,6 @@ public interface ICatalogRepository
     Task<List<Complement>> GetComplementsAsync(bool onlyActive = true, CancellationToken ct = default);
     Task<Burger?> GetBurgerByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default);
     Task<Menu?> GetMenuDetailsByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default);
+    Task<Complement?> GetComplementByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default);
+
 }

@@ -1,4 +1,5 @@
 using BrasilBurgerCSharp.DTOs;
+using BrasilBurgerCSharp.Models;
 using BrasilBurgerCSharp.Service.Common;
 
 namespace BrasilBurgerCSharp.Service;

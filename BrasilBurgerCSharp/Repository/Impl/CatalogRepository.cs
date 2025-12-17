@@ -62,4 +62,10 @@ public sealed class CatalogRepository : ICatalogRepository
         return await q.OrderBy(m => m.Nom).ToListAsync(ct);
     }
 
+    public async Task<Complement?> GetComplementByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default)
+{
+    var q = _db.Complements.AsNoTracking().Where(c => c.IdComplement == id);
+    if (onlyActive) q = q.Where(c => !c.IsArchived);
+    return await q.SingleOrDefaultAsync(ct);
+}
 }
