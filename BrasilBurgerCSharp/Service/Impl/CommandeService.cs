@@ -94,9 +94,10 @@ public sealed class CommandeService : ICommandeService
                 }
                 case TypeArticle.COMPLEMENT:
                 {
-                    var complements = await _catalogRepo.GetComplementsAsync(true, ct);
-                    var comp = complements.FirstOrDefault(c => c.IdComplement == l.ArticleId);
-                    if (comp is null) return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Complément {l.ArticleId} introuvable.");
+                    var comp = await _catalogRepo.GetComplementByIdAsync(l.ArticleId, true, ct);
+                    if (comp is null)
+                        return ServiceResult<CommandeDto>.Fail(ServiceError.NotFound, $"Complément {l.ArticleId} introuvable.");
+
                     entity.IdComplement = comp.IdComplement;
                     entity.IdBurger = null;
                     entity.IdMenu = null;
