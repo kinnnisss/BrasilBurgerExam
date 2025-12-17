@@ -211,4 +211,12 @@ public sealed class CommandeController : Controller
 
         return RedirectToAction(nameof(Panier));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Clear()
+    {
+        ClientSession.ClearPanier(HttpContext);
+        return RedirectToAction(nameof(Panier));
+    }
 }
