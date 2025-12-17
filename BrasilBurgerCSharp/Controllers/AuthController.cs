@@ -51,6 +51,45 @@ public sealed class AuthController : Controller
         ViewBag.ReturnUrl = returnUrl;
         return View(new RegisterVm());
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterVm model, string? returnUrl = null, CancellationToken ct = default)
+    {
+        ViewBag.ReturnUrl = returnUrl;
+
+        if (string.IsNullOrWhiteSpace(model.Nom) ||
+            string.IsNullOrWhiteSpace(model.Prenom) ||
+            string.IsNullOrWhiteSpace(model.Telephone) ||
+            string.IsNullOrWhiteSpace(model.Login) ||
+            string.IsNullOrWhiteSpace(model.Password))
+        {
+            model.ErrorMessage = "Tous les champs sont obligatoires.";
+            return View(model);
+        }
+
+        if (model.Password != model.ConfirmPassword)
+        {
+            model.ErrorMessage = "Les mots de passe ne correspondent pas.";
+            return View(model);
+        }
+
+        var dto = new RegisterDto(model.Nom, model.Prenom, model.Telephone, model.Login, model.Password);
+        var res = await _auth.RegisterAsync(dto, ct);
+
+        if (!res.Success || res.Data is null)
+        {
+            model.ErrorMessage = res.Message ?? "Inscription impossible.";
+            return View(model);
+        }
+
+        ClientSession.SetClientId(HttpContext, res.Data.Id);
+
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return Redirect(returnUrl);
+
+        return RedirectToAction("Index", "Catalogue");
+    } 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Logout()
