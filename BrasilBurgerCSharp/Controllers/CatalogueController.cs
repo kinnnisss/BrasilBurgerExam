@@ -112,4 +112,25 @@ public sealed class CatalogueController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Complement(int id, CancellationToken ct = default)
+    {
+        var res = await _catalog.GetComplementsAsync(ct);
+        if (!res.Success || res.Data is null) return NotFound();
+
+        var c = res.Data.FirstOrDefault(x => x.Id == id);
+        if (c is null) return NotFound();
+
+        var vm = new ComplementVm
+        {
+            Id = c.Id,
+            Nom = c.Nom,
+            Prix = c.Prix,
+            Image = c.Image,
+            TypeComplement = c.TypeComplement
+        };
+
+        return View(vm);
+    }
 }
