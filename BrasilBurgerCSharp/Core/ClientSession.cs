@@ -11,5 +11,8 @@ public static class ClientSession
     public static int? GetClientId(HttpContext http)
         => http.Session.GetInt32(ClientIdKey);
 
+    public static void SetClientId(HttpContext http, int clientId)
+        => http.Session.SetInt32(ClientIdKey, clientId);
+
 
 }
