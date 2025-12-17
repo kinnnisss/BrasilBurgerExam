@@ -17,7 +17,5 @@ public sealed class LivraisonRepository : ILivraisonRepository
             .ToListAsync(ct);
 
     public Task<List<Zone>> GetZonesAsync(CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
+        => _db.Zones.AsNoTracking().OrderBy(z => z.Libelle).ToListAsync(ct);
 }
