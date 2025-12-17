@@ -64,4 +64,28 @@ public sealed class CommandeController : Controller
         item.PrixTotal = item.PrixUnitaire * item.Quantite;
         Recalc(panier);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddMenu(int id, int quantite = 1, CancellationToken ct = default)
+    {
+        if (quantite <= 0) quantite = 1;
+
+        var menuRes = await _catalog.GetMenuDetailsAsync(id, ct);
+        if (!menuRes.Success || menuRes.Data is null) return NotFound();
+
+        var panier = ClientSession.GetPanier(HttpContext);
+
+        AddOrIncrement(
+            panier,
+            typeArticle: "MENU",
+            articleId: menuRes.Data.Id,
+            libelle: menuRes.Data.Nom,
+            image: menuRes.Data.Image,
+            quantite: quantite,
+            prixUnitaire: menuRes.Data.Prix);
+
+        ClientSession.SavePanier(HttpContext, panier);
+        return RedirectToAction(nameof(Panier));
+    }
 }
