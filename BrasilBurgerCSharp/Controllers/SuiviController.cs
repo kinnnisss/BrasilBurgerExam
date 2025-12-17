@@ -73,5 +73,32 @@ public sealed class SuiviController : Controller
         return View(vm);
     }
 
+
+    [HttpGet]
+    public async Task<IActionResult> Historique(DateTime? date = null, CancellationToken ct = default)
+    {
+        var clientId = ClientSession.GetClientId(HttpContext);
+        if (clientId is null)
+            return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Historique), "Suivi", new { date }) });
+
+        var res = await _commandeService.GetHistoriqueAsync(clientId.Value, ct);
+        if (!res.Success || res.Data is null) return View(new HistoriqueVm());
+
+        var vm = new HistoriqueVm();
+
+        var list = res.Data;
+        if (date is not null)
+            list = list.Where(x => x.DateCommande.Date == date.Value.Date).ToList();
+
+        foreach (var c in list)
+        {
+            var row = await BuildRowAsync(clientId.Value, c.Id, ct, fallback: c);
+            vm.Commandes.Add(row);
+        }
+
+        return View(vm);
+    }
+
+
  
 }
