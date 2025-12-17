@@ -42,4 +42,13 @@ public sealed class AuthController : Controller
         return RedirectToAction("Index", "Catalogue");
     }
 
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Logout()
+    {
+        ClientSession.ClearClient(HttpContext);
+        ClientSession.ClearPanier(HttpContext);
+        return RedirectToAction("Index", "Catalogue");
+    }
 }
