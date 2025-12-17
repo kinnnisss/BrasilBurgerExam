@@ -10,9 +10,11 @@ public sealed class CatalogRepository : ICatalogRepository
 
     public CatalogRepository(BrasilBurgerDbContext db) => _db = db;
 
-    public Task<Burger?> GetBurgerByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default)
+    public async Task<Burger?> GetBurgerByIdAsync(int id, bool onlyActive = true, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var q = _db.Burgers.AsNoTracking().Where(b => b.IdBurger == id);
+        if (onlyActive) q = q.Where(b => !b.IsArchived);
+        return await q.SingleOrDefaultAsync(ct);
     }
 
     public async Task<List<Burger>> GetBurgersAsync(bool onlyActive = true, CancellationToken ct = default)
