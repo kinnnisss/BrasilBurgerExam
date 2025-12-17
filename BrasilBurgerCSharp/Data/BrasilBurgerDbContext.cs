@@ -176,6 +176,17 @@ private static void ConfigureLigneCommande(ModelBuilder modelBuilder)
         e.HasOne(l => l.Commande)
             .WithMany(c => c.Lignes)
             .HasForeignKey(l => l.IdCommande);
+        e.HasOne(l => l.Burger)
+            .WithMany()
+            .HasForeignKey(l => l.IdBurger);
+            
+        e.HasOne(l => l.Menu)
+            .WithMany()
+            .HasForeignKey(l => l.IdMenu);
+            
+        e.HasOne(l => l.Complement)
+            .WithMany()
+            .HasForeignKey(l => l.IdComplement);
     });
 }
 
@@ -240,6 +251,13 @@ private static void ConfigureMenuBurger(ModelBuilder modelBuilder)
 
         e.Property(x => x.IdMenu).HasColumnName("id_menu");
         e.Property(x => x.IdBurger).HasColumnName("id_burger");
+        e.HasOne(x => x.Menu)
+            .WithMany(m => m.MenuBurgers)
+            .HasForeignKey(x => x.IdMenu);
+            
+        e.HasOne(x => x.Burger)
+            .WithMany()
+            .HasForeignKey(x => x.IdBurger);
     });
 }
 
@@ -252,6 +270,13 @@ private static void ConfigureMenuComplement(ModelBuilder modelBuilder)
 
         e.Property(x => x.IdMenu).HasColumnName("id_menu");
         e.Property(x => x.IdComplement).HasColumnName("id_complement");
+        e.HasOne(x => x.Menu)
+            .WithMany(m => m.MenuComplements)
+            .HasForeignKey(x => x.IdMenu);
+            
+        e.HasOne(x => x.Complement)
+            .WithMany()
+            .HasForeignKey(x => x.IdComplement);
     });
 }
     private static void ConfigureLivreur(ModelBuilder modelBuilder)
