@@ -26,10 +26,19 @@ public sealed class CommandeRepository : ICommandeRepository
         return commande;
     }
     public Task<Commande?> GetCommandeDetailsAsync(int commandeId, int clientId, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
-
+        => _db.Commandes.AsNoTracking()
+            .Where(c => c.IdCommande == commandeId && c.IdClient == clientId)
+            .Include(c => c.Zone)
+            .Include(c => c.Quartier)
+            .Include(c => c.Livreur)
+            .Include(c => c.Paiement)
+            .Include(c => c.Lignes)
+                .ThenInclude(l => l.Burger)
+            .Include(c => c.Lignes)
+                .ThenInclude(l => l.Menu)
+            .Include(c => c.Lignes)
+                .ThenInclude(l => l.Complement)
+            .SingleOrDefaultAsync(ct);
     public Task<List<Commande>> GetEnCoursByClientAsync(int clientId, CancellationToken ct = default)
     {
         throw new NotImplementedException();
