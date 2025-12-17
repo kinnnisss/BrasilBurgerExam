@@ -32,32 +32,49 @@ public sealed class PaiementService : IPaiementService
         if (!Enum.TryParse<ModePaiement>(dto.ModePaiement, true, out var mode))
             return ServiceResult<PaiementDto>.Fail(ServiceError.Validation, "Mode de paiement invalide.");
 
-        var cmd = await _commandeRepo.GetCommandeDetailsAsync(dto.CommandeId, clientId, ct);
-        if (cmd is null) return ServiceResult<PaiementDto>.Fail(ServiceError.NotFound, "Commande introuvable.");
-
-        if (cmd.Paiement is not null || await _paiementRepo.HasPaiementAsync(cmd.IdCommande, ct))
-            return ServiceResult<PaiementDto>.Fail(ServiceError.Conflict, "Cette commande est déjà payée.");
-
         if (!_providers.TryGetValue(mode, out var provider))
             return ServiceResult<PaiementDto>.Fail(ServiceError.Validation, "Provider de paiement non configuré.");
+
+        var cmd = await _commandeRepo.GetCommandeDetailsAsync(dto.CommandeId, clientId, ct);
+        if (cmd is null)
+            return ServiceResult<PaiementDto>.Fail(ServiceError.NotFound, "Commande introuvable.");
+
+        if (cmd.Paiement is not null)
+            return ServiceResult<PaiementDto>.Fail(ServiceError.Conflict, "Cette commande est déjà payée.");
 
         await using var trx = await _db.Database.BeginTransactionAsync(ct);
         try
         {
+            if (await _paiementRepo.HasPaiementAsync(cmd.IdCommande, ct))
+                return ServiceResult<PaiementDto>.Fail(ServiceError.Conflict, "Cette commande est déjà payée.");
+
             var paiement = await provider.PayAsync(cmd, ct);
+
+            paiement.IdCommande = cmd.IdCommande;
+            paiement.Montant = cmd.MontantTotal;
+            paiement.ModePaiement = mode;
+            if (paiement.DatePaiement == default) paiement.DatePaiement = DateTime.UtcNow;
+
             var saved = await _paiementRepo.CreateAsync(paiement, ct);
 
-            var commandeToUpdate = await _db.Commandes.FirstOrDefaultAsync(c => c.IdCommande == cmd.IdCommande, ct);
-            if (commandeToUpdate is not null)
-            {
-                commandeToUpdate.Etat = EtatCommande.VALIDEE;
-                await _db.SaveChangesAsync(ct);
-            }
+            var commandeToUpdate = await _db.Commandes
+                .FirstOrDefaultAsync(c => c.IdCommande == cmd.IdCommande && c.IdClient == clientId, ct);
+
+            if (commandeToUpdate is null)
+                return ServiceResult<PaiementDto>.Fail(ServiceError.NotFound, "Commande introuvable.");
+
+            commandeToUpdate.Etat = EtatCommande.VALIDEE;
+            await _db.SaveChangesAsync(ct);
 
             await trx.CommitAsync(ct);
 
             var dtoRes = new PaiementDto(saved.IdPaiement, saved.DatePaiement, saved.Montant, saved.ModePaiement.ToString());
             return ServiceResult<PaiementDto>.Ok(dtoRes);
+        }
+        catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+        {
+            await trx.RollbackAsync(ct);
+            return ServiceResult<PaiementDto>.Fail(ServiceError.Conflict, "Cette commande est déjà payée.");
         }
         catch
         {
