@@ -20,5 +20,8 @@ public static class ClientSession
     public static PanierVm GetPanier(HttpContext http)
         => http.Session.GetJson<PanierVm>(PanierKey) ?? new PanierVm();
 
+    public static void SavePanier(HttpContext http, PanierVm panier)
+        => http.Session.SetJson(PanierKey, panier);
+
 
 }
