@@ -19,11 +19,28 @@ public sealed class CatalogService : ICatalogService
     }
 
 
-    public Task<ServiceResult<CatalogueDto>> GetCatalogueAsync(string? filtre, CancellationToken ct = default)
+    public async Task<ServiceResult<CatalogueDto>> GetCatalogueAsync(string? filtre, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
-    }
+        filtre = (filtre ?? "").Trim().ToUpperInvariant();
 
+        var burgersTask = _catalogRepo.GetBurgersAsync(true, ct);
+        var menusTask = _catalogRepo.GetMenusAsync(true, ct);
+
+        await Task.WhenAll(burgersTask, menusTask);
+
+        var burgers = (await burgersTask)
+            .Select(b => new BurgerDto(b.IdBurger, b.Nom, b.Prix, b.Image))
+            .ToList();
+
+        var menus = (await menusTask)
+            .Select(m => new MenuDto(m.IdMenu, m.Nom, m.Prix, m.Image))
+            .ToList();
+
+        if (filtre == "BURGER") return ServiceResult<CatalogueDto>.Ok(new CatalogueDto(burgers, new List<MenuDto>()));
+        if (filtre == "MENU")   return ServiceResult<CatalogueDto>.Ok(new CatalogueDto(new List<BurgerDto>(), menus));
+
+        return ServiceResult<CatalogueDto>.Ok(new CatalogueDto(burgers, menus));
+    }
     public Task<ServiceResult<List<ComplementDto>>> GetComplementsAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
