@@ -1,0 +1,276 @@
+@model BrasilBurgerCSharp.ViewModels.Commande.CheckoutVm
+@using BrasilBurgerCSharp.Core
+
+@{
+    ViewData["Title"] = "Mon panier";
+
+    var isAuth = ClientSession.GetClientId(Context) != null;
+
+    var type = (Model.TypeConsommation ?? "SUR_PLACE").Trim().ToUpperInvariant();
+    bool isDelivery = type == "LIVRAISON";
+
+    // Sous-total : ce que tu as déjà dans la session (articles + compléments)
+    var sousTotal = Model.Panier?.Total ?? 0m;
+
+    // Frais livraison : basé sur zone choisie (cohérent avec ton controller/service)
+    var selectedZone = (isDelivery && Model.ZoneId is not null)
+        ? Model.Zones.FirstOrDefault(z => z.Id == Model.ZoneId.Value)
+        : null;
+
+    var fraisLivraison = (isDelivery && selectedZone is not null) ? selectedZone.PrixLivraison : 0m;
+    var totalFinal = sousTotal + fraisLivraison;
+
+    // Pour se rapprocher de ta capture : on affiche "Articles (n)" en comptant burgers+menus (et compléments comme lignes secondaires)
+    var items = Model.Panier?.Items ?? new List<BrasilBurgerCSharp.ViewModels.Commande.PanierItemVm>();
+    var mainItems = items.Where(i => !string.Equals(i.TypeArticle, "COMPLEMENT", StringComparison.OrdinalIgnoreCase)).ToList();
+    var complements = items.Where(i => string.Equals(i.TypeArticle, "COMPLEMENT", StringComparison.OrdinalIgnoreCase)).ToList();
+
+    string CheckedType(string t) => type == t ? "is-selected" : "";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/commande.css" asp-append-version="true" />
+}
+
+<section class="bb-cart-page">
+
+    @* --- EMPTY STATE (capture 1) --- *@
+    @if (items.Count == 0)
+    {
+        <div class="bb-cart-empty">
+            <div class="bb-cart-empty__icon">🛒</div>
+            <div class="bb-cart-empty__title">Votre panier est vide</div>
+            <div class="bb-cart-empty__sub">Ajoutez des produits pour commencer</div>
+
+            <a class="bb-btn bb-btn--primary" asp-controller="Catalogue" asp-action="Index">
+                Voir le catalogue
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="bb-cart-layout">
+
+            <!-- COL A : contenu -->
+            <div class="bb-cart-col">
+
+                @* message d'erreur venant du controller *@
+                @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                {
+                    <div class="bb-alert">@Model.ErrorMessage</div>
+                }
+
+                <!-- CARD: Articles -->
+                <div class="bb-cardbox">
+                    <div class="bb-cardbox__title">Articles (@mainItems.Count)</div>
+
+                    <div class="bb-cart-items">
+                        @foreach (var it in mainItems)
+                        {
+                            <div class="bb-cart-item">
+                                <div class="bb-cart-item__img">
+                                    @if (!string.IsNullOrWhiteSpace(it.Image))
+                                    {
+                                        <img src="@it.Image" alt="@it.Libelle" loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bb-img-ph"></div>
+                                    }
+                                </div>
+
+                                <div class="bb-cart-item__content">
+                                    <div class="bb-cart-item__name">@it.Libelle</div>
+                                    <div class="bb-cart-item__meta">Quantité : @it.Quantite</div>
+
+                                    @* (optionnel) afficher un résumé des compléments comme sur ta capture 2 *@
+                                    @if (complements.Count > 0)
+                                    {
+                                        <div class="bb-cart-item__extras">
+                                            + @string.Join(", ", complements.Select(c => c.Libelle))
+                                        </div>
+                                    }
+
+                                    <div class="bb-cart-item__price">@($"{it.PrixTotal:0} FCFA")</div>
+
+                                    <!-- Actions quantité -->
+                                    <div class="bb-qty">
+                                        <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
+                                            <input type="hidden" name="articleId" value="@it.ArticleId" />
+                                            <input type="hidden" name="quantite" value="@(it.Quantite - 1)" />
+                                            <button class="bb-qty__btn" type="submit" aria-label="Diminuer">−</button>
+                                        </form>
+
+                                        <div class="bb-qty__value">@it.Quantite</div>
+
+                                        <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
+                                            <input type="hidden" name="articleId" value="@it.ArticleId" />
+                                            <input type="hidden" name="quantite" value="@(it.Quantite + 1)" />
+                                            <button class="bb-qty__btn bb-qty__btn--plus" type="submit" aria-label="Augmenter">+</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Supprimer -->
+                                <form asp-controller="Commande" asp-action="Remove" method="post" class="bb-cart-item__remove">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
+                                    <input type="hidden" name="articleId" value="@it.ArticleId" />
+                                    <button type="submit" class="bb-trash" aria-label="Supprimer">🗑</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+
+                    @* si tu veux laisser l’option “vider panier” *@
+                    <div class="bb-cart-actions">
+                        <form asp-controller="Commande" asp-action="Clear" method="post">
+                            @Html.AntiForgeryToken()
+                            <button class="bb-link-danger" type="submit">Vider le panier</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CARD: Type consommation (capture 2) -->
+                <div class="bb-cardbox">
+                    <div class="bb-cardbox__title">Type de consommation</div>
+
+                    <div class="bb-consumption">
+                        <a class="bb-choice @CheckedType("SUR_PLACE")"
+                           asp-controller="Commande" asp-action="Panier"
+                           asp-route-type="SUR_PLACE">
+                            <span class="bb-choice__ico">🪑</span>
+                            <span class="bb-choice__txt">Sur place</span>
+                        </a>
+
+                        <a class="bb-choice @CheckedType("A_EMPORTER")"
+                           asp-controller="Commande" asp-action="Panier"
+                           asp-route-type="A_EMPORTER">
+                            <span class="bb-choice__ico">🛍</span>
+                            <span class="bb-choice__txt">À emporter</span>
+                        </a>
+
+                        <a class="bb-choice @CheckedType("LIVRAISON")"
+                           asp-controller="Commande" asp-action="Panier"
+                           asp-route-type="LIVRAISON">
+                            <span class="bb-choice__ico">🏍</span>
+                            <span class="bb-choice__txt">Livraison</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CARD: Infos livraison (capture 3) -->
+                @if (isDelivery)
+                {
+                    <div class="bb-cardbox">
+                        <div class="bb-cardbox__title bb-cardbox__title--withicon">
+                            <span class="bb-pin">📍</span>
+                            <span>Informations de livraison</span>
+                        </div>
+
+                        @* IMPORTANT : on reste cohérent avec ton GET Panier(type, zoneId, quartierId)
+                           Donc on fait un petit GET pour rafraîchir les quartiers quand zone change *@
+                        <form class="bb-delivery" method="get" asp-controller="Commande" asp-action="Panier">
+                            <input type="hidden" name="type" value="LIVRAISON" />
+
+                            <label class="bb-field">
+                                <span class="bb-field__label">Zone</span>
+                                <select class="bb-field__input" name="zoneId" id="bbZone">
+                                    <option value="">-- Choisir une zone --</option>
+                                    @foreach (var z in Model.Zones)
+                                    {
+                                        <option value="@z.Id" selected="@(Model.ZoneId == z.Id)">
+                                            @z.Libelle
+                                        </option>
+                                    }
+                                </select>
+                            </label>
+
+                            <label class="bb-field">
+                                <span class="bb-field__label">Quartier</span>
+                                <select class="bb-field__input" name="quartierId" id="bbQuartier">
+                                    <option value="">-- Choisir un quartier --</option>
+                                    @foreach (var q in Model.Quartiers)
+                                    {
+                                        <option value="@q.Id" selected="@(Model.QuartierId == q.Id)">
+                                            @q.Libelle
+                                        </option>
+                                    }
+                                </select>
+                            </label>
+
+                            <div class="bb-fee">
+                                Frais de livraison: <strong>@($"{fraisLivraison:0} FCFA")</strong>
+                            </div>
+
+                            <button type="submit" class="bb-btn bb-btn--ghost">Mettre à jour</button>
+                        </form>
+                    </div>
+                }
+
+                <!-- CARD: Totaux -->
+                <div class="bb-cardbox bb-totals">
+                    <div class="bb-totalrow">
+                        <span>Sous-total</span>
+                        <span>@($"{sousTotal:0} FCFA")</span>
+                    </div>
+
+                    @if (isDelivery)
+                    {
+                        <div class="bb-totalrow">
+                            <span>Livraison</span>
+                            <span>@($"{fraisLivraison:0} FCFA")</span>
+                        </div>
+                    }
+
+                    <div class="bb-totalrow bb-totalrow--strong">
+                        <span>Total</span>
+                        <span>@($"{totalFinal:0} FCFA")</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COL B : bouton confirmer (sticky desktop + bottom mobile) -->
+            <div class="bb-cart-col bb-cart-col--cta">
+                <form asp-controller="Commande" asp-action="Confirmer" method="post" class="bb-cta">
+                    @Html.AntiForgeryToken()
+
+                    @* Le controller Confirmer lit TypeConsommation / ZoneId / QuartierId *@
+                    <input type="hidden" name="TypeConsommation" value="@type" />
+                    <input type="hidden" name="ZoneId" value="@(Model.ZoneId?.ToString() ?? "")" />
+                    <input type="hidden" name="QuartierId" value="@(Model.QuartierId?.ToString() ?? "")" />
+
+                    <button class="bb-btn bb-btn--primary bb-btn--xl" type="submit">
+                        Confirmer la commande (@($"{totalFinal:0} FCFA"))
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    }
+
+</section>
+
+<script>
+  // UX : si zone change en livraison => on auto-submit le GET pour charger les quartiers
+  (function () {
+    const zone = document.getElementById("bbZone");
+    if (!zone) return;
+
+    zone.addEventListener("change", function () {
+      const form = zone.closest("form");
+      if (!form) return;
+
+      // reset quartier quand zone change
+      const q = document.getElementById("bbQuartier");
+      if (q) q.value = "";
+
+      form.submit();
+    });
+  })();
+</script>

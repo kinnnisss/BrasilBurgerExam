@@ -5,6 +5,22 @@
       "PackagePath": "staticwebassets\\BrasilBurgerCSharp.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\Catalogue.css",
+      "PackagePath": "staticwebassets\\css\\Catalogue.css"
+    },
+    {
+      "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\commande.css",
+      "PackagePath": "staticwebassets\\css\\commande.css"
+    },
+    {
+      "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\details.css",
+      "PackagePath": "staticwebassets\\css\\details.css"
+    },
+    {
+      "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\layout.css",
+      "PackagePath": "staticwebassets\\css\\layout.css"
+    },
+    {
       "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

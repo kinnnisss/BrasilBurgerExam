@@ -1,0 +1,180 @@
+@model BrasilBurgerCSharp.ViewModels.Catalogue.MenuDetailsVm
+@{
+    ViewData["Title"] = "Détails du menu";
+    ViewBag.MinimalHeader = true;
+
+    var qty = Model.Quantite <= 0 ? 1 : Model.Quantite;
+    var total = Model.Prix * qty;
+
+    decimal sumSep =
+        (Model.Burgers?.Sum(b => b.Prix) ?? 0m) +
+        (Model.Complements?.Sum(c => c.Prix) ?? 0m);
+
+    var eco = sumSep - Model.Prix; // si > 0 => économie
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+}
+
+<section class="bb-detail">
+
+    <!-- Top bar blanc -->
+    <div class="bb-detail-topbar">
+        <a class="bb-detail-back" asp-controller="Catalogue" asp-action="Index" aria-label="Retour">←</a>
+        <div class="bb-detail-title">Détails du burger</div>
+        <a class="bb-detail-cart" asp-controller="Commande" asp-action="Panier" aria-label="Panier">
+            🛒 <span class="bb-badge bb-badge--dark">0</span>
+        </a>
+    </div>
+
+    <!-- Image -->
+    <div class="bb-detail-hero">
+        @if (!string.IsNullOrWhiteSpace(Model.Image))
+        {
+            <img src="@Model.Image" alt="@Model.Nom" class="bb-detail-hero__img" />
+        }
+        else
+        {
+            <div class="bb-detail-hero__placeholder"></div>
+        }
+    </div>
+
+    <!-- Carte -->
+    <div class="bb-detail-card">
+        <h1 class="bb-detail-name">@Model.Nom</h1>
+
+        <h2 class="bb-detail-subtitle">Composition du menu</h2>
+
+        <div class="bb-menu-comp">
+            @if (Model.Burgers is not null)
+            {
+                foreach (var b in Model.Burgers)
+                {
+                    <div class="bb-menu-comp__row">
+                        <div class="bb-menu-comp__imgWrap">
+                            @if (!string.IsNullOrWhiteSpace(b.Image))
+                            {
+                                <img src="@b.Image" alt="@b.Nom" />
+                            }
+                            else
+                            {
+                                <div class="bb-menu-comp__imgPh"></div>
+                            }
+                        </div>
+
+                        <div class="bb-menu-comp__info">
+                            <div class="bb-menu-comp__name">@b.Nom</div>
+                            <div class="bb-menu-comp__price">@($"{b.Prix:0} FCFA")</div>
+                        </div>
+                    </div>
+                }
+            }
+
+            @if (Model.Complements is not null)
+            {
+                foreach (var c in Model.Complements)
+                {
+                    <div class="bb-menu-comp__row">
+                        <div class="bb-menu-comp__imgWrap">
+                            @if (!string.IsNullOrWhiteSpace(c.Image))
+                            {
+                                <img src="@c.Image" alt="@c.Nom" />
+                            }
+                            else
+                            {
+                                <div class="bb-menu-comp__imgPh"></div>
+                            }
+                        </div>
+
+                        <div class="bb-menu-comp__info">
+                            <div class="bb-menu-comp__name">@c.Nom</div>
+                            <div class="bb-menu-comp__price">@($"{c.Prix:0} FCFA")</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- Bloc économies -->
+        <div class="bb-savings">
+            <div class="bb-savings__row">
+                <span>Prix séparé</span>
+                <span class="bb-savings__strike">@($"{sumSep:0} FCFA")</span>
+            </div>
+            <div class="bb-savings__row">
+                <span>Prix menu</span>
+                <span class="bb-savings__menu">@($"{Model.Prix:0} FCFA")</span>
+            </div>
+            @if (eco > 0)
+            {
+                <div class="bb-savings__hint">Économisez @($"{eco:0} FCFA") !</div>
+            }
+        </div>
+
+        <!-- Quantité -->
+        <form asp-controller="Commande" asp-action="AddMenu" method="post" class="bb-detail-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" id="qtyInput" name="quantite" value="@qty" />
+
+            <div class="bb-detail-qty">
+                <div class="bb-detail-qty__label">Quantité</div>
+
+                <div class="bb-detail-qty__controls">
+                    <button type="button" class="bb-qty-btn bb-qty-btn--ghost" id="btnMinus">−</button>
+                    <div class="bb-qty-value" id="qtyValue">@qty</div>
+                    <button type="button" class="bb-qty-btn" id="btnPlus">+</button>
+                </div>
+            </div>
+
+            <div class="bb-detail-footer">
+                <div class="bb-detail-total">
+                    <div class="bb-detail-total__label">Total</div>
+                    <div class="bb-detail-total__value" id="totalValue">@($"{total:0} FCFA")</div>
+                </div>
+
+                <button type="submit" class="bb-detail-submit">
+                    Ajouter au panier
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+(function(){
+  const qtyInput = document.getElementById("qtyInput");
+  const qtyValue = document.getElementById("qtyValue");
+  const totalValue = document.getElementById("totalValue");
+  const btnMinus = document.getElementById("btnMinus");
+  const btnPlus = document.getElementById("btnPlus");
+
+  const menuPrice = Number("@Model.Prix".replace(",", "."));
+
+  function getQty(){
+    const q = parseInt(qtyInput.value || "1", 10);
+    return isNaN(q) || q < 1 ? 1 : q;
+  }
+
+  function render(){
+    const q = getQty();
+    qtyValue.textContent = String(q);
+
+    const total = menuPrice * q;
+    totalValue.textContent = Math.round(total) + " FCFA";
+  }
+
+  btnMinus.addEventListener("click", () => {
+    qtyInput.value = String(Math.max(1, getQty() - 1));
+    render();
+  });
+
+  btnPlus.addEventListener("click", () => {
+    qtyInput.value = String(getQty() + 1);
+    render();
+  });
+
+  render();
+})();
+</script>

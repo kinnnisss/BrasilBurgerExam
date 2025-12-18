@@ -1,7 +1,15 @@
-<nav class="bb-top-nav" aria-label="Navigation principale desktop">
+@* Desktop top navigation (visible uniquement en desktop via CSS) *@
+<nav class="bb-top-nav" aria-label="Navigation principale">
     <div class="bb-top-nav__inner">
-        <a asp-controller="Catalogue" asp-action="Index" class="bb-top-nav__link bb-active">Catalogue</a>
-        <a asp-controller="Suivi" asp-action="Index" class="bb-top-nav__link">Commandes</a>
-        <a asp-controller="Suivi" asp-action="Historique" class="bb-top-nav__link">Profil</a>
+        <a class="bb-top-link" asp-controller="Catalogue" asp-action="Index">Catalogue</a>
+        <a class="bb-top-link" asp-controller="Suivi" asp-action="Index">Commandes</a>
+        <a class="bb-top-link" asp-controller="Suivi" asp-action="Historique">Historique</a>
+
+        <a class="bb-top-link" asp-controller="Commande" asp-action="Panier">Panier</a>
+
+        <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-top-logout">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="bb-top-logout__btn">Déconnexion</button>
+        </form>
     </div>
 </nav>

@@ -12,66 +12,133 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - Brasil Burger</title>
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
 </head>
-<body>
 
-<header class="bb-header">
-    <div class="bb-header__left">
-        <button class="bb-icon-btn" type="button" aria-label="Menu">
-            ☰
-        </button>
-    </div>
+<body class="bb-body">
 
-    <div class="bb-header__center">
-        @if (isAuth)
-        {
-            <div class="bb-welcome">
-                <div class="bb-welcome__title">Bienvenue</div>
-                <div class="bb-welcome__sub">@(!string.IsNullOrWhiteSpace(clientName) ? clientName : "Client")</div>
-            </div>
-        }
-        else
-        {
-            <div class="bb-brand">
-                <div class="bb-brand__title">Brasil Burger</div>
-            </div>
-        }
-    </div>
+@if (ViewBag.MinimalHeader != true)
+{
+    <header class="bb-header">
+        <div class="bb-header__left">
+            <!-- Hamburger : MOBILE ONLY (CSS) -->
+            <button class="bb-icon-btn bb-hamburger"
+                    type="button"
+                    aria-label="Menu"
+                    aria-controls="bbDrawer"
+                    aria-expanded="false"
+                    onclick="bbToggleDrawer(true)">
+                ☰
+            </button>
+        </div>
 
-    <div class="bb-header__right">
-        <a class="bb-icon-link" asp-controller="Commande" asp-action="Panier" title="Panier" aria-label="Panier">
-            <span class="bb-cart">
-                🛒
-                <span class="bb-badge">0</span>
-            </span>
-        </a>
+        <div class="bb-header__center">
+            @if (isAuth)
+            {
+                <div class="bb-welcome">
+                    <div class="bb-welcome__title">Bienvenue</div>
+                    <div class="bb-welcome__sub">@(!string.IsNullOrWhiteSpace(clientName) ? clientName : "Client")</div>
+                </div>
+            }
+            else
+            {
+                <div class="bb-brand">
+                    <div class="bb-brand__title">Brasil Burger</div>
+                </div>
+            }
+        </div>
 
-        @if (isAuth)
-        {
-            <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-logout">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="bb-logout__btn" title="Logout">
-                    ↪ <span>log out</span>
-                </button>
-            </form>
-        }
-    </div>
-</header>
+        <div class="bb-header__right">
+            <a class="bb-icon-link" asp-controller="Commande" asp-action="Panier" title="Panier" aria-label="Panier">
+                <span class="bb-cart">
+                    🛒
+                    <span class="bb-badge">0</span>
+                </span>
+            </a>
+        </div>
+    </header>
+}
 
+<!-- TOP NAV : DESKTOP ONLY (CSS) + seulement après connexion -->
 @if (isAuth)
 {
     @await Html.PartialAsync("_TopNav")
 }
 
+<!-- DRAWER (Hamburger menu mobile) -->
+<div id="bbDrawerOverlay" class="bb-drawer-overlay" hidden onclick="bbToggleDrawer(false)"></div>
+
+<aside id="bbDrawer" class="bb-drawer" aria-label="Menu" hidden>
+    <div class="bb-drawer__header">
+        <div class="bb-drawer__title">Menu</div>
+        <button class="bb-icon-btn" type="button" aria-label="Fermer" onclick="bbToggleDrawer(false)">✕</button>
+    </div>
+
+    <nav class="bb-drawer__nav">
+        @if (!isAuth)
+        {
+            <a class="bb-drawer__link" asp-controller="Auth" asp-action="Login">Se connecter</a>
+            <a class="bb-drawer__link" asp-controller="Auth" asp-action="Register">S’inscrire</a>
+
+            <!-- Optionnel : page "About/Contact" si tu la crées -->
+            <a class="bb-drawer__link" asp-controller="Home" asp-action="Contact">À propos / Contact</a>
+        }
+        else
+        {
+            <!-- Mon profil : tu peux décider où ça pointe (ex: un controller Profil) -->
+            <a class="bb-drawer__link" asp-controller="Suivi" asp-action="Historique">Mes commandes</a>
+            <a class="bb-drawer__link" asp-controller="Suivi" asp-action="Index">Suivi</a>
+            <a class="bb-drawer__link" asp-controller="Catalogue" asp-action="Index">Catalogue</a>
+
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-drawer__form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="bb-drawer__logout">Déconnexion</button>
+            </form>
+        }
+    </nav>
+</aside>
+
 <main class="bb-main @(isAuth ? "bb-main--withnav" : "")">
     @RenderBody()
 </main>
 
+<!-- BOTTOM NAV : MOBILE ONLY (CSS) + seulement après connexion -->
 @if (isAuth)
 {
     @await Html.PartialAsync("_BottomNav")
 }
+
+<script>
+    function bbToggleDrawer(open) {
+        const drawer = document.getElementById("bbDrawer");
+        const overlay = document.getElementById("bbDrawerOverlay");
+        const btn = document.querySelector(".bb-hamburger");
+
+        if (!drawer || !overlay) return;
+
+        if (open) {
+            drawer.hidden = false;
+            overlay.hidden = false;
+            drawer.classList.add("is-open");
+            overlay.classList.add("is-open");
+            if (btn) btn.setAttribute("aria-expanded", "true");
+            document.body.style.overflow = "hidden";
+        } else {
+            drawer.classList.remove("is-open");
+            overlay.classList.remove("is-open");
+            if (btn) btn.setAttribute("aria-expanded", "false");
+            document.body.style.overflow = "";
+            window.setTimeout(() => {
+                drawer.hidden = true;
+                overlay.hidden = true;
+            }, 160);
+        }
+    }
+</script>
 
 </body>
 </html>

@@ -1,16 +1,17 @@
-<nav class="bb-bottom-nav" aria-label="Navigation principale mobile">
-    <a asp-controller="Catalogue" asp-action="Index" class="bb-bottom-nav__item bb-active">
-        <div class="bb-bottom-nav__icon">⌂</div>
-        <div class="bb-bottom-nav__label">Catalogue</div>
+@* Mobile bottom navigation *@
+<nav class="bb-bottom-nav" aria-label="Navigation bas">
+    <a class="bb-bottom-link" asp-controller="Catalogue" asp-action="Index">
+        <span class="bb-bottom-ico">🏠</span>
+        <span class="bb-bottom-txt">Home</span>
     </a>
 
-    <a asp-controller="Suivi" asp-action="Index" class="bb-bottom-nav__item">
-        <div class="bb-bottom-nav__icon">🧾</div>
-        <div class="bb-bottom-nav__label">Commandes</div>
+    <a class="bb-bottom-link" asp-controller="Suivi" asp-action="Index">
+        <span class="bb-bottom-ico">📦</span>
+        <span class="bb-bottom-txt">Commande</span>
     </a>
 
-    <a asp-controller="Suivi" asp-action="Historique" class="bb-bottom-nav__item">
-        <div class="bb-bottom-nav__icon">👤</div>
-        <div class="bb-bottom-nav__label">Profil</div>
+    <a class="bb-bottom-link" asp-controller="Suivi" asp-action="Historique">
+        <span class="bb-bottom-ico">👤</span>
+        <span class="bb-bottom-txt">Moi</span>
     </a>
 </nav>
