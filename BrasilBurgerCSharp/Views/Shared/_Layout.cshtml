@@ -1,49 +1,77 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using BrasilBurgerCSharp.Core
+@{
+    var clientId = ClientSession.GetClientId(Context);
+    var isAuth = clientId != null;
+
+    var clientName = ViewBag.ClientName as string; 
+}
+
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BrasilBurgerCSharp</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Brasil Burger</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BrasilBurgerCSharp.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BrasilBurgerCSharp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+<header class="bb-header">
+    <div class="bb-header__left">
+        <button class="bb-icon-btn" type="button" aria-label="Menu">
+            ☰
+        </button>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - BrasilBurgerCSharp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <div class="bb-header__center">
+        @if (isAuth)
+        {
+            <div class="bb-welcome">
+                <div class="bb-welcome__title">Bienvenue</div>
+                <div class="bb-welcome__sub">@(!string.IsNullOrWhiteSpace(clientName) ? clientName : "Client")</div>
+            </div>
+        }
+        else
+        {
+            <div class="bb-brand">
+                <div class="bb-brand__title">Brasil Burger</div>
+            </div>
+        }
+    </div>
+
+    <div class="bb-header__right">
+        <a class="bb-icon-link" asp-controller="Commande" asp-action="Panier" title="Panier" aria-label="Panier">
+            <span class="bb-cart">
+                🛒
+                <span class="bb-badge">0</span>
+            </span>
+        </a>
+
+        @if (isAuth)
+        {
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-logout">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="bb-logout__btn" title="Logout">
+                    ↪ <span>log out</span>
+                </button>
+            </form>
+        }
+    </div>
+</header>
+
+@if (isAuth)
+{
+    @await Html.PartialAsync("_TopNav")
+}
+
+<main class="bb-main @(isAuth ? "bb-main--withnav" : "")">
+    @RenderBody()
+</main>
+
+@if (isAuth)
+{
+    @await Html.PartialAsync("_BottomNav")
+}
+
 </body>
 </html>
