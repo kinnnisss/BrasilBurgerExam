@@ -52,7 +52,7 @@ private static void ConfigureClient(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Client>(e =>
     {
-        e.ToTable("CLIENT");
+        e.ToTable("client");
         e.HasKey(c => c.IdClient);
 
         e.Property(c => c.IdClient).HasColumnName("id_client");
@@ -71,7 +71,7 @@ private static void ConfigureBurger(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Burger>(e =>
     {
-        e.ToTable("BURGER");
+        e.ToTable("burger");
         e.HasKey(b => b.IdBurger);
 
         e.Property(b => b.IdBurger).HasColumnName("id_burger");
@@ -87,7 +87,7 @@ private static void ConfigureComplement(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Complement>(e =>
     {
-        e.ToTable("COMPLEMENT");
+        e.ToTable("complement");
         e.HasKey(c => c.IdComplement);
 
         e.Property(c => c.IdComplement).HasColumnName("id_complement");
@@ -105,7 +105,7 @@ private static void ConfigureMenu(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Menu>(e =>
     {
-        e.ToTable("MENU");
+        e.ToTable("menu");
         e.HasKey(m => m.IdMenu);
 
         e.Property(m => m.IdMenu).HasColumnName("id_menu");
@@ -119,7 +119,7 @@ private static void ConfigureCommande(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Commande>(e =>
     {
-        e.ToTable("COMMANDE");
+        e.ToTable("commande");
         e.HasKey(c => c.IdCommande);
 
         e.Property(c => c.IdCommande).HasColumnName("id_commande");
@@ -158,7 +158,7 @@ private static void ConfigureLigneCommande(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<LigneCommande>(e =>
     {
-        e.ToTable("LIGNE_COMMANDE");
+        e.ToTable("ligne_commande");
         e.HasKey(l => l.IdLigneCommande);
 
         e.Property(l => l.IdLigneCommande).HasColumnName("id_ligne_commande");
@@ -194,7 +194,7 @@ private static void ConfigurePaiement(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Paiement>(e =>
     {
-        e.ToTable("PAIEMENT");
+        e.ToTable("paiement");
         e.HasKey(p => p.IdPaiement);
 
         e.Property(p => p.IdPaiement).HasColumnName("id_paiement");
@@ -217,7 +217,7 @@ private static void ConfigureZone(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Zone>(e =>
     {
-        e.ToTable("ZONE");
+        e.ToTable("zone");
         e.HasKey(z => z.IdZone);
 
         e.Property(z => z.IdZone).HasColumnName("id_zone");
@@ -230,7 +230,7 @@ private static void ConfigureQuartier(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Quartier>(e =>
     {
-        e.ToTable("QUARTIER");
+        e.ToTable("quartier");
         e.HasKey(q => q.IdQuartier);
 
         e.Property(q => q.IdQuartier).HasColumnName("id_quartier");
@@ -246,7 +246,7 @@ private static void ConfigureMenuBurger(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<MenuBurger>(e =>
     {
-        e.ToTable("MENU_BURGER");
+        e.ToTable("menu_burger");
         e.HasKey(x => new { x.IdMenu, x.IdBurger });
 
         e.Property(x => x.IdMenu).HasColumnName("id_menu");
@@ -265,7 +265,7 @@ private static void ConfigureMenuComplement(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<MenuComplement>(e =>
     {
-        e.ToTable("MENU_COMPLEMENT");
+        e.ToTable("menu_complement");
         e.HasKey(x => new { x.IdMenu, x.IdComplement });
 
         e.Property(x => x.IdMenu).HasColumnName("id_menu");
@@ -283,7 +283,7 @@ private static void ConfigureMenuComplement(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Livreur>(e =>
         {
-            e.ToTable("LIVREUR");
+            e.ToTable("livreur");
             e.HasKey(l => l.IdLivreur);
 
             e.Property(l => l.IdLivreur).HasColumnName("id_livreur");

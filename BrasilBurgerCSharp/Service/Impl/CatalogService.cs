@@ -26,7 +26,6 @@ public sealed class CatalogService : ICatalogService
         var burgersTask = _catalogRepo.GetBurgersAsync(true, ct);
         var menusTask = _catalogRepo.GetMenusAsync(true, ct);
 
-        await Task.WhenAll(burgersTask, menusTask);
 
         var burgers = (await burgersTask)
             .Select(b => new BurgerDto(b.IdBurger, b.Nom, b.Prix, b.Image))

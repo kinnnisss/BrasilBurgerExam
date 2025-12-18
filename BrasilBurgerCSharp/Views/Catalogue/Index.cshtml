@@ -1,0 +1,124 @@
+@model CatalogueIndexVm
+@using BrasilBurgerCSharp.Core
+@{
+    ViewData["Title"] = "Catalogue";
+    var isAuth = ClientSession.GetClientId(Context) != null;
+
+    string filtre = (Model.Filtre ?? "ALL").Trim().ToUpperInvariant();
+    string active(string f) => filtre == f ? "is-active" : "";
+    string LinkForBurger(int id) => Url.Action("Burger", "Catalogue", new { id }) ?? "#";
+    string LinkForMenu(int id) => Url.Action("Menu", "Catalogue", new { id }) ?? "#";
+    string LinkForComplement(int id) => Url.Action("Complement", "Catalogue", new { id }) ?? "#";
+}
+
+<section class="bb-page">
+
+
+
+@* FILTRE DESKTOP : sous navbar *@
+<div class="bb-filterbar">
+    <a class="bb-filterchip @active("ALL")" asp-controller="Catalogue" asp-action="Index" asp-route-filtre="ALL">All</a>
+    <a class="bb-filterchip @active("BURGER")" asp-controller="Catalogue" asp-action="Index" asp-route-filtre="BURGER">Burger</a>
+    <a class="bb-filterchip @active("MENU")" asp-controller="Catalogue" asp-action="Index" asp-route-filtre="MENU">Menu</a>
+    <a class="bb-filterchip @active("COMPLEMENT")" asp-controller="Catalogue" asp-action="Index" asp-route-filtre="COMPLEMENT">Complements</a>
+</div>
+
+@* FILTRE MOBILE : panneau gauche *@
+<aside class="bb-filter">
+    <a class="bb-filter__item @(filtre=="ALL" ? "bb-filter__item--active": "")"
+       asp-controller="Catalogue" asp-action="Index" asp-route-filtre="ALL">All</a>
+
+    <a class="bb-filter__item @(filtre=="BURGER" ? "bb-filter__item--active": "")"
+       asp-controller="Catalogue" asp-action="Index" asp-route-filtre="BURGER">Burger</a>
+
+    <a class="bb-filter__item @(filtre=="MENU" ? "bb-filter__item--active": "")"
+       asp-controller="Catalogue" asp-action="Index" asp-route-filtre="MENU">Menu</a>
+
+    <a class="bb-filter__item @(filtre=="COMPLEMENT" ? "bb-filter__item--active": "")"
+       asp-controller="Catalogue" asp-action="Index" asp-route-filtre="COMPLEMENT">Complements</a>
+</aside>
+
+
+    <div class="bb-grid">
+
+        @* Burgers *@
+        @foreach (var b in Model.Burgers)
+        {
+            <article class="bb-card">
+                <a class="bb-card__imgWrap" href="@LinkForBurger(b.Id)">
+                    @if (!string.IsNullOrWhiteSpace(b.Image))
+                    {
+                        <img class="bb-card__img" src="@b.Image" alt="@b.Nom" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="bb-card__imgPlaceholder"></div>
+                    }
+                </a>
+
+                <div class="bb-card__body">
+                    <div class="bb-card__title">@b.Nom</div>
+                    <div class="bb-card__row">
+                        <div class="bb-card__price">@($"{b.Prix:0} FCFA")</div>
+                        <a class="bb-card__btn" href="@LinkForBurger(b.Id)">Voir</a>
+                    </div>
+                </div>
+            </article>
+        }
+
+        @* Menus *@
+        @foreach (var m in Model.Menus)
+        {
+            <article class="bb-card">
+                <a class="bb-card__imgWrap" href="@LinkForMenu(m.Id)">
+                    @if (!string.IsNullOrWhiteSpace(m.Image))
+                    {
+                        <img class="bb-card__img" src="@m.Image" alt="@m.Nom" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="bb-card__imgPlaceholder"></div>
+                    }
+                </a>
+
+                <div class="bb-card__body">
+                    <div class="bb-card__title">@m.Nom</div>
+                    <div class="bb-card__row">
+                        <div class="bb-card__price">@($"{m.Prix:0} FCFA")</div>
+                        <a class="bb-card__btn" href="@LinkForMenu(m.Id)">Voir</a>
+                    </div>
+                </div>
+            </article>
+        }
+
+        @* Complements *@
+        @foreach (var c in Model.Complements)
+        {
+            <article class="bb-card">
+                <a class="bb-card__imgWrap" href="@LinkForComplement(c.Id)">
+                    @if (!string.IsNullOrWhiteSpace(c.Image))
+                    {
+                        <img class="bb-card__img" src="@c.Image" alt="@c.Nom" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="bb-card__imgPlaceholder"></div>
+                    }
+                </a>
+
+                <div class="bb-card__body">
+                    <div class="bb-card__title">@c.Nom</div>
+                    <div class="bb-card__row">
+                        <div class="bb-card__price">@($"{c.Prix:0} FCFA")</div>
+                        <a class="bb-card__btn" href="@LinkForComplement(c.Id)">Voir</a>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+
+    <div class="bb-more">
+        <button class="bb-more__btn" type="button">Voir plus</button>
+    </div>
+
+</section>
