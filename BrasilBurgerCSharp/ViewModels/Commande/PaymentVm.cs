@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BrasilBurgerCSharp.ViewModels.Commande;
 
 public class PaymentVm
 {
+    [Required]
     public int CommandeId { get; set; }
     public string Reference { get; set; } = "";
     public decimal Montant { get; set; }
