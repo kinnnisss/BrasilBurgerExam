@@ -1,2 +1,12 @@
+using NpgsqlTypes;
+
 namespace BrasilBurgerCSharp.Models;
-public enum ModePaiement { OM, WAVE }
+
+public enum ModePaiement
+{
+    [PgName("OM")]
+    OM,
+
+    [PgName("WAVE")]
+    WAVE
+}

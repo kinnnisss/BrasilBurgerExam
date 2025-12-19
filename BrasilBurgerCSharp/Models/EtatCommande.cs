@@ -1,2 +1,16 @@
+using NpgsqlTypes;
 namespace BrasilBurgerCSharp.Models;
-public enum EtatCommande { ENCOURS, VALIDEE, TERMINER, ANNULEE }
+
+
+public enum EtatCommande
+{
+    [PgName("ENCOURS")]
+    ENCOURS,
+
+    [PgName("VALIDEE")]
+    VALIDEE,
+
+    [PgName("ANNULEE")]
+    ANNULEE
+}
+
