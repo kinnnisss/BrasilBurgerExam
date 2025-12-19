@@ -1,0 +1,177 @@
+.pay{ max-width: 520px; margin: 0 auto; padding: 12px 12px 22px; }
+
+.pay-alert{
+  background:#fff3f2;
+  border:1px solid #ffd7d2;
+  color:#7f1d1d;
+  padding:12px 12px;
+  border-radius: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Bloc référence */
+.pay-ref{
+  background: var(--bb-blue);
+  color:#fff;
+  border-radius: 16px;
+  padding: 18px 18px;
+  box-shadow: var(--bb-shadow);
+  margin-bottom: 14px;
+}
+.pay-ref__label{ opacity:.9; font-weight:700; font-size: 14px; }
+.pay-ref__value{ font-size: 24px; font-weight: 900; margin-top: 6px; letter-spacing: .5px; }
+
+/* Cards */
+.pay-card{
+  background:#fff;
+  border-radius: 16px;
+  padding: 14px 14px;
+  box-shadow: var(--bb-shadow);
+  border: 1px solid #eef2f7;
+  margin-bottom: 12px;
+}
+.pay-card__title{
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Lignes */
+.pay-row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 2px;
+  color:#374151;
+}
+.pay-row--total{ padding-top: 6px; }
+.pay-row__right{ font-weight: 800; color:#374151; }
+.pay-row__right--accent{ color: var(--bb-orange); }
+.pay-sep{ height:1px; background:#eef2f7; margin: 4px 0; }
+
+/* Type conso */
+.pay-cons{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+.pay-cons__ico{
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background:#f3f4f6;
+  display:grid;
+  place-items:center;
+  font-size: 18px;
+}
+.pay-cons__label{ font-weight: 800; color:#111827; }
+.pay-cons__value{ color:#374151; font-weight: 700; margin-top: 2px; }
+
+/* Méthodes paiement */
+.pay-methods{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.pay-method{ display:block; cursor:pointer; }
+.pay-method__radio{ position:absolute; opacity:0; pointer-events:none; }
+
+.pay-method__box{
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+
+  height: 120px;
+  border-radius: 14px;
+  border: 2px solid #e5e7eb;
+  background:#fff;
+}
+
+.pay-method__logo{
+  width: 54px; height: 54px;
+  border-radius: 12px;
+  color:#fff;
+  font-weight: 900;
+  display:grid;
+  place-items:center;
+  font-size: 14px;
+}
+.pay-method__logo--om{ background: #f97316; }
+.pay-method__logo--wave{ background: #3b82f6; }
+
+.pay-method__name{ font-weight: 900; color:#111827; }
+
+/* état sélectionné */
+.pay-method__radio:checked + .pay-method__box{
+  border-color: var(--bb-blue);
+  background: #fff7ed;
+}
+
+/* Bouton payer */
+.pay-btn{
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+  border-radius: 14px;
+  padding: 14px 14px;
+  font-weight: 900;
+  background: var(--bb-blue);
+  color:#fff;
+  box-shadow: var(--bb-shadow);
+}
+
+/* SUCCESS */
+.pay-success{ padding: 16px 12px 26px; }
+.pay-success__card{
+  max-width: 520px;
+  margin: 0 auto;
+  background:#fff;
+  border-radius: 18px;
+  padding: 22px 18px;
+  box-shadow: 0 30px 60px rgba(15,23,42,.12);
+  border: 1px solid #eef2f7;
+  text-align:center;
+}
+.pay-success__ok{
+  width: 70px; height: 70px;
+  border-radius: 999px;
+  margin: 0 auto 12px;
+  background: #dcfce7;
+  color:#16a34a;
+  display:grid;
+  place-items:center;
+  font-size: 34px;
+  font-weight: 900;
+  outline: 10px solid rgba(34,197,94,.12);
+}
+.pay-success__title{ font-size: 22px; font-weight: 900; color:#111827; margin-top: 6px; }
+.pay-success__sub{ color:#6b7280; font-weight: 700; margin-top: 8px; line-height: 1.35; }
+
+.pay-success__amount{
+  margin-top: 14px;
+  background:#f3f4f6;
+  border-radius: 14px;
+  padding: 12px 12px;
+}
+.pay-success__amountLabel{ color:#6b7280; font-weight: 800; }
+.pay-success__amountValue{ color: var(--bb-orange); font-weight: 900; margin-top: 6px; }
+
+.pay-success__btn{
+  display:block;
+  margin-top: 14px;
+  text-decoration:none;
+  background: var(--bb-blue);
+  color:#fff;
+  font-weight: 900;
+  padding: 14px 14px;
+  border-radius: 14px;
+}
+
+/* Desktop */
+@media (min-width: 992px){
+  .pay{ max-width: 860px; }
+  .pay-methods{ grid-template-columns: 220px 220px; justify-content:start; }
+}

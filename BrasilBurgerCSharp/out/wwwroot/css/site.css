@@ -1,0 +1,30 @@
+:root{
+  --bb-orange: #f25a2a;
+  --bb-blue: #1f3a8a;
+  --bb-text: #0f172a;
+  --bb-muted: #6b7280;
+  --bb-bg: #ffffff;
+  --bb-card: #ffffff;
+  --bb-shadow: 0 6px 18px rgba(15, 23, 42, .10);
+  --bb-radius: 18px;
+  --bb-bottom-nav-h: 70px;
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  height: 100%;
+}
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--bb-text);
+  background: var(--bb-bg);
+}
+
+img{ max-width: 100%; display:block; }
+
+a{ color: inherit; }
+
+button{ font-family: inherit; }

@@ -1,0 +1,130 @@
+/* Desktop only */
+.bb-footer{
+  display:none;
+  background: linear-gradient(180deg, #0f172a, #111827);
+  color: #e5e7eb;
+  margin-top: 28px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.bb-footer__inner{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 22px 16px;
+}
+
+.bb-footer__brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+.bb-footer__logo{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display:grid;
+  place-items:center;
+  background: rgba(255,255,255,.10);
+  font-size: 22px;
+}
+
+.bb-footer__title{
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: .2px;
+}
+
+.bb-footer__tagline{
+  opacity: .85;
+  font-weight: 700;
+  margin-top: 2px;
+  font-size: 13px;
+}
+
+.bb-footer__cols{
+  display:grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 18px;
+  padding: 16px 0 14px;
+}
+
+.bb-footer__col{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 14px 14px;
+}
+
+.bb-footer__h{
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.bb-footer__p{
+  line-height: 1.55;
+  font-weight: 700;
+  opacity: .92;
+}
+
+.bb-footer__mini{
+  margin-top: 10px;
+  font-weight: 800;
+  opacity: .85;
+  font-size: 12px;
+}
+
+.bb-footer__link{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  margin-top: 10px;
+  text-decoration:none;
+  color: #fff;
+  font-weight: 900;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.bb-footer__link:hover{
+  background: rgba(255,255,255,.14);
+}
+
+.bb-footer__bottom{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.10);
+  font-weight: 800;
+  opacity: .9;
+  font-size: 13px;
+}
+
+.bb-footer__bottomLinks{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bb-footer__bottomLink{
+  color:#fff;
+  text-decoration:none;
+  font-weight: 900;
+  opacity: .95;
+}
+
+.bb-footer__bottomLink:hover{ text-decoration: underline; }
+
+.bb-footer__dot{ opacity: .6; }
+
+@media (min-width: 992px){
+  .bb-footer{ display:block; }
+}

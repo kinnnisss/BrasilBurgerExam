@@ -1,0 +1,65 @@
+.bb-pagebar{
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  background: #fff;
+  border-bottom: 1px solid #eef2f7;
+
+  height: 56px;
+  padding: 0 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.bb-pagebar__left{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+.bb-pagebar__back{
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid #eef2f7;
+  background: #f9fafb;
+  color: #111827;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.bb-pagebar__title{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 16px;
+  font-weight: 900;
+  color: #111827;
+
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.bb-pagebar__right{
+  z-index: 2;
+}
+
+@media (min-width: 992px){
+  .bb-pagebar{
+    padding: 12px 14px;
+  }
+  .bb-pagebar__title{
+    font-size: 18px;
+    max-width: 900px;
+  }
+}
