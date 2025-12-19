@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using BrasilBurgerCSharp.DTOs;
 
 namespace BrasilBurgerCSharp.ViewModels.Commande;
 
@@ -15,7 +16,6 @@ public class PaymentVm
     public decimal SousTotal { get; set; }
     public decimal FraisLivraison { get; set; }
 
-    public List<PaymentLineVm> Lignes { get; set; } = new();
-
+    public List<LigneCommandeDto> Lignes { get; set; } = new();
 }
 
