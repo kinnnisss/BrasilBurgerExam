@@ -10,5 +10,6 @@ public class PaymentVm
     public decimal Montant { get; set; }
     public string ModePaiement { get; set; } = "WAVE"; // OM/WAVE
     public string? ErrorMessage { get; set; }
+
 }
 
