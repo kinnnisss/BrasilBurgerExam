@@ -1,4 +1,5 @@
 using BrasilBurgerCSharp.Data;
+using BrasilBurgerCSharp.Models;
 using BrasilBurgerCSharp.Repository;
 using BrasilBurgerCSharp.Repository.Impl;
 using BrasilBurgerCSharp.Service;
@@ -49,11 +50,23 @@ builder.Services.AddDbContext<BrasilBurgerDbContext>(options =>
         Pooling = true
     };
 
-    options.UseNpgsql(csb.ConnectionString, npgsql =>
+    var dataSourceBuilder = new NpgsqlDataSourceBuilder(csb.ConnectionString);
+
+    dataSourceBuilder.MapEnum<TypeComplement>("type_complement_enum");
+    dataSourceBuilder.MapEnum<EtatCommande>("etat_commande_enum");
+    dataSourceBuilder.MapEnum<TypeConsommation>("type_consommation_enum");
+    dataSourceBuilder.MapEnum<TypeArticle>("type_article_enum");
+    dataSourceBuilder.MapEnum<ModePaiement>("mode_paiement_enum");
+
+    var dataSource = dataSourceBuilder.Build();
+
+    options.UseNpgsql(dataSource, npgsql =>
     {
         npgsql.EnableRetryOnFailure(3);
     });
 });
+
+
 
 
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
