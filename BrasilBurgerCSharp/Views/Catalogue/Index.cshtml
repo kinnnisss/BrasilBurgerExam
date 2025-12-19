@@ -35,87 +35,120 @@
          asp-controller="Catalogue" asp-action="Index" asp-route-filtre="COMPLEMENT">Compléments</a>
   </div>
 
-  <div class="bb-grid">
+<div class="bb-gridWrap is-clamped" id="bbGridWrap">
+    <div class="bb-grid" id="bbGrid">
+        @* Burgers *@
+        @foreach (var b in Model.Burgers)
+        {
+            <article class="bb-card">
+                <a class="bb-card__imgWrap" href="@LinkForBurger(b.Id)">
+                    @if (!string.IsNullOrWhiteSpace(b.Image))
+                    {
+                        <img class="bb-card__img" src="@b.Image" alt="@b.Nom" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="bb-card__imgPlaceholder"></div>
+                    }
+                </a>
 
-      @* Burgers *@
-      @foreach (var b in Model.Burgers)
-      {
-          <article class="bb-card">
-              <a class="bb-card__imgWrap" href="@LinkForBurger(b.Id)" aria-label="Voir @b.Nom">
-                  @if (!string.IsNullOrWhiteSpace(b.Image))
-                  {
-                      <img class="bb-card__img" src="@b.Image" alt="@b.Nom" loading="lazy" />
-                  }
-                  else
-                  {
-                      <div class="bb-card__imgPlaceholder"></div>
-                  }
-              </a>
+                <div class="bb-card__body">
+                    <div class="bb-card__title">@b.Nom</div>
+                    <div class="bb-card__row">
+                        <div class="bb-card__price">@($"{b.Prix:0} FCFA")</div>
+                        <a class="bb-card__btn" href="@LinkForBurger(b.Id)">Voir</a>
+                    </div>
+                </div>
+            </article>
+        }
 
-              <div class="bb-card__body">
-                  <div class="bb-card__title">@b.Nom</div>
-                  <div class="bb-card__row">
-                      <div class="bb-card__price">@($"{b.Prix:0} FCFA")</div>
-                      <a class="bb-card__btn" href="@LinkForBurger(b.Id)">Voir</a>
-                  </div>
-              </div>
-          </article>
-      }
+        @* Menus *@
+        @foreach (var m in Model.Menus)
+        {
+            <article class="bb-card">
+                <a class="bb-card__imgWrap" href="@LinkForMenu(m.Id)">
+                    @if (!string.IsNullOrWhiteSpace(m.Image))
+                    {
+                        <img class="bb-card__img" src="@m.Image" alt="@m.Nom" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="bb-card__imgPlaceholder"></div>
+                    }
+                </a>
 
-      @* Menus *@
-      @foreach (var m in Model.Menus)
-      {
-          <article class="bb-card">
-              <a class="bb-card__imgWrap" href="@LinkForMenu(m.Id)" aria-label="Voir @m.Nom">
-                  @if (!string.IsNullOrWhiteSpace(m.Image))
-                  {
-                      <img class="bb-card__img" src="@m.Image" alt="@m.Nom" loading="lazy" />
-                  }
-                  else
-                  {
-                      <div class="bb-card__imgPlaceholder"></div>
-                  }
-              </a>
+                <div class="bb-card__body">
+                    <div class="bb-card__title">@m.Nom</div>
+                    <div class="bb-card__row">
+                        <div class="bb-card__price">@($"{m.Prix:0} FCFA")</div>
+                        <a class="bb-card__btn" href="@LinkForMenu(m.Id)">Voir</a>
+                    </div>
+                </div>
+            </article>
+        }
 
-              <div class="bb-card__body">
-                  <div class="bb-card__title">@m.Nom</div>
-                  <div class="bb-card__row">
-                      <div class="bb-card__price">@($"{m.Prix:0} FCFA")</div>
-                      <a class="bb-card__btn" href="@LinkForMenu(m.Id)">Voir</a>
-                  </div>
-              </div>
-          </article>
-      }
+        @* Complements *@
+        @foreach (var c in Model.Complements)
+        {
+            <article class="bb-card">
+                <a class="bb-card__imgWrap" href="@LinkForComplement(c.Id)">
+                    @if (!string.IsNullOrWhiteSpace(c.Image))
+                    {
+                        <img class="bb-card__img" src="@c.Image" alt="@c.Nom" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="bb-card__imgPlaceholder"></div>
+                    }
+                </a>
 
-      @* Complements *@
-      @foreach (var c in Model.Complements)
-      {
-          <article class="bb-card">
-              <a class="bb-card__imgWrap" href="@LinkForComplement(c.Id)" aria-label="Voir @c.Nom">
-                  @if (!string.IsNullOrWhiteSpace(c.Image))
-                  {
-                      <img class="bb-card__img" src="@c.Image" alt="@c.Nom" loading="lazy" />
-                  }
-                  else
-                  {
-                      <div class="bb-card__imgPlaceholder"></div>
-                  }
-              </a>
+                <div class="bb-card__body">
+                    <div class="bb-card__title">@c.Nom</div>
+                    <div class="bb-card__row">
+                        <div class="bb-card__price">@($"{c.Prix:0} FCFA")</div>
+                        <a class="bb-card__btn" href="@LinkForComplement(c.Id)">Voir</a>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+</div>
 
-              <div class="bb-card__body">
-                  <div class="bb-card__title">@c.Nom</div>
-                  <div class="bb-card__row">
-                      <div class="bb-card__price">@($"{c.Prix:0} FCFA")</div>
-                      <a class="bb-card__btn" href="@LinkForComplement(c.Id)">Voir</a>
-                  </div>
-              </div>
-          </article>
-      }
+<div class="bb-more" id="bbMoreWrap">
+    <button class="bb-more__btn" id="bbMoreBtn" type="button">Voir plus</button>
+</div>
 
-  </div>
+@section Scripts {
+<script>
+(function () {
+  const wrap = document.getElementById("bbGridWrap");
+  const grid = document.getElementById("bbGrid");
+  const btn = document.getElementById("bbMoreBtn");
+  const btnWrap = document.getElementById("bbMoreWrap");
 
-  <div class="bb-more">
-      <button class="bb-more__btn" type="button">Voir plus</button>
-  </div>
+  if (!wrap || !grid || !btn || !btnWrap) return;
+
+  function refresh() {
+    const clamped = wrap.classList.contains("is-clamped");
+    if (!clamped) return;
+
+    const needsMore = grid.scrollHeight > grid.clientHeight + 2;
+    btnWrap.style.display = needsMore ? "flex" : "none";
+  }
+
+  requestAnimationFrame(refresh);
+
+  window.addEventListener("load", refresh);
+
+  window.addEventListener("resize", () => requestAnimationFrame(refresh));
+
+  btn.addEventListener("click", function () {
+    wrap.classList.remove("is-clamped");
+    btnWrap.style.display = "none";
+  });
+})();
+</script>
+}
+
 
 </section>

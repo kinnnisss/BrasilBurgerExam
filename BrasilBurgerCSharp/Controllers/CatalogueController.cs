@@ -18,13 +18,14 @@ public sealed class CatalogueController : Controller
         if (filtre is not ("ALL" or "BURGER" or "MENU" or "COMPLEMENT"))
             filtre = "ALL";
 
-        var catRes = await _catalog.GetCatalogueAsync(
-            filtre is "BURGER" or "MENU" ? filtre : null,
-            ct);
+        var catRes = (filtre is "BURGER" or "MENU" or "ALL")
+            ? await _catalog.GetCatalogueAsync(filtre is "BURGER" or "MENU" ? filtre : null, ct)
+            : null;
 
         var compRes = (filtre is "ALL" or "COMPLEMENT")
             ? await _catalog.GetComplementsAsync(ct)
             : null;
+
 
         var vm = new CatalogueIndexVm
         {
@@ -34,7 +35,7 @@ public sealed class CatalogueController : Controller
             Complements = new()
         };
 
-        if (catRes.Success && catRes.Data is not null)
+        if (catRes is not null && catRes.Success && catRes.Data is not null)
         {
             vm.Burgers = catRes.Data.Burgers.Select(b => new BurgerCardVm
             {
