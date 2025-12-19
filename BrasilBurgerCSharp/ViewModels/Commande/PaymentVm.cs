@@ -11,5 +11,11 @@ public class PaymentVm
     public string ModePaiement { get; set; } = "WAVE"; // OM/WAVE
     public string? ErrorMessage { get; set; }
 
+    public string TypeConsommation { get; set; } = ""; // SUR_PLACE / A_EMPORTER / LIVRAISON
+    public decimal SousTotal { get; set; }
+    public decimal FraisLivraison { get; set; }
+
+    public List<PaymentLineVm> Lignes { get; set; } = new();
+
 }
 

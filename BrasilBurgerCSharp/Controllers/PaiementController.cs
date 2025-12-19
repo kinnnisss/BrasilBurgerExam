@@ -35,6 +35,7 @@ public sealed class PaiementController : Controller
             Reference = cmd.Reference,
             Montant = cmd.MontantTotal,
             ModePaiement = "WAVE"
+            
         };
 
         return View(vm);
