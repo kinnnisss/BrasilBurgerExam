@@ -11,6 +11,14 @@
 @{
     var cartCount = ClientSession.GetPanierCount(Context);
 }
+@{
+    var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();
+    var action = (ViewContext.RouteData.Values["action"]?.ToString() ?? "").ToLowerInvariant();
+
+    var hideFooter = minimalHeader
+        || (controller == "auth" && (action == "login" || action == "register"));
+}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -123,7 +131,10 @@ else
 <main class="bb-main @(isAuth ? "bb-main--withnav" : "")">
     @RenderBody()
 </main>
-@await Html.PartialAsync("_Footer")
+@if (!hideFooter)
+{
+    @await Html.PartialAsync("_Footer")
+}
 
 @if (isAuth && !minimalHeader)
 {

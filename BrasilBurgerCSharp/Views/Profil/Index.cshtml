@@ -1,0 +1,101 @@
+@model BrasilBurgerCSharp.ViewModels.Profil.ProfilVm
+
+@{
+    ViewData["Title"] = "Mon profil";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profil.css" asp-append-version="true" />
+}
+
+<section class="profile-hero">
+    <div class="profile-hero__inner">
+        <div class="profile-hero__title">Mon profil</div>
+    </div>
+</section>
+
+<section class="profile">
+    <div class="profile-card">
+        <div class="profile-card__head">
+            <div class="profile-avatar" aria-hidden="true">
+                <span>@Model.Initiales</span>
+            </div>
+
+            <div class="profile-id">
+                <div class="profile-id__name">@Model.NomComplet</div>
+                <div class="profile-id__since">
+                    <span>Client Brasil Burger</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <div class="profile-row">
+                <div class="profile-ico" aria-hidden="true">📞</div>
+                <div class="profile-txt">
+                    <div class="profile-txt__label">Téléphone</div>
+                    <div class="profile-txt__value">@(!string.IsNullOrWhiteSpace(Model.Telephone) ? Model.Telephone : "—")</div>
+                </div>
+            </div>
+
+            <div class="profile-row">
+                <div class="profile-ico" aria-hidden="true">👤</div>
+                <div class="profile-txt">
+                    <div class="profile-txt__label">Login</div>
+                    <div class="profile-txt__value">@(!string.IsNullOrWhiteSpace(Model.Login) ? Model.Login : "—")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat">
+            <div class="stat__n">@Model.NbCommandes</div>
+            <div class="stat__t">Commandes</div>
+        </div>
+        <div class="stat">
+            <div class="stat__n">@Model.NbEnCours</div>
+            <div class="stat__t">En cours</div>
+        </div>
+        <div class="stat">
+            <div class="stat__n">@FormatK(Model.TotalFcfa)</div>
+            <div class="stat__t">Total FCFA</div>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <a class="action-link" asp-controller="Profil" asp-action="Index">
+            <span class="action-ico" aria-hidden="true">⚙️</span>
+            <span>Paramètres du compte</span>
+            <span class="action-arrow" aria-hidden="true">›</span>
+        </a>
+
+        <a class="action-link" asp-controller="Suivi" asp-action="Index">
+            <span class="action-ico" aria-hidden="true">🧾</span>
+            <span>Mes commandes</span>
+            <span class="action-arrow" aria-hidden="true">›</span>
+        </a>
+
+        <a class="action-link" asp-controller="Home" asp-action="Contact">
+            <span class="action-ico" aria-hidden="true">☎️</span>
+            <span>Aide / Contact</span>
+            <span class="action-arrow" aria-hidden="true">›</span>
+        </a>
+    </div>
+
+    <form asp-controller="Auth" asp-action="Logout" method="post" class="profile-logout">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="profile-logout__btn">
+            <span aria-hidden="true">⎋</span>
+            <span>Se déconnecter</span>
+        </button>
+    </form>
+</section>
+
+@functions {
+    public string FormatK(decimal v)
+    {
+        if (v >= 1000m) return $"{Math.Round(v / 1000m, 0):0}k";
+        return $"{v:0}";
+    }
+}

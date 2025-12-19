@@ -1,17 +1,46 @@
-@* Mobile bottom navigation *@
+@{
+    var ctrl = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();
+    var act = (ViewContext.RouteData.Values["action"]?.ToString() ?? "").ToLowerInvariant();
+
+    string Active(string c, string? a = null)
+    {
+        if (ctrl != c.ToLowerInvariant()) return "";
+        if (a is null) return "is-active";
+        return act == a.ToLowerInvariant() ? "is-active" : "";
+    }
+}
+
 <nav class="bb-bottom-nav" aria-label="Navigation bas">
-    <a class="bb-bottom-link" asp-controller="Catalogue" asp-action="Index">
-        <span class="bb-bottom-ico">🏠</span>
-        <span class="bb-bottom-txt">Home</span>
+    <a class="bb-bottom-link @Active("catalogue","index")"
+       asp-controller="Catalogue" asp-action="Index">
+        <span class="bb-bottom-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="bb-ico">
+                <path d="M12 3 3 10v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V10l-9-7Z"/>
+            </svg>
+        </span>
+        <span class="bb-bottom-txt">Catalogue</span>
     </a>
 
-    <a class="bb-bottom-link" asp-controller="Suivi" asp-action="Index">
-        <span class="bb-bottom-ico">📦</span>
-        <span class="bb-bottom-txt">Commande</span>
+    <a class="bb-bottom-link @Active("suivi")"
+       asp-controller="Suivi" asp-action="Index">
+        <span class="bb-bottom-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="bb-ico">
+                <path d="M21 8.5 12 3 3 8.5 12 14l9-5.5Z"/>
+                <path d="M3 8.5V19a2 2 0 0 0 1 1.73L12 22l8-1.27A2 2 0 0 0 21 19V8.5"/>
+                <path d="M12 14v8"/>
+            </svg>
+        </span>
+        <span class="bb-bottom-txt">Commandes</span>
     </a>
 
-    <a class="bb-bottom-link" asp-controller="Suivi" asp-action="Historique">
-        <span class="bb-bottom-ico">👤</span>
-        <span class="bb-bottom-txt">Moi</span>
+    <a class="bb-bottom-link @Active("profil","index")"
+       asp-controller="Profil" asp-action="Index">
+        <span class="bb-bottom-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="bb-ico">
+                <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z"/>
+                <path d="M4 21a8 8 0 0 1 16 0"/>
+            </svg>
+        </span>
+        <span class="bb-bottom-txt">Profil</span>
     </a>
 </nav>

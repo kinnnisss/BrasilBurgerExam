@@ -107,6 +107,32 @@
 
 .bb-bottom-ico{ font-size: 18px; }
 
+
+.bb-bottom-ico{
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+}
+
+.bb-ico{
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bb-bottom-link{
+  color: #6b7280;
+}
+
+.bb-bottom-link.is-active{
+  color: var(--bb-blue);
+}
+
 @media (min-width: 992px){
   .bb-bottom-nav{ display:none; }
   .bb-top-nav{
