@@ -37,6 +37,8 @@ public class BrasilBurgerDbContext : DbContext
         ConfigurePaiement(modelBuilder);
         ConfigureMenuBurger(modelBuilder);
         ConfigureMenuComplement(modelBuilder);
+        
+        base.OnModelCreating(modelBuilder);
     }
 
 private static void ConfigureEnums(ModelBuilder modelBuilder)
