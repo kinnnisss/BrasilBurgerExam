@@ -239,11 +239,11 @@ public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
         var zone = cmd.Zone?.Libelle;
         var quartier = cmd.Quartier?.Libelle;
         var livreur = cmd.Livreur is null ? null : $"{cmd.Livreur.Prenom} {cmd.Livreur.Nom} ({cmd.Livreur.Telephone})";
-
-        return ServiceResult<CommandeDetailsDto>.Ok(new CommandeDetailsDto(commandeDto, lignes, zone, quartier, livreur));
+        var modePaiement = cmd.Paiement?.ModePaiement.ToString();
+        return ServiceResult<CommandeDetailsDto>.Ok(
+            new CommandeDetailsDto(commandeDto, lignes, zone, quartier, livreur, modePaiement)
+        );
     }
-
-
     public async Task<ServiceResult<List<CommandeDto>>> GetCommandesEnCoursAsync(int clientId, CancellationToken ct = default)
     {
         var list = await _commandeRepo.GetEnCoursByClientAsync(clientId, ct);
