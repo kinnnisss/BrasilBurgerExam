@@ -1,0 +1,147 @@
+@{
+    ViewData["Title"] = "À propos";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+}
+
+<section class="bb-about">
+
+    <header class="bb-about-hero">
+        <div class="bb-about-hero__inner">
+            <div class="bb-about-hero__badge">🍔 Brasil Burger</div>
+            <h1 class="bb-about-hero__title">Les meilleurs burgers de la ville</h1>
+            <p class="bb-about-hero__sub">
+                Produits frais, recettes gourmandes, service rapide. Sur place, à emporter ou livraison.
+            </p>
+
+            <div class="bb-about-hero__cta">
+                <a class="bb-btn bb-btn--primary" asp-controller="Catalogue" asp-action="Index">Voir le catalogue</a>
+                <a class="bb-btn bb-btn--ghost" href="tel:+221770000000">Appeler</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="bb-about-grid">
+
+        <!-- Card: À propos -->
+        <article class="bb-card">
+            <h2 class="bb-card__title">À propos</h2>
+            <p class="bb-card__text">
+                Brasil Burger, c’est une cuisine simple et généreuse : burgers, menus et compléments,
+                préparés avec soin pour vous régaler à tout moment.
+            </p>
+            <ul class="bb-list">
+                <li class="bb-list__item">✅ Produits frais et recettes maison</li>
+                <li class="bb-list__item">✅ Service rapide</li>
+                <li class="bb-list__item">✅ Livraison selon zone</li>
+            </ul>
+        </article>
+
+        <!-- Card: Infos -->
+        <article class="bb-card">
+            <h2 class="bb-card__title">Infos & horaires</h2>
+
+            <div class="bb-info">
+                <div class="bb-info__row">
+                    <span class="bb-info__ico">📍</span>
+                    <div class="bb-info__txt">
+                        <div class="bb-info__label">Adresse</div>
+                        <div class="bb-info__value">Dakar — (mets ton adresse ici)</div>
+                    </div>
+                </div>
+
+                <div class="bb-info__row">
+                    <span class="bb-info__ico">🕒</span>
+                    <div class="bb-info__txt">
+                        <div class="bb-info__label">Horaires</div>
+                        <div class="bb-info__value">
+                            Lun–Dim : 10h00 – 23h00
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bb-info__row">
+                    <span class="bb-info__ico">☎️</span>
+                    <div class="bb-info__txt">
+                        <div class="bb-info__label">Téléphone</div>
+                        <div class="bb-info__value">
+                            <a class="bb-link" href="tel:+221770000000">+221 77 000 00 00</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bb-info__row">
+                    <span class="bb-info__ico">✉️</span>
+                    <div class="bb-info__txt">
+                        <div class="bb-info__label">Email</div>
+                        <div class="bb-info__value">
+                            <a class="bb-link" href="mailto:contact@brasilburger.sn">contact@brasilburger.sn</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bb-chips">
+                <span class="bb-chip">Sur place</span>
+                <span class="bb-chip">À emporter</span>
+                <span class="bb-chip">Livraison</span>
+            </div>
+        </article>
+
+        <!-- Card: Map -->
+        <article class="bb-card bb-card--map">
+            <h2 class="bb-card__title">Nous trouver</h2>
+
+            <div class="bb-map">
+                <!-- Remplace le src par ton lien Google Maps embed -->
+                <iframe
+                    title="Carte Brasil Burger"
+                    src="https://www.google.com/maps?q=Dakar&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <a class="bb-btn bb-btn--ghost bb-map__btn" target="_blank" rel="noreferrer"
+               href="https://www.google.com/maps?q=Dakar">
+                Ouvrir dans Google Maps
+            </a>
+        </article>
+
+        <!-- Card: Contact form -->
+        <article class="bb-card">
+            <h2 class="bb-card__title">Contact</h2>
+            <p class="bb-card__text">
+                Une question ? Un souci sur une commande ? Écris-nous et on te répond rapidement.
+            </p>
+
+            <!-- Form statique pour l’instant (tu pourras le brancher plus tard) -->
+            <form class="bb-form" method="post" action="#">
+                <label class="bb-field">
+                    <span class="bb-field__label">Nom</span>
+                    <input class="bb-field__input" type="text" placeholder="Votre nom" />
+                </label>
+
+                <label class="bb-field">
+                    <span class="bb-field__label">Téléphone</span>
+                    <input class="bb-field__input" type="tel" placeholder="+221 ..." />
+                </label>
+
+                <label class="bb-field">
+                    <span class="bb-field__label">Message</span>
+                    <textarea class="bb-field__input bb-field__input--ta" rows="4" placeholder="Votre message..."></textarea>
+                </label>
+
+                <button class="bb-btn bb-btn--primary bb-btn--xl" type="submit">
+                    Envoyer
+                </button>
+
+                <div class="bb-form__hint">
+                    Astuce : pour une urgence, appelle directement.
+                </div>
+            </form>
+        </article>
+
+    </div>
+</section>

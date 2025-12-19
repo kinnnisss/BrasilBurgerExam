@@ -131,24 +131,34 @@ public sealed class CatalogueController : Controller
         return View(vm);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Complement(int id, CancellationToken ct = default)
+[HttpGet]
+public async Task<IActionResult> Complement(int id, string? returnUrl = null, CancellationToken ct = default)
+{
+    var res = await _catalog.GetComplementsAsync(ct);
+    if (!res.Success || res.Data is null) return NotFound();
+
+    var c = res.Data.FirstOrDefault(x => x.Id == id);
+    if (c is null) return NotFound();
+
+    string backUrl;
+    if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+        backUrl = returnUrl!;
+    else
+        backUrl = Url.Action("Index", "Catalogue") ?? "/";
+
+    ViewBag.MinimalHeader = true;
+    ViewData["PageBarTitle"] = "Détails complément";
+    ViewData["PageBarBackUrl"] = backUrl;
+
+    var vm = new ComplementVm
     {
-        var res = await _catalog.GetComplementsAsync(ct);
-        if (!res.Success || res.Data is null) return NotFound();
+        Id = c.Id,
+        Nom = c.Nom,
+        Prix = c.Prix,
+        Image = c.Image,
+        TypeComplement = c.TypeComplement
+    };
 
-        var c = res.Data.FirstOrDefault(x => x.Id == id);
-        if (c is null) return NotFound();
-
-        var vm = new ComplementVm
-        {
-            Id = c.Id,
-            Nom = c.Nom,
-            Prix = c.Prix,
-            Image = c.Image,
-            TypeComplement = c.TypeComplement
-        };
-
-        return View(vm);
-    }
+    return View(vm);
+}
 }
