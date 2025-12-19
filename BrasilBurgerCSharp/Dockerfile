@@ -18,3 +18,4 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:$PORT
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "BrasilBurgerCSharp.dll"]
+
