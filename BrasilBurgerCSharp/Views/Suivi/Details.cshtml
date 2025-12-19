@@ -1,0 +1,211 @@
+@model BrasilBurgerCSharp.DTOs.CommandeDetailsDto
+
+@{
+    ViewData["Title"] = "Détails de la commande";
+    ViewBag.MinimalHeader = true;
+
+    var cmd = Model.Commande;
+
+    string Etat = (cmd.Etat ?? "").Trim().ToUpperInvariant();
+    int step = Etat switch
+    {
+        "ENCOURS" => 1,
+        "VALIDEE" => 2,
+        "TERMINEE" => 3,
+        _ => 1
+    };
+
+    string ConsoIco(string t)
+    {
+        t = (t ?? "").Trim().ToUpperInvariant();
+        return t switch
+        {
+            "LIVRAISON" => "🏍",
+            "A_EMPORTER" => "🛍",
+            "SUR_PLACE" => "🪑",
+            _ => "🍔"
+        };
+    }
+
+    string ConsoLabel(string t)
+    {
+        t = (t ?? "").Trim().ToUpperInvariant();
+        return t switch
+        {
+            "LIVRAISON" => "Livraison",
+            "A_EMPORTER" => "À emporter",
+            "SUR_PLACE" => "Sur place",
+            _ => t
+        };
+    }
+
+    string EtatBadge(string e)
+    {
+        e = (e ?? "").Trim().ToUpperInvariant();
+        return e switch
+        {
+            "ENCOURS" => "En cours",
+            "VALIDEE" => "Validée",
+            "TERMINEE" => "Terminée",
+            _ => e
+        };
+    }
+
+    string BadgeClass(string e)
+    {
+        e = (e ?? "").Trim().ToUpperInvariant();
+        return e switch
+        {
+            "ENCOURS" => "is-running",
+            "VALIDEE" => "is-ok",
+            "TERMINEE" => "is-done",
+            _ => "is-running"
+        };
+    }
+
+    string FormatDate(DateTime d) => d.ToString("d MMMM yyyy 'à' HH:mm", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
+
+    var sousTotal = (Model.Lignes ?? new List<BrasilBurgerCSharp.DTOs.LigneCommandeDto>()).Sum(x => x.PrixTotal);
+    var typeCons = (cmd.TypeConsommation ?? "").Trim().ToUpperInvariant();
+    var fraisLivraison = typeCons == "LIVRAISON" ? (cmd.MontantTotal - sousTotal) : 0m;
+    if (fraisLivraison < 0) fraisLivraison = 0m; 
+}
+
+@section Styles{
+  <link rel="stylesheet" href="~/css/pagebar.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/suivi-details.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_PageBar")
+
+<section class="cmd-details">
+
+    <div class="cmd-head">
+        <div class="cmd-head__left">
+            <div class="cmd-head__label">Référence</div>
+            <div class="cmd-head__ref">@cmd.Reference</div>
+            <div class="cmd-head__date">@FormatDate(cmd.DateCommande)</div>
+        </div>
+        <div class="cmd-head__right">
+            <span class="cmd-badge @BadgeClass(cmd.Etat)">@EtatBadge(cmd.Etat)</span>
+        </div>
+    </div>
+
+    <div class="cmd-card">
+        <div class="cmd-card__title">État de la commande</div>
+
+        <div class="timeline">
+            <div class="tl-step @(step>=1 ? "is-done" : "") @(step==1 ? "is-current" : "")">
+                <div class="tl-dot">@(step==1 ? "✓" : "1")</div>
+                <div class="tl-body">
+                    <div class="tl-title">En cours</div>
+                    @if (step == 1)
+                    {
+                        <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
+                    }
+                </div>
+            </div>
+
+            <div class="tl-step @(step>=2 ? "is-done" : "") @(step==2 ? "is-current" : "")">
+                <div class="tl-dot">@(step>=2 ? "✓" : "2")</div>
+                <div class="tl-body">
+                    <div class="tl-title">Validée</div>
+                    @if (step == 2)
+                    {
+                        <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
+                    }
+                </div>
+            </div>
+
+            <div class="tl-step @(step>=3 ? "is-done" : "") @(step==3 ? "is-current" : "")">
+                <div class="tl-dot">@(step>=3 ? "✓" : "3")</div>
+                <div class="tl-body">
+                    <div class="tl-title">Terminée</div>
+                    @if (step == 3)
+                    {
+                        <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cmd-card">
+        <div class="cmd-card__title">Articles commandés</div>
+
+        <div class="items">
+            @foreach (var l in Model.Lignes)
+            {
+                <div class="item">
+                    <div class="item__img">
+                        @if (!string.IsNullOrWhiteSpace(l.ImageArticle))
+                        {
+                            <img src="@l.ImageArticle" alt="@l.LibelleArticle" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="img-ph"></div>
+                        }
+                    </div>
+
+                    <div class="item__info">
+                        <div class="item__name">@l.LibelleArticle</div>
+                        <div class="item__qty">Quantité : @l.Quantite</div>
+                    </div>
+
+                    <div class="item__price">@($"{l.PrixTotal:0} FCFA")</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="cmd-card">
+        <div class="meta">
+            <div class="meta-row">
+                <div class="meta-ico">@ConsoIco(cmd.TypeConsommation)</div>
+                <div class="meta-text">
+                    <div class="meta-label">Type de consommation</div>
+                    <div class="meta-value">@ConsoLabel(cmd.TypeConsommation)</div>
+                </div>
+            </div>
+
+            @if (typeCons == "LIVRAISON")
+            {
+                <div class="meta-row">
+                    <div class="meta-ico">📍</div>
+                    <div class="meta-text">
+                        <div class="meta-label">Adresse de livraison</div>
+                        <div class="meta-value">
+                            @(!string.IsNullOrWhiteSpace(Model.Quartier) ? Model.Quartier : "—")<br />
+                            @(!string.IsNullOrWhiteSpace(Model.Zone) ? Model.Zone : "—")
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="meta-row">
+                <div class="meta-ico">💳</div>
+                <div class="meta-text">
+                    <div class="meta-label">Mode de paiement</div>
+                    <div class="meta-value">@(!string.IsNullOrWhiteSpace(Model.ModePaiement) ? Model.ModePaiement : "—")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="totals">
+            <div class="t-row"><span>Sous-total</span><span>@($"{sousTotal:0} FCFA")</span></div>
+
+            @if (typeCons == "LIVRAISON")
+            {
+                <div class="t-row"><span>Livraison</span><span>@($"{fraisLivraison:0} FCFA")</span></div>
+            }
+
+            <div class="t-row t-row--strong"><span>Total</span><span class="t-accent">@($"{cmd.MontantTotal:0} FCFA")</span></div>
+
+            @if (cmd.EstPayee)
+            {
+                <div class="paid">✓ Paiement effectué</div>
+            }
+        </div>
+    </div>
+</section>

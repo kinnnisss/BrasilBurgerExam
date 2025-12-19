@@ -1,0 +1,135 @@
+@model BrasilBurgerCSharp.ViewModels.Suivi.HistoriqueVm
+
+@{
+    ViewData["Title"] = "Mes commandes";
+    ViewBag.MinimalHeader = false;
+    var selectedDate = Context.Request.Query["date"].ToString();
+    string EtatLabel(string etat)
+    {
+        etat = (etat ?? "").Trim().ToUpperInvariant();
+        return etat switch
+        {
+            "ENCOURS" => "En cours",
+            "VALIDEE" => "Validée",
+            "TERMINEE" => "Terminée",
+            _ => etat
+        };
+    }
+
+    string EtatClass(string etat)
+    {
+        etat = (etat ?? "").Trim().ToUpperInvariant();
+        return etat switch
+        {
+            "ENCOURS" => "is-running",
+            "VALIDEE" => "is-ok",
+            "TERMINEE" => "is-done",
+            _ => "is-running"
+        };
+    }
+
+    string ConsoIco(string t)
+    {
+        t = (t ?? "").Trim().ToUpperInvariant();
+        return t switch
+        {
+            "LIVRAISON" => "🏍",
+            "A_EMPORTER" => "🛍",
+            "SUR_PLACE" => "🪑",
+            _ => "🍔"
+        };
+    }
+
+    string ConsoLabel(string t)
+    {
+        t = (t ?? "").Trim().ToUpperInvariant();
+        return t switch
+        {
+            "LIVRAISON" => "Livraison",
+            "A_EMPORTER" => "À emporter",
+            "SUR_PLACE" => "Sur place",
+            _ => t
+        };
+    }
+
+    string FormatDate(DateTime d) => d.ToString("d MMMM 'à' HH:mm", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
+}
+
+@section Styles{
+  <link rel="stylesheet" href="~/css/suivi.css" asp-append-version="true" />
+}
+
+<section class="suivi">
+    <div class="suivi-hero">
+        <div class="suivi-hero__title">Mes commandes</div>
+        <div class="suivi-hero__sub">Consultez votre historique</div>
+    </div>
+
+    <div class="suivi-tabs">
+        <a class="suivi-tab" asp-controller="Suivi" asp-action="Index">En cours</a>
+        <a class="suivi-tab is-active" asp-controller="Suivi" asp-action="Historique">Historique</a>
+    </div>
+    <form class="hist-filter" method="get" asp-controller="Suivi" asp-action="Historique">
+        <div class="hist-filter__card">
+            <div class="hist-filter__label">
+                <span class="hist-filter__ico">📅</span>
+                <span>Filtrer par date</span>
+            </div>
+
+            <div class="hist-filter__row">
+                <input class="hist-filter__input"
+                       type="date"
+                       name="date"
+                       value="@selectedDate" />
+
+                @* bouton optionnel (sur mobile c’est clean) *@
+                <button type="submit" class="hist-filter__btn">Filtrer</button>
+
+                @if (!string.IsNullOrWhiteSpace(selectedDate))
+                {
+                    <a class="hist-filter__clear" asp-controller="Suivi" asp-action="Historique">Réinitialiser</a>
+                }
+            </div>
+        </div>
+    </form>
+
+    @if (Model.Commandes == null || Model.Commandes.Count == 0)
+    {
+        <div class="suivi-empty">
+            <div class="suivi-empty__ico">🧾</div>
+            <div class="suivi-empty__title">Aucune commande dans l’historique</div>
+            <div class="suivi-empty__sub">Votre historique apparaîtra ici</div>
+        </div>
+    }
+    else
+    {
+        <div class="suivi-list">
+            @foreach (var c in Model.Commandes)
+            {
+                <a class="cmd-card" asp-controller="Suivi" asp-action="Details" asp-route-id="@c.Id">
+                    <div class="cmd-card__top">
+                        <div class="cmd-card__ref">Commande @c.Reference</div>
+                        <span class="cmd-badge @EtatClass(c.Etat)">@EtatLabel(c.Etat)</span>
+                    </div>
+
+                    <div class="cmd-card__date">@FormatDate(c.DateCommande)</div>
+
+                    <div class="cmd-card__lines">
+                        @foreach (var line in (c.ResumeArticles ?? new List<string>()).Take(2))
+                        {
+                            <div class="cmd-card__line">@line</div>
+                        }
+                    </div>
+
+                    <div class="cmd-card__bottom">
+                        <div class="cmd-card__conso">
+                            <span class="cmd-card__ico">@ConsoIco(c.TypeConsommation)</span>
+                            <span>@ConsoLabel(c.TypeConsommation)</span>
+                        </div>
+                        <div class="cmd-card__amount">@($"{c.MontantTotal:0} FCFA")</div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</section>

@@ -1,0 +1,114 @@
+@model BrasilBurgerCSharp.ViewModels.Suivi.SuiviVm
+@using BrasilBurgerCSharp.Core
+
+@{
+    ViewData["Title"] = "Mes commandes";
+    ViewBag.MinimalHeader = false;
+
+    string EtatLabel(string etat)
+    {
+        etat = (etat ?? "").Trim().ToUpperInvariant();
+        return etat switch
+        {
+            "ENCOURS" => "En cours",
+            "VALIDEE" => "Validée",
+            "TERMINEE" => "Terminée",
+            _ => etat
+        };
+    }
+
+    string EtatClass(string etat)
+    {
+        etat = (etat ?? "").Trim().ToUpperInvariant();
+        return etat switch
+        {
+            "ENCOURS" => "is-running",
+            "VALIDEE" => "is-ok",
+            "TERMINEE" => "is-done",
+            _ => "is-running"
+        };
+    }
+
+    string ConsoIco(string t)
+    {
+        t = (t ?? "").Trim().ToUpperInvariant();
+        return t switch
+        {
+            "LIVRAISON" => "🏍",
+            "A_EMPORTER" => "🛍",
+            "SUR_PLACE" => "🪑",
+            _ => "🍔"
+        };
+    }
+
+    string ConsoLabel(string t)
+    {
+        t = (t ?? "").Trim().ToUpperInvariant();
+        return t switch
+        {
+            "LIVRAISON" => "Livraison",
+            "A_EMPORTER" => "À emporter",
+            "SUR_PLACE" => "Sur place",
+            _ => t
+        };
+    }
+
+    string FormatDate(DateTime d) => d.ToString("d MMMM 'à' HH:mm", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
+}
+
+@section Styles{
+  <link rel="stylesheet" href="~/css/suivi.css" asp-append-version="true" />
+}
+
+<section class="suivi">
+    <div class="suivi-hero">
+        <div class="suivi-hero__title">Mes commandes</div>
+        <div class="suivi-hero__sub">Suivez vos commandes en cours</div>
+    </div>
+
+    <div class="suivi-tabs">
+        <a class="suivi-tab is-active" asp-controller="Suivi" asp-action="Index">En cours</a>
+        <a class="suivi-tab" asp-controller="Suivi" asp-action="Historique">Historique</a>
+    </div>
+
+    @if (Model.CommandesEnCours == null || Model.CommandesEnCours.Count == 0)
+    {
+        <div class="suivi-empty">
+            <div class="suivi-empty__ico">📦</div>
+            <div class="suivi-empty__title">Aucune commande en cours</div>
+            <div class="suivi-empty__sub">Commandez un burger pour commencer</div>
+            <a class="suivi-empty__btn" asp-controller="Catalogue" asp-action="Index">Voir le catalogue</a>
+        </div>
+    }
+    else
+    {
+        <div class="suivi-list">
+            @foreach (var c in Model.CommandesEnCours)
+            {
+                <a class="cmd-card" asp-controller="Suivi" asp-action="Details" asp-route-id="@c.Id">
+                    <div class="cmd-card__top">
+                        <div class="cmd-card__ref">Commande @c.Reference</div>
+                        <span class="cmd-badge @EtatClass(c.Etat)">@EtatLabel(c.Etat)</span>
+                    </div>
+
+                    <div class="cmd-card__date">@FormatDate(c.DateCommande)</div>
+
+                    <div class="cmd-card__lines">
+                        @foreach (var line in (c.ResumeArticles ?? new List<string>()).Take(2))
+                        {
+                            <div class="cmd-card__line">@line</div>
+                        }
+                    </div>
+
+                    <div class="cmd-card__bottom">
+                        <div class="cmd-card__conso">
+                            <span class="cmd-card__ico">@ConsoIco(c.TypeConsommation)</span>
+                            <span>@ConsoLabel(c.TypeConsommation)</span>
+                        </div>
+                        <div class="cmd-card__amount">@($"{c.MontantTotal:0} FCFA")</div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</section>

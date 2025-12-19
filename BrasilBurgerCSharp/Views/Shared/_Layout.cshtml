@@ -18,6 +18,7 @@
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
 
     @RenderSection("Styles", required: false)
 </head>
@@ -67,7 +68,7 @@
                 else
                 {
                     <a class="bb-header-link" asp-controller="Catalogue" asp-action="Index">Catalogue</a>
-                    <a class="bb-header-link" asp-controller="Commande" asp-action="Panier">Commande</a>
+                    <a class="bb-header-link" asp-controller="Suivi" asp-action="Index">Commande</a>
                     <a class="bb-header-link" asp-controller="Profil" asp-action="Index">Moi</a>
 
                     <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-header-logout">
@@ -120,6 +121,7 @@ else
 <main class="bb-main @(isAuth ? "bb-main--withnav" : "")">
     @RenderBody()
 </main>
+@await Html.PartialAsync("_Footer")
 
 @if (isAuth && !minimalHeader)
 {
