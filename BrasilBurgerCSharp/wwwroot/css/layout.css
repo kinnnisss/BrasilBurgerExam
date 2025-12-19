@@ -78,6 +78,7 @@
   font-size: 12px;
   opacity: .95;
 }
+.bb-badge.is-hidden { display: none; }
 
 .bb-main{ padding: 14px 12px 18px; }
 .bb-main--withnav{ padding-bottom: calc(var(--bb-bottom-nav-h) + 18px); }

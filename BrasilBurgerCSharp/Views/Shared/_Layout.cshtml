@@ -8,7 +8,9 @@
 
     string? returnUrl = ViewBag.ReturnUrl as string;
 }
-
+@{
+    var cartCount = ClientSession.GetPanierCount(Context);
+}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -81,7 +83,7 @@
             <a class="bb-icon-link" asp-controller="Commande" asp-action="Panier" title="Panier" aria-label="Panier">
                 <span class="bb-cart">
                     🛒
-                    <span class="bb-badge" id="bbCartCount">0</span>
+                    <span class="bb-badge @(cartCount==0 ? "is-hidden" : "")" id="bbCartCount">@cartCount</span>
                 </span>
             </a>
         </div>
