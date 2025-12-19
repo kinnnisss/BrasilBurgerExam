@@ -37,7 +37,7 @@ public class BrasilBurgerDbContext : DbContext
         ConfigurePaiement(modelBuilder);
         ConfigureMenuBurger(modelBuilder);
         ConfigureMenuComplement(modelBuilder);
-        
+
         base.OnModelCreating(modelBuilder);
     }
 
@@ -165,12 +165,15 @@ private static void ConfigureLigneCommande(ModelBuilder modelBuilder)
 
         e.Property(l => l.IdLigneCommande).HasColumnName("id_ligne_commande");
         e.Property(l => l.IdCommande).HasColumnName("id_commande");
+
         e.Property(l => l.TypeArticle)
             .HasColumnName("type_article")
             .HasColumnType("type_article_enum");
+
         e.Property(l => l.IdBurger).HasColumnName("id_burger");
         e.Property(l => l.IdMenu).HasColumnName("id_menu");
         e.Property(l => l.IdComplement).HasColumnName("id_complement");
+
         e.Property(l => l.Quantite).HasColumnName("quantite");
         e.Property(l => l.PrixUnitaire).HasColumnName("prix_unitaire").HasColumnType("numeric(10,2)");
         e.Property(l => l.PrixTotal).HasColumnName("prix_total").HasColumnType("numeric(10,2)");
@@ -178,17 +181,21 @@ private static void ConfigureLigneCommande(ModelBuilder modelBuilder)
         e.HasOne(l => l.Commande)
             .WithMany(c => c.Lignes)
             .HasForeignKey(l => l.IdCommande);
+
         e.HasOne(l => l.Burger)
-            .WithMany()
-            .HasForeignKey(l => l.IdBurger);
-            
+            .WithMany(b => b.LignesCommande)
+            .HasForeignKey(l => l.IdBurger)
+            .OnDelete(DeleteBehavior.Restrict);
+
         e.HasOne(l => l.Menu)
-            .WithMany()
-            .HasForeignKey(l => l.IdMenu);
-            
+            .WithMany(m => m.LignesCommande)
+            .HasForeignKey(l => l.IdMenu)
+            .OnDelete(DeleteBehavior.Restrict);
+
         e.HasOne(l => l.Complement)
-            .WithMany()
-            .HasForeignKey(l => l.IdComplement);
+            .WithMany(c => c.LignesCommande)
+            .HasForeignKey(l => l.IdComplement)
+            .OnDelete(DeleteBehavior.Restrict);
     });
 }
 
@@ -253,12 +260,13 @@ private static void ConfigureMenuBurger(ModelBuilder modelBuilder)
 
         e.Property(x => x.IdMenu).HasColumnName("id_menu");
         e.Property(x => x.IdBurger).HasColumnName("id_burger");
+
         e.HasOne(x => x.Menu)
             .WithMany(m => m.MenuBurgers)
             .HasForeignKey(x => x.IdMenu);
-            
+
         e.HasOne(x => x.Burger)
-            .WithMany()
+            .WithMany(b => b.MenuBurgers)
             .HasForeignKey(x => x.IdBurger);
     });
 }
@@ -272,15 +280,17 @@ private static void ConfigureMenuComplement(ModelBuilder modelBuilder)
 
         e.Property(x => x.IdMenu).HasColumnName("id_menu");
         e.Property(x => x.IdComplement).HasColumnName("id_complement");
+
         e.HasOne(x => x.Menu)
             .WithMany(m => m.MenuComplements)
             .HasForeignKey(x => x.IdMenu);
-            
+
         e.HasOne(x => x.Complement)
-            .WithMany()
+            .WithMany(c => c.MenuComplements)
             .HasForeignKey(x => x.IdComplement);
     });
 }
+
     private static void ConfigureLivreur(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Livreur>(e =>

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "OWQijg+i4epawqyHnF1h/U/OrEc62zrNEpvCACtUmXA=",
+  "Hash": "PK7XS6+aSe+Ght6oTT3/ouj3JQUPqdkactVJwmquk7w=",
   "Source": "BrasilBurgerCSharp",
   "BasePath": "_content/BrasilBurgerCSharp",
   "Mode": "Default",
@@ -167,6 +167,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\pageBar.css"
+    },
+    {
+      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\paiement.css",
+      "SourceId": "BrasilBurgerCSharp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\",
+      "BasePath": "_content/BrasilBurgerCSharp",
+      "RelativePath": "css/paiement.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\paiement.css"
     },
     {
       "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\site.css",

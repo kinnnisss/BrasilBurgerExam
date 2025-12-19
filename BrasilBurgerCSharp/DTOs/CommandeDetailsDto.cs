@@ -5,6 +5,7 @@ public record CommandeDetailsDto(
     List<LigneCommandeDto> Lignes,
     string? Zone,
     string? Quartier,
-    string? Livreur
+    string? Livreur,
+    string? ModePaiement
 );
 

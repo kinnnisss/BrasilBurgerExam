@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\css\\pageBar.css"
     },
     {
+      "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\paiement.css",
+      "PackagePath": "staticwebassets\\css\\paiement.css"
+    },
+    {
       "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
