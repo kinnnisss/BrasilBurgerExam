@@ -9,6 +9,9 @@ using BrasilBurgerCSharp.Service.Payments;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
+using Microsoft.AspNetCore.HttpOverrides;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ----------------------------
@@ -75,6 +78,15 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 
+var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
+});
+
+app.UseHttpsRedirection();
+
 
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
@@ -91,9 +103,6 @@ builder.Services.AddScoped<IPaiementService, PaiementService>();
 
 builder.Services.AddTransient<IPaymentProvider, WavePaymentProvider>();
 builder.Services.AddTransient<IPaymentProvider, OmPaymentProvider>();
-
-var app = builder.Build();
-
 
 if (!app.Environment.IsDevelopment())
 {
