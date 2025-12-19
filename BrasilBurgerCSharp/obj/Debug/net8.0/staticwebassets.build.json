@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "b6zglZzTlWvsavwonjLhjthK4EeRlceO+1JS3xH+dGU=",
+  "Hash": "DabWda41IkqEKKBv2Vj4VdxgG97jxAfqN31p6XMFb8Y=",
   "Source": "BrasilBurgerCSharp",
   "BasePath": "_content/BrasilBurgerCSharp",
   "Mode": "Default",
@@ -110,6 +110,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\commande.css"
+    },
+    {
+      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\complement-details.css",
+      "SourceId": "BrasilBurgerCSharp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\",
+      "BasePath": "_content/BrasilBurgerCSharp",
+      "RelativePath": "css/complement-details.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\complement-details.css"
     },
     {
       "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\contact.css",

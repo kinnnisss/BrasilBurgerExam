@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\css\\commande.css"
     },
     {
+      "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\complement-details.css",
+      "PackagePath": "staticwebassets\\css\\complement-details.css"
+    },
+    {
       "Id": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\contact.css",
       "PackagePath": "staticwebassets\\css\\contact.css"
     },

@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes = true
 build_property.MSBuildProjectDirectory = C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/ViewModels/Catalogue/Complement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld01vZGVsc1xDYXRhbG9ndWVcQ29tcGxlbWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
