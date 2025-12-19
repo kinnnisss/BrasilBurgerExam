@@ -161,43 +161,41 @@ public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
         TypeConsommation = typeCons,
         MontantTotal = montantTotal,
         IdClient = dto.ClientId,
-
         IdZone = zoneId,
         IdQuartier = quartierId
     };
 
-    await using var trx = await _db.Database.BeginTransactionAsync(ct);
-    try
+    var strategy = _db.Database.CreateExecutionStrategy();
+
+    return await strategy.ExecuteAsync(async () =>
     {
-        var created = await _commandeRepo.CreateCommandeAsync(commande, ct);
-        await _commandeRepo.AddLignesAsync(created.IdCommande, lignesEntities, ct);
+        await using var trx = await _db.Database.BeginTransactionAsync(ct);
+        try
+        {
+            var created = await _commandeRepo.CreateCommandeAsync(commande, ct);
+            await _commandeRepo.AddLignesAsync(created.IdCommande, lignesEntities, ct);
 
-        await trx.CommitAsync(ct);
+            await trx.CommitAsync(ct);
 
-        var dtoResult = new CommandeDto(
-            created.IdCommande,
-            created.Reference,
-            created.DateCommande,
-            created.Etat.ToString(),
-            created.TypeConsommation.ToString(),
-            created.MontantTotal,
-            EstPayee: false
-        );
+            var dtoResult = new CommandeDto(
+                created.IdCommande,
+                created.Reference,
+                created.DateCommande,
+                created.Etat.ToString(),
+                created.TypeConsommation.ToString(),
+                created.MontantTotal,
+                EstPayee: false
+            );
 
-        return ServiceResult<CommandeDto>.Ok(dtoResult);
-    }
-catch (Exception ex)
-{
-    await trx.RollbackAsync(ct);
-
-    _logger.LogError(ex,
-        "Erreur création commande. ClientId={ClientId} Type={Type} ZoneId={ZoneId} QuartierId={QuartierId}",
-        dto.ClientId, dto.TypeConsommation, dto.ZoneId, dto.QuartierId);
-
-    var msg = ex.GetBaseException().Message;
-    return ServiceResult<CommandeDto>.Fail(ServiceError.Unexpected, $"Erreur lors de la création: {msg}");
-}
-
+            return ServiceResult<CommandeDto>.Ok(dtoResult);
+        }
+        catch (Exception ex)
+        {
+            await trx.RollbackAsync(ct);
+            var msg = ex.GetBaseException().Message;
+            return ServiceResult<CommandeDto>.Fail(ServiceError.Unexpected, $"Erreur lors de la création: {msg}");
+        }
+    });
 }
 
     private static (string libelle, string? image) GetLibelleImage(LigneCommande l)
