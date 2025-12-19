@@ -1,9 +1,41 @@
-/* Page */
+/* Header minimal (Panier) */
+.bb-min-header{
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #fff;
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, .08);
+
+  display: grid;
+  grid-template-columns: 44px 1fr 44px; 
+  align-items: center;
+}
+
+.bb-min-header__back{
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.bb-min-header__title{
+  grid-column: 2;
+  text-align: center;
+  font-weight: 950;
+  font-size: 20px;
+  color: #111827;
+}
+
 .bb-cart-page{
   padding: 14px 12px 24px;
 }
 
-/* Layout responsive (mobile: 1 colonne, desktop: 2 colonnes) */
 .bb-cart-layout{
   display: grid;
   gap: 14px;
@@ -14,7 +46,6 @@
   bottom: 12px;
 }
 
-/* Carte générique (comme tes captures) */
 .bb-cardbox{
   background: #fff;
   border-radius: 18px;
@@ -37,7 +68,6 @@
 
 .bb-pin{ font-size: 18px; }
 
-/* Alert */
 .bb-alert{
   background: #fff5f5;
   border: 1px solid #ffd1d1;
@@ -47,7 +77,6 @@
   font-weight: 800;
 }
 
-/* Empty state */
 .bb-cart-empty{
   min-height: 70vh;
   display: grid;
@@ -75,7 +104,6 @@
   margin-top: -6px;
 }
 
-/* Items */
 .bb-cart-items{
   display: grid;
   gap: 12px;
@@ -173,7 +201,6 @@
   font-weight: 900;
 }
 
-/* Consommation */
 .bb-consumption{
   display: grid;
   gap: 10px;
@@ -199,7 +226,6 @@
   background: #fff7ed;
 }
 
-/* Livraison form */
 .bb-delivery{
   display: grid;
   gap: 12px;
@@ -234,7 +260,6 @@
   color: #1d4ed8;
 }
 
-/* Totaux */
 .bb-totals{
   padding: 0;
   overflow: hidden;
@@ -256,7 +281,6 @@
   font-weight: 950;
 }
 
-/* CTA */
 .bb-cta{
   background: transparent;
 }
@@ -290,7 +314,6 @@
   border-radius: 16px;
 }
 
-/* Actions bas */
 .bb-cart-actions{
   margin-top: 10px;
   display: flex;

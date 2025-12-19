@@ -1,6 +1,5 @@
 .bb-detail{ background:#fff; }
 
-/* topbar blanc */
 .bb-detail-topbar{
   height: 56px;
   display:grid;
@@ -35,13 +34,11 @@
   font-size: 18px;
 }
 
-/* Badge dark (pour topbar blanc) */
 .bb-badge--dark{
   background: var(--bb-blue);
   color:#fff;
 }
 
-/* image hero */
 .bb-detail-hero__img{
   width:100%;
   height: 260px;
@@ -88,7 +85,6 @@
   font-weight: 900;
 }
 
-/* addons */
 .bb-detail-group{ margin: 14px 0; }
 
 .bb-detail-group__title{
@@ -142,7 +138,6 @@
 .bb-detail-addon__name{ font-weight: 900; color:#111827; }
 .bb-detail-addon__price{ color: var(--bb-orange); font-weight: 900; }
 
-/* quantity */
 .bb-detail-qty{
   margin-top: 18px;
   display:grid;
@@ -181,7 +176,6 @@
   font-size: 16px;
 }
 
-/* ===== Menu details blocks ===== */
 .bb-menu-comp{
   display: grid;
   gap: 14px;
@@ -256,7 +250,6 @@
   font-weight: 900;
 }
 
-/* footer */
 .bb-detail-footer{
   margin-top: 18px;
   display:flex;
@@ -279,7 +272,6 @@
   cursor:pointer;
 }
 
-/* Desktop */
 @media (min-width: 992px){
   .bb-detail-hero__img, .bb-detail-hero__placeholder{ height: 380px; }
 

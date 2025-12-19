@@ -48,7 +48,7 @@ public sealed class CommandeController : Controller
             vm.QuartierId = null;
             vm.Quartiers = new();
         }
-
+        ViewBag.MinimalHeader = true;
         return View(vm);
     }
 
@@ -283,7 +283,7 @@ public sealed class CommandeController : Controller
     {
         var panier = ClientSession.GetPanier(HttpContext);
         model.Panier = panier;
-
+        ViewBag.MinimalHeader = true;
         if (panier.Items.Count == 0)
         {
             model.ErrorMessage = "Votre panier est vide.";

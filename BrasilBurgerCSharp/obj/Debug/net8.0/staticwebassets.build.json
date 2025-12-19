@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Krfr73vSB+GSy65oYxRsIdYUO6VMm88z7r77vHw3LYY=",
+  "Hash": "OWQijg+i4epawqyHnF1h/U/OrEc62zrNEpvCACtUmXA=",
   "Source": "BrasilBurgerCSharp",
   "BasePath": "_content/BrasilBurgerCSharp",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\BrasilBurgerCSharp.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\auth.css",
+      "SourceId": "BrasilBurgerCSharp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\",
+      "BasePath": "_content/BrasilBurgerCSharp",
+      "RelativePath": "css/auth.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\auth.css"
     },
     {
       "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\Catalogue.css",
@@ -129,6 +148,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\layout.css"
+    },
+    {
+      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\pageBar.css",
+      "SourceId": "BrasilBurgerCSharp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\",
+      "BasePath": "_content/BrasilBurgerCSharp",
+      "RelativePath": "css/pageBar.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\pageBar.css"
     },
     {
       "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\site.css",

@@ -13,20 +13,19 @@
     var eco = sumSep - Model.Prix; // si > 0 => économie
 }
 
-@section Styles {
-  <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
-}
 
 <section class="bb-detail">
 
-    <!-- Top bar blanc -->
-    <div class="bb-detail-topbar">
-        <a class="bb-detail-back" asp-controller="Catalogue" asp-action="Index" aria-label="Retour">←</a>
-        <div class="bb-detail-title">Détails du burger</div>
-        <a class="bb-detail-cart" asp-controller="Commande" asp-action="Panier" aria-label="Panier">
-            🛒 <span class="bb-badge bb-badge--dark">0</span>
-        </a>
-    </div>
+@{
+    ViewData["PageBarTitle"] = "Détails Menu";
+    ViewData["PageBarBackUrl"] = Url.Action("Index","Catalogue", new { filtre = "MENU" });
+}
+@section Styles{
+  <link rel="stylesheet" href="~/css/pagebar.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+}
+@await Html.PartialAsync("_PageBar")
+
 
     <!-- Image -->
     <div class="bb-detail-hero">

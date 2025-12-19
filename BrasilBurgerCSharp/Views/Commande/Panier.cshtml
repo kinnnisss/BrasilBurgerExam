@@ -9,10 +9,8 @@
     var type = (Model.TypeConsommation ?? "SUR_PLACE").Trim().ToUpperInvariant();
     bool isDelivery = type == "LIVRAISON";
 
-    // Sous-total : ce que tu as déjà dans la session (articles + compléments)
     var sousTotal = Model.Panier?.Total ?? 0m;
 
-    // Frais livraison : basé sur zone choisie (cohérent avec ton controller/service)
     var selectedZone = (isDelivery && Model.ZoneId is not null)
         ? Model.Zones.FirstOrDefault(z => z.Id == Model.ZoneId.Value)
         : null;
@@ -20,7 +18,6 @@
     var fraisLivraison = (isDelivery && selectedZone is not null) ? selectedZone.PrixLivraison : 0m;
     var totalFinal = sousTotal + fraisLivraison;
 
-    // Pour se rapprocher de ta capture : on affiche "Articles (n)" en comptant burgers+menus (et compléments comme lignes secondaires)
     var items = Model.Panier?.Items ?? new List<BrasilBurgerCSharp.ViewModels.Commande.PanierItemVm>();
     var mainItems = items.Where(i => !string.Equals(i.TypeArticle, "COMPLEMENT", StringComparison.OrdinalIgnoreCase)).ToList();
     var complements = items.Where(i => string.Equals(i.TypeArticle, "COMPLEMENT", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -28,13 +25,29 @@
     string CheckedType(string t) => type == t ? "is-selected" : "";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/commande.css" asp-append-version="true" />
+
+@{
+    var backUrl = Context.Request.Headers["Referer"].ToString();
+    if (string.IsNullOrWhiteSpace(backUrl))
+    {
+        backUrl = Url.Action("Index", "Catalogue") ?? "/";
+    }
 }
+
+@{
+    ViewData["PageBarTitle"] = "Mon panier";
+    ViewData["PageBarBackUrl"] = Url.Action("Index","Catalogue");
+}
+@section Styles{
+  <link rel="stylesheet" href="~/css/pagebar.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/commande.css" asp-append-version="true" />
+}
+@await Html.PartialAsync("_PageBar")
+
+
 
 <section class="bb-cart-page">
 
-    @* --- EMPTY STATE (capture 1) --- *@
     @if (items.Count == 0)
     {
         <div class="bb-cart-empty">
@@ -51,7 +64,6 @@
     {
         <div class="bb-cart-layout">
 
-            <!-- COL A : contenu -->
             <div class="bb-cart-col">
 
                 @* message d'erreur venant du controller *@
@@ -60,7 +72,6 @@
                     <div class="bb-alert">@Model.ErrorMessage</div>
                 }
 
-                <!-- CARD: Articles -->
                 <div class="bb-cardbox">
                     <div class="bb-cardbox__title">Articles (@mainItems.Count)</div>
 
@@ -83,7 +94,7 @@
                                     <div class="bb-cart-item__name">@it.Libelle</div>
                                     <div class="bb-cart-item__meta">Quantité : @it.Quantite</div>
 
-                                    @* (optionnel) afficher un résumé des compléments comme sur ta capture 2 *@
+                                 
                                     @if (complements.Count > 0)
                                     {
                                         <div class="bb-cart-item__extras">
@@ -93,7 +104,6 @@
 
                                     <div class="bb-cart-item__price">@($"{it.PrixTotal:0} FCFA")</div>
 
-                                    <!-- Actions quantité -->
                                     <div class="bb-qty">
                                         <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
                                             @Html.AntiForgeryToken()
@@ -115,7 +125,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Supprimer -->
                                 <form asp-controller="Commande" asp-action="Remove" method="post" class="bb-cart-item__remove">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
@@ -126,7 +135,7 @@
                         }
                     </div>
 
-                    @* si tu veux laisser l’option “vider panier” *@
+                    @* option “vider panier” *@
                     <div class="bb-cart-actions">
                         <form asp-controller="Commande" asp-action="Clear" method="post">
                             @Html.AntiForgeryToken()
@@ -135,7 +144,6 @@
                     </div>
                 </div>
 
-                <!-- CARD: Type consommation (capture 2) -->
                 <div class="bb-cardbox">
                     <div class="bb-cardbox__title">Type de consommation</div>
 
@@ -163,7 +171,6 @@
                     </div>
                 </div>
 
-                <!-- CARD: Infos livraison (capture 3) -->
                 @if (isDelivery)
                 {
                     <div class="bb-cardbox">
@@ -172,8 +179,6 @@
                             <span>Informations de livraison</span>
                         </div>
 
-                        @* IMPORTANT : on reste cohérent avec ton GET Panier(type, zoneId, quartierId)
-                           Donc on fait un petit GET pour rafraîchir les quartiers quand zone change *@
                         <form class="bb-delivery" method="get" asp-controller="Commande" asp-action="Panier">
                             <input type="hidden" name="type" value="LIVRAISON" />
 
@@ -235,12 +240,10 @@
 
             </div>
 
-            <!-- COL B : bouton confirmer (sticky desktop + bottom mobile) -->
             <div class="bb-cart-col bb-cart-col--cta">
                 <form asp-controller="Commande" asp-action="Confirmer" method="post" class="bb-cta">
                     @Html.AntiForgeryToken()
 
-                    @* Le controller Confirmer lit TypeConsommation / ZoneId / QuartierId *@
                     <input type="hidden" name="TypeConsommation" value="@type" />
                     <input type="hidden" name="ZoneId" value="@(Model.ZoneId?.ToString() ?? "")" />
                     <input type="hidden" name="QuartierId" value="@(Model.QuartierId?.ToString() ?? "")" />

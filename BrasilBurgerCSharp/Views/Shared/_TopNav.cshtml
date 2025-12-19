@@ -1,15 +1,27 @@
-@* Desktop top navigation (visible uniquement en desktop via CSS) *@
+@model bool
+
+@{
+    var isAuth = Model;
+}
+
 <nav class="bb-top-nav" aria-label="Navigation principale">
     <div class="bb-top-nav__inner">
-        <a class="bb-top-link" asp-controller="Catalogue" asp-action="Index">Catalogue</a>
-        <a class="bb-top-link" asp-controller="Suivi" asp-action="Index">Commandes</a>
-        <a class="bb-top-link" asp-controller="Suivi" asp-action="Historique">Historique</a>
+        @if (!isAuth)
+        {
+            <a class="bb-top-link" asp-controller="Auth" asp-action="Login">Se connecter</a>
+            <a class="bb-top-link" asp-controller="Auth" asp-action="Register">S’inscrire</a>
+            <a class="bb-top-link" asp-controller="Home" asp-action="Contact">À propos</a>
+        }
+        else
+        {
+            <a class="bb-top-link" asp-controller="Catalogue" asp-action="Index">Catalogue</a>
+            <a class="bb-top-link" asp-controller="Commande" asp-action="Panier">Commande</a>
+            <a class="bb-top-link" asp-controller="Profil" asp-action="Index">Moi</a>
 
-        <a class="bb-top-link" asp-controller="Commande" asp-action="Panier">Panier</a>
-
-        <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-top-logout">
-            @Html.AntiForgeryToken()
-            <button type="submit" class="bb-top-logout__btn">Déconnexion</button>
-        </form>
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-top-logout">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="bb-top-logout__btn">Déconnexion</button>
+            </form>
+        }
     </div>
 </nav>

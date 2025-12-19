@@ -1,0 +1,44 @@
+@{
+    var title = (string?)ViewData["PageBarTitle"] ?? "";
+
+    var backUrl = (string?)ViewData["PageBarBackUrl"];
+
+    var showCart = (bool?)ViewData["PageBarShowCart"] ?? false;
+}
+
+<header class="bb-pagebar" role="banner">
+    <div class="bb-pagebar__left">
+        @if (!string.IsNullOrWhiteSpace(backUrl))
+        {
+            <a class="bb-pagebar__back" href="@backUrl" aria-label="Retour">
+                <span class="bb-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </a>
+        }
+        else
+        {
+            <button class="bb-pagebar__back" type="button" aria-label="Retour" onclick="history.back()">
+                <span class="bb-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </button>
+        }
+
+        <h1 class="bb-pagebar__title">@title</h1>
+    </div>
+
+    @if (showCart)
+    {
+        <div class="bb-pagebar__right">
+            <a class="bb-pagebar__cart" asp-controller="Commande" asp-action="Panier" aria-label="Panier">
+                <span class="bb-icon" aria-hidden="true">🛒</span>
+                <span class="bb-pagebar__badge" id="bbCartCountMini">0</span>
+            </a>
+        </div>
+    }
+</header>

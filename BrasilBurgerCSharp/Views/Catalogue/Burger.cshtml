@@ -1,25 +1,24 @@
 @model BrasilBurgerCSharp.ViewModels.Catalogue.BurgerDetailsVm
 @{
     ViewData["Title"] = "Détails du burger";
-    // On veut un header blanc "mobile style" sur cette page (comme ta capture)
     ViewBag.MinimalHeader = true;
 
     decimal burgerTotal = Model.Prix * (Model.Quantite <= 0 ? 1 : Model.Quantite);
 }
-@section Styles {
-  <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
-}
+
 
 <section class="bb-detail">
 
-    <!-- Top bar blanc comme sur la capture -->
-    <div class="bb-detail-topbar">
-        <a class="bb-detail-back" asp-controller="Catalogue" asp-action="Index" aria-label="Retour">←</a>
-        <div class="bb-detail-title">Détails du burger</div>
-        <a class="bb-detail-cart" asp-controller="Commande" asp-action="Panier" aria-label="Panier">
-            🛒 <span class="bb-badge bb-badge--dark">0</span>
-        </a>
-    </div>
+@{
+    ViewData["PageBarTitle"] = "Détails Burger";
+    ViewData["PageBarBackUrl"] = Url.Action("Index","Catalogue", new { filtre = "BURGER" });
+}
+@section Styles{
+  <link rel="stylesheet" href="~/css/pagebar.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+}
+@await Html.PartialAsync("_PageBar")
+
 
     <!-- Image -->
     <div class="bb-detail-hero">
@@ -37,17 +36,13 @@
     <div class="bb-detail-card">
         <h1 class="bb-detail-name">@Model.Nom</h1>
 
-        <!-- Description : tu n'as pas ce champ dans ton VM actuellement.
-             Donc on laisse vide/optionnel (pour être 100% aligné modèle). -->
         <p class="bb-detail-desc">
-            <!-- Si tu ajoutes Description plus tard, on l'affichera ici. -->
         </p>
 
         <div class="bb-detail-price">@($"{Model.Prix:0} FCFA")</div>
 
         <h2 class="bb-detail-subtitle">Ajouter des compléments</h2>
 
-        <!-- Form POST aligné à CommandeController.AddBurger -->
         <form asp-controller="Commande" asp-action="AddBurger" method="post" class="bb-detail-form">
             @Html.AntiForgeryToken()
 
