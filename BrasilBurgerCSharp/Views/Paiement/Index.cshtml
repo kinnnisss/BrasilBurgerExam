@@ -1,0 +1,124 @@
+@model BrasilBurgerCSharp.ViewModels.Commande.PaymentVm
+
+@{
+    ViewData["Title"] = "Paiement";
+    ViewBag.MinimalHeader = true;
+
+    ViewData["PageBarTitle"] = "Paiement";
+    ViewData["PageBarBackUrl"] = Url.Action("Panier", "Commande");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pagebar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/paiement.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_PageBar")
+
+@functions{
+    (string ico, string label) Conso(string t)
+        => (t ?? "").Trim().ToUpperInvariant() switch
+        {
+            "SUR_PLACE" => ("🪑", "Sur place"),
+            "A_EMPORTER" => ("🛍️", "À emporter"),
+            "LIVRAISON" => ("🏍️", "Livraison"),
+            _ => ("🍔", "—")
+        };
+}
+
+@{
+    var (ico, consoLabel) = Conso(Model.TypeConsommation);
+}
+
+<section class="pay">
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="pay-alert">@Model.ErrorMessage</div>
+    }
+
+    <div class="pay-ref">
+        <div class="pay-ref__label">Référence de commande</div>
+        <div class="pay-ref__value">@Model.Reference</div>
+    </div>
+
+    <div class="pay-card">
+        <div class="pay-card__title">Récapitulatif</div>
+
+        @foreach (var l in (Model.Lignes ?? new()).Take(6))
+        {
+            <div class="pay-row">
+                <div class="pay-row__left">@l.LibelleArticle x @l.Quantite</div>
+                <div class="pay-row__right">@($"{l.PrixTotal:0} FCFA")</div>
+            </div>
+        }
+
+        <div class="pay-sep"></div>
+
+        <div class="pay-row">
+            <div class="pay-row__left">Sous-total</div>
+            <div class="pay-row__right">@($"{Model.SousTotal:0} FCFA")</div>
+        </div>
+
+        @if (Model.FraisLivraison > 0)
+        {
+            <div class="pay-row">
+                <div class="pay-row__left">Livraison</div>
+                <div class="pay-row__right">@($"{Model.FraisLivraison:0} FCFA")</div>
+            </div>
+        }
+
+        <div class="pay-row pay-row--total">
+            <div class="pay-row__left">Total à payer</div>
+            <div class="pay-row__right pay-row__right--accent">@($"{Model.Montant:0} FCFA")</div>
+        </div>
+    </div>
+
+    <div class="pay-card pay-cons">
+        <div class="pay-cons__ico" aria-hidden="true">@ico</div>
+        <div class="pay-cons__txt">
+            <div class="pay-cons__label">Type de consommation</div>
+            <div class="pay-cons__value">@consoLabel</div>
+        </div>
+    </div>
+
+    <form asp-controller="Paiement" asp-action="Payer" method="post" class="pay-form">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="CommandeId" />
+        <input type="hidden" asp-for="ModePaiement" value="" />
+
+        <div class="pay-card">
+            <div class="pay-card__title">Mode de paiement</div>
+
+            <div class="pay-methods">
+                <label class="pay-method">
+                    <input class="pay-method__radio"
+                           asp-for="ModePaiement"
+                           type="radio"
+                           value="OM"
+                           checked="@(Model.ModePaiement?.ToUpperInvariant() == "OM")" />
+                    <span class="pay-method__box">
+                        <span class="pay-method__logo pay-method__logo--om">OM</span>
+                        <span class="pay-method__name">Orange Money</span>
+                    </span>
+                </label>
+
+                <label class="pay-method">
+                    <input class="pay-method__radio"
+                           asp-for="ModePaiement"
+                           type="radio"
+                           value="WAVE"
+                           checked="@(string.IsNullOrWhiteSpace(Model.ModePaiement) || Model.ModePaiement.ToUpperInvariant() == "WAVE")" />
+                    <span class="pay-method__box">
+                        <span class="pay-method__logo pay-method__logo--wave">WAVE</span>
+                        <span class="pay-method__name">Wave</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <button class="pay-btn" type="submit">
+            Payer maintenant (@($"{Model.Montant:0} FCFA"))
+        </button>
+    </form>
+</section>

@@ -15,20 +15,24 @@ public sealed class CommandeService : ICommandeService
     private readonly ILivraisonRepository _livraisonRepo;
     private readonly IClientRepository _clientRepo;
 
+private readonly ILogger<CommandeService> _logger;
 
-    public CommandeService(
-        BrasilBurgerDbContext db,
-        ICommandeRepository commandeRepo,
-        ICatalogRepository catalogRepo,
-        ILivraisonRepository livraisonRepo,
-        IClientRepository clientRepo)
-    {
-        _db = db;
-        _commandeRepo = commandeRepo;
-        _catalogRepo = catalogRepo;
-        _livraisonRepo = livraisonRepo;
-        _clientRepo = clientRepo;
-    }
+public CommandeService(
+    BrasilBurgerDbContext db,
+    ICommandeRepository commandeRepo,
+    ICatalogRepository catalogRepo,
+    ILivraisonRepository livraisonRepo,
+    IClientRepository clientRepo,
+    ILogger<CommandeService> logger)
+{
+    _db = db;
+    _commandeRepo = commandeRepo;
+    _catalogRepo = catalogRepo;
+    _livraisonRepo = livraisonRepo;
+    _clientRepo = clientRepo;
+    _logger = logger;
+}
+
 
 public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
     CommandeCreateDto dto,
@@ -182,11 +186,18 @@ public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
 
         return ServiceResult<CommandeDto>.Ok(dtoResult);
     }
-    catch (Exception)
-    {
-        await trx.RollbackAsync(ct);
-        return ServiceResult<CommandeDto>.Fail(ServiceError.Unexpected, "Erreur lors de la création de la commande.");
-    }
+catch (Exception ex)
+{
+    await trx.RollbackAsync(ct);
+
+    _logger.LogError(ex,
+        "Erreur création commande. ClientId={ClientId} Type={Type} ZoneId={ZoneId} QuartierId={QuartierId}",
+        dto.ClientId, dto.TypeConsommation, dto.ZoneId, dto.QuartierId);
+
+    var msg = ex.GetBaseException().Message;
+    return ServiceResult<CommandeDto>.Fail(ServiceError.Unexpected, $"Erreur lors de la création: {msg}");
+}
+
 }
 
     private static (string libelle, string? image) GetLibelleImage(LigneCommande l)
