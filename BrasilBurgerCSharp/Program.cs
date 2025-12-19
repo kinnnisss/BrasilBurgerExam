@@ -1,3 +1,4 @@
+using BrasilBurgerCSharp.Core;
 using BrasilBurgerCSharp.Data;
 using BrasilBurgerCSharp.Models;
 using BrasilBurgerCSharp.Repository;
@@ -66,6 +67,12 @@ builder.Services.AddDbContext<BrasilBurgerDbContext>(options =>
     });
 });
 
+builder.Services.AddScoped<ClientHeaderFilter>();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<ClientHeaderFilter>();
+});
 
 
 
