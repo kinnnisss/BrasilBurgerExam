@@ -6,18 +6,21 @@ using BrasilBurgerCSharp.Repository.Impl;
 using BrasilBurgerCSharp.Service;
 using BrasilBurgerCSharp.Service.Impl;
 using BrasilBurgerCSharp.Service.Payments;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-
-using Microsoft.AspNetCore.HttpOverrides;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ----------------------------
-// MVC
+// MVC + Filters
 // ----------------------------
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ClientHeaderFilter>();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<ClientHeaderFilter>();
+});
 
 // ----------------------------
 // Session + HttpContext
@@ -31,7 +34,6 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
 
 builder.Services.AddDbContext<BrasilBurgerDbContext>(options =>
 {
@@ -64,29 +66,8 @@ builder.Services.AddDbContext<BrasilBurgerDbContext>(options =>
 
     var dataSource = dataSourceBuilder.Build();
 
-    options.UseNpgsql(dataSource, npgsql =>
-    {
-        npgsql.EnableRetryOnFailure(3);
-    });
+    options.UseNpgsql(dataSource, npgsql => npgsql.EnableRetryOnFailure(3));
 });
-
-builder.Services.AddScoped<ClientHeaderFilter>();
-
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add<ClientHeaderFilter>();
-});
-
-
-var app = builder.Build();
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
-});
-
-app.UseHttpsRedirection();
-
 
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
@@ -94,15 +75,20 @@ builder.Services.AddScoped<ICommandeRepository, CommandeRepository>();
 builder.Services.AddScoped<ILivraisonRepository, LivraisonRepository>();
 builder.Services.AddScoped<IPaiementRepository, PaiementRepository>();
 
-
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<ICommandeService, CommandeService>();
 builder.Services.AddScoped<IPaiementService, PaiementService>();
 
-
 builder.Services.AddTransient<IPaymentProvider, WavePaymentProvider>();
 builder.Services.AddTransient<IPaymentProvider, OmPaymentProvider>();
+
+var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
+});
 
 if (!app.Environment.IsDevelopment())
 {
@@ -116,9 +102,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
-
 app.UseAuthorization();
-
 
 app.MapControllerRoute(
     name: "default",
