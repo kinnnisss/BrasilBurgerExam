@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using BrasilBurgerCSharp.ViewModels.Commande;
+using System.Security.Cryptography;
 
 namespace BrasilBurgerCSharp.Core;
 
@@ -14,9 +15,17 @@ public static class SessionExtensions
     public static void SetJson<T>(this ISession session, string key, T value)
         => session.SetString(key, JsonSerializer.Serialize(value, JsonOptions));
 
-    public static T? GetJson<T>(this ISession session, string key)
+public static T? GetJson<T>(this ISession session, string key)
+{
+    try
     {
         var s = session.GetString(key);
         return string.IsNullOrWhiteSpace(s) ? default : JsonSerializer.Deserialize<T>(s, JsonOptions);
     }
+    catch (CryptographicException)
+    {
+        return default;
+    }
+}
+
 }

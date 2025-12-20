@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using BrasilBurgerCSharp.ViewModels.Commande;
 
 namespace BrasilBurgerCSharp.Core;
@@ -8,9 +9,26 @@ public static class ClientSession
     public const string ClientIdKey = "CLIENT_ID";
     public const string PanierKey = "PANIER";
 
-    public static int? GetClientId(HttpContext http)
-        => http.Session.GetInt32(ClientIdKey);
+    public static int? GetClientId(HttpContext context)
+    {
+        try
+        {
+            return context.Session.GetInt32(ClientIdKey);
+        }
+        catch (CryptographicException)
+        {
+            SafeResetSession(context);
+            return null;
+        }
+    }
 
+
+    private static void SafeResetSession(HttpContext context)
+    {
+        try { context.Session.Clear(); } catch { /* ignore */ }
+
+        context.Response.Cookies.Delete(".AspNetCore.Session");
+    }
     public static void SetClientId(HttpContext http, int clientId)
         => http.Session.SetInt32(ClientIdKey, clientId);
 
