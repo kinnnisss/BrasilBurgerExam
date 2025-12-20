@@ -16,7 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 // MVC + Filters
 // ----------------------------
 builder.Services.AddScoped<ClientHeaderFilter>();
-
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<ClientHeaderFilter>();
@@ -35,45 +34,48 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddDbContext<BrasilBurgerDbContext>(options =>
+
+var baseConnection = builder.Configuration.GetConnectionString("Neon");
+if (string.IsNullOrWhiteSpace(baseConnection))
+    throw new InvalidOperationException("ConnectionStrings:Neon manquant dans appsettings.json.");
+
+var user = Environment.GetEnvironmentVariable("BB_DB_USER");
+var password = Environment.GetEnvironmentVariable("BB_DB_PASSWORD");
+if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
+    throw new InvalidOperationException("Variables d'environnement manquantes : BB_DB_USER et/ou BB_DB_PASSWORD.");
+
+var csb = new NpgsqlConnectionStringBuilder(baseConnection)
 {
-    var baseConnection = builder.Configuration.GetConnectionString("Neon");
-    if (string.IsNullOrWhiteSpace(baseConnection))
-        throw new InvalidOperationException("ConnectionStrings:Neon manquant dans appsettings.json.");
+    Username = user,
+    Password = password,
+    SslMode = SslMode.Require,
+    TrustServerCertificate = true,
+    Pooling = true
+};
 
-    var user = Environment.GetEnvironmentVariable("BB_DB_USER");
-    var password = Environment.GetEnvironmentVariable("BB_DB_PASSWORD");
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(csb.ConnectionString);
+dataSourceBuilder.MapEnum<TypeComplement>("type_complement_enum");
+dataSourceBuilder.MapEnum<EtatCommande>("etat_commande_enum");
+dataSourceBuilder.MapEnum<TypeConsommation>("type_consommation_enum");
+dataSourceBuilder.MapEnum<TypeArticle>("type_article_enum");
+dataSourceBuilder.MapEnum<ModePaiement>("mode_paiement_enum");
 
-    if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
-        throw new InvalidOperationException("Variables d'environnement manquantes : BB_DB_USER et/ou BB_DB_PASSWORD.");
+var dataSource = dataSourceBuilder.Build();
+builder.Services.AddSingleton(dataSource);
 
-    var csb = new NpgsqlConnectionStringBuilder(baseConnection)
-    {
-        Username = user,
-        Password = password,
-        SslMode = SslMode.Require,
-        TrustServerCertificate = true,
-        Pooling = true
-    };
-
-    var dataSourceBuilder = new NpgsqlDataSourceBuilder(csb.ConnectionString);
-
-    dataSourceBuilder.MapEnum<TypeComplement>("type_complement_enum");
-    dataSourceBuilder.MapEnum<EtatCommande>("etat_commande_enum");
-    dataSourceBuilder.MapEnum<TypeConsommation>("type_consommation_enum");
-    dataSourceBuilder.MapEnum<TypeArticle>("type_article_enum");
-    dataSourceBuilder.MapEnum<ModePaiement>("mode_paiement_enum");
-
-    var dataSource = dataSourceBuilder.Build();
-
-    options.UseNpgsql(dataSource, npgsql => npgsql.EnableRetryOnFailure(3));
+builder.Services.AddDbContext<BrasilBurgerDbContext>((sp, options) =>
+{
+    var ds = sp.GetRequiredService<NpgsqlDataSource>();
+    options.UseNpgsql(ds, npgsql => npgsql.EnableRetryOnFailure(3));
 });
+
 
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ICommandeRepository, CommandeRepository>();
 builder.Services.AddScoped<ILivraisonRepository, LivraisonRepository>();
 builder.Services.AddScoped<IPaiementRepository, PaiementRepository>();
+
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
