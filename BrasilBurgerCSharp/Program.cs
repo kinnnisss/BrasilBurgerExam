@@ -49,7 +49,6 @@ var csb = new NpgsqlConnectionStringBuilder(baseConnection)
     Username = user,
     Password = password,
     SslMode = SslMode.Require,
-    TrustServerCertificate = true,
     Pooling = true
 };
 
