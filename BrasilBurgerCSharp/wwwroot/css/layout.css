@@ -140,6 +140,29 @@
   color: var(--bb-blue);
 }
 
+
+.bb-header-link{
+  text-decoration: none;
+  font-weight: 900;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.14);
+  transition: all .15s ease;
+}
+
+
+.bb-header-link:hover{
+  background: rgba(255,255,255,.22);
+}
+
+
+.bb-header-link.is-active{
+  background: #ffffff;
+  color: var(--bb-blue);
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+
 @media (min-width: 992px){
   .bb-bottom-nav{ display:none; }
   .bb-top-nav{

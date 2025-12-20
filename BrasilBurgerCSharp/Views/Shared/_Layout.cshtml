@@ -20,6 +20,17 @@
     var hideFooter = minimalHeader
         || (controller == "auth" && (action == "login" || action == "register"));
 }
+@functions {
+    string IsActive(string controller, string action = "Index")
+    {
+        var currentController = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLower();
+        var currentAction = (ViewContext.RouteData.Values["action"]?.ToString() ?? "").ToLower();
+
+        return (currentController == controller.ToLower() && currentAction == action.ToLower())
+            ? "is-active"
+            : "";
+    }
+}
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -79,9 +90,21 @@
                 }
                 else
                 {
-                    <a class="bb-header-link" asp-controller="Catalogue" asp-action="Index">Catalogue</a>
-                    <a class="bb-header-link" asp-controller="Suivi" asp-action="Index">Commande</a>
-                    <a class="bb-header-link" asp-controller="Profil" asp-action="Index">Moi</a>
+                    <a class="bb-header-link @IsActive("Catalogue")"
+                    asp-controller="Catalogue" asp-action="Index">
+                        Catalogue
+                    </a>
+
+                    <a class="bb-header-link @IsActive("Suivi")"
+                    asp-controller="Suivi" asp-action="Index">
+                        Commande
+                    </a>
+
+                    <a class="bb-header-link @IsActive("Profil")"
+                    asp-controller="Profil" asp-action="Index">
+                        Moi
+                    </a>
+
 
                     <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-header-logout">
                         @Html.AntiForgeryToken()
