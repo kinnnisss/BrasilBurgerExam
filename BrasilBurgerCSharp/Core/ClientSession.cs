@@ -44,12 +44,19 @@ public static class ClientSession
     public static void ClearPanier(HttpContext http)
         => http.Session.Remove(PanierKey);
 
-    public static int GetPanierCount(HttpContext ctx)
+public static int GetPanierCount(HttpContext ctx)
+{
+    try
     {
         var panier = GetPanier(ctx);
         if (panier?.Items is null) return 0;
-
         return panier.Items.Sum(i => i.Quantite);
     }
+    catch
+    {
+        return 0;
+    }
+}
+
 
     }

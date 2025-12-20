@@ -9,7 +9,9 @@
     string? returnUrl = ViewBag.ReturnUrl as string;
 }
 @{
-    var cartCount = ClientSession.GetPanierCount(Context);
+    var cartCount = 0;
+    try { cartCount = ClientSession.GetPanierCount(Context); } catch { cartCount = 0; }
+
 }
 @{
     var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();

@@ -15,17 +15,28 @@ public static class SessionExtensions
     public static void SetJson<T>(this ISession session, string key, T value)
         => session.SetString(key, JsonSerializer.Serialize(value, JsonOptions));
 
-public static T? GetJson<T>(this ISession session, string key)
-{
-    try
+    public static T? GetJson<T>(this ISession session, string key)
     {
-        var s = session.GetString(key);
-        return string.IsNullOrWhiteSpace(s) ? default : JsonSerializer.Deserialize<T>(s, JsonOptions);
+        try
+        {
+            var s = session.GetString(key);
+            if (string.IsNullOrWhiteSpace(s)) return default;
+
+            return JsonSerializer.Deserialize<T>(s, JsonOptions);
+        }
+        catch (CryptographicException)
+        {
+            return default;
+        }
+        catch (JsonException)
+        {
+            return default;
+        }
+        catch
+        {
+            return default;
+        }
     }
-    catch (CryptographicException)
-    {
-        return default;
-    }
-}
+
 
 }

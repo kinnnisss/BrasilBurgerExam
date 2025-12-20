@@ -9,115 +9,115 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = BrasilBurgerCSharp
 build_property.RootNamespace = BrasilBurgerCSharp
-build_property.ProjectDir = C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\
+build_property.ProjectDir = c:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = true
-build_property.MSBuildProjectDirectory = C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp
+build_property.MSBuildProjectDirectory = c:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/ViewModels/Catalogue/Complement.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/ViewModels/Catalogue/Complement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld01vZGVsc1xDYXRhbG9ndWVcQ29tcGxlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Auth/Login.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Auth/Register.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Auth/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Burger.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Burger.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ3VlXEJ1cmdlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Complement.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Complement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ3VlXENvbXBsZW1lbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Index.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ3VlXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Menu.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Catalogue/Menu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ3VlXE1lbnUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Commande/Panier.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Commande/Panier.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tbWFuZGVcUGFuaWVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Home/Contact.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Home/Contact.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDb250YWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Home/Index.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Home/Privacy.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Paiement/Index.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Paiement/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpZW1lbnRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Paiement/Success.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Paiement/Success.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpZW1lbnRcU3VjY2Vzcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Profil/Index.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Profil/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/Error.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_BottomNav.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_BottomNav.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Cb3R0b21OYXYuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_Footer.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_Footer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Gb290ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_PageBar.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_PageBar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdlQmFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_TopNav.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_TopNav.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Ub3BOYXYuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_ValidationScriptsPartial.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Suivi/Details.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Suivi/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VpdmlcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Suivi/Historique.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Suivi/Historique.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VpdmlcSGlzdG9yaXF1ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Suivi/Index.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Suivi/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VpdmlcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/_ViewImports.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/_ViewStart.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_Layout.cshtml]
+[c:/Users/oper/Desktop/L3_GLRS_COURS/SEM1/BrasilBurgerExam/BrasilBurgerExam/BrasilBurgerCSharp/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-2dc5na8bo3
