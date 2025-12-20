@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "yGFpu60HyZu05d85BXZgDFEnirKPhHSleB0sQf0m6NQ=",
+  "Hash": "vYqDPaEMf+Axc6mja3HxUOI4Y3stAtAGRZLiaktVjnU=",
   "Source": "BrasilBurgerCSharp",
   "BasePath": "_content/BrasilBurgerCSharp",
   "Mode": "Default",
@@ -74,12 +74,12 @@
       "OriginalItemSpec": "wwwroot\\css\\auth.css"
     },
     {
-      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\Catalogue.css",
+      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\catalogue.css",
       "SourceId": "BrasilBurgerCSharp",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\",
       "BasePath": "_content/BrasilBurgerCSharp",
-      "RelativePath": "css/Catalogue.css",
+      "RelativePath": "css/catalogue.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -90,7 +90,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\Catalogue.css"
+      "OriginalItemSpec": "wwwroot\\css\\catalogue.css"
     },
     {
       "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\commande.css",
@@ -207,12 +207,12 @@
       "OriginalItemSpec": "wwwroot\\css\\layout.css"
     },
     {
-      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\pageBar.css",
+      "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\pagebar.css",
       "SourceId": "BrasilBurgerCSharp",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\",
       "BasePath": "_content/BrasilBurgerCSharp",
-      "RelativePath": "css/pageBar.css",
+      "RelativePath": "css/pagebar.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -223,7 +223,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\pageBar.css"
+      "OriginalItemSpec": "wwwroot\\css\\pagebar.css"
     },
     {
       "Identity": "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\BrasilBurgerCSharp\\wwwroot\\css\\paiement.css",

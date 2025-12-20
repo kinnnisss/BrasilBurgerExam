@@ -409,3 +409,8 @@ C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\Brasi
 C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\obj\Debug\net8.0\BrasilBurgerCSharp.pdb
 C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\obj\Debug\net8.0\BrasilBurgerCSharp.genruntimeconfig.cache
 C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\obj\Debug\net8.0\ref\BrasilBurgerCSharp.dll
+C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\bin\Debug\net8.0\out\web.config
+C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\bin\Debug\net8.0\out\appsettings.Development.json
+C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\bin\Debug\net8.0\out\appsettings.json
+C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\bin\Debug\net8.0\out\BrasilBurgerCSharp.deps.json
+C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\BrasilBurgerExam\BrasilBurgerExam\BrasilBurgerCSharp\bin\Debug\net8.0\out\BrasilBurgerCSharp.runtimeconfig.json
