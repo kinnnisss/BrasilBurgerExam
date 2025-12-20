@@ -140,14 +140,14 @@
     <nav class="bb-drawer__nav">
  @if (!isAuth)
 {
-    <a class="bb-drawer__link" asp-controller="Auth" asp-action="Login">Se connecter</a>
-    <a class="bb-drawer__link" asp-controller="Auth" asp-action="Register">S’inscrire</a>
+    <a class="bb-drawer__link @IsActive("Auth")"  asp-controller="Auth" asp-action="Login">Se connecter</a>
+    <a class="bb-drawer__link @IsActive("Auth")" asp-controller="Auth" asp-action="Register">S’inscrire</a>
     <a class="bb-drawer__link" asp-controller="Home" asp-action="Contact">À propos / Contact</a>
 }
 else
 {
-    <a class="bb-drawer__link" asp-controller="Profil" asp-action="Index">Mon profil</a>
-    <a class="bb-drawer__link" asp-controller="Home" asp-action="Contact">Aide / Contact</a>
+    <a class="bb-drawer__link @IsActive("Auth")" asp-controller="Profil" asp-action="Index">Mon profil</a>
+    <a class="bb-drawer__link @IsActive("Home")" asp-controller="Home" asp-action="Contact">Aide / Contact</a>
 
     <form asp-controller="Auth" asp-action="Logout" method="post" class="bb-drawer__form">
         @Html.AntiForgeryToken()

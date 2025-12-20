@@ -243,8 +243,7 @@
 .bb-drawer__title{ font-weight: 900; font-size: 16px; }
 
 .bb-drawer__nav{
-  display: grid;
-  gap: 2px;
+  gap: 0.5em;
   padding: 12px;
 }
 .bb-drawer__link{
@@ -321,3 +320,55 @@
 
   .bb-drawer, .bb-drawer-overlay{ display:none !important; }
 }
+
+/* ===============================
+   DRAWER (menu burger mobile)
+   Amélioration style + hauteur stable
+   =============================== */
+
+.bb-drawer__nav{
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+}
+
+.bb-drawer__link{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  height: 44px;                 
+  padding: 0 14px;              
+  border-radius: 14px;
+
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 14px;
+  color: #111827;
+
+  background: #f3f4f6;        
+  line-height: 1;            
+  white-space: nowrap;          
+  overflow: hidden;
+  text-overflow: ellipsis;      
+
+  transition:
+    background .15s ease,
+    transform .1s ease,
+    box-shadow .15s ease;
+}
+
+.bb-drawer__link:hover{
+  background: #e5e7eb;
+}
+
+.bb-drawer__link:active{
+  transform: scale(.98);
+}
+
+.bb-drawer__link.is-active{
+  background: linear-gradient(180deg, var(--bb-orange), #5b5aa5);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+}
+
