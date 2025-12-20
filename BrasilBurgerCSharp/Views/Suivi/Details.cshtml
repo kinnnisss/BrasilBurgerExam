@@ -41,29 +41,31 @@
   }
 
 
-    string ConsoLabel(string t)
+    string ConsoLabel(string? t)
     {
-        t = (t ?? "").Trim().ToUpperInvariant();
-        return t switch
+        var v = (t ?? "").Trim().ToUpperInvariant();
+        return v switch
         {
             "LIVRAISON" => "Livraison",
             "A_EMPORTER" => "À emporter",
             "SUR_PLACE" => "Sur place",
-            _ => t
+            _ => string.IsNullOrWhiteSpace(v) ? "—" : v
         };
     }
 
-    string EtatBadge(string e)
+
+    string EtatBadge(string? e)
     {
-        e = (e ?? "").Trim().ToUpperInvariant();
-        return e switch
+        var v = (e ?? "").Trim().ToUpperInvariant();
+        return v switch
         {
             "ENCOURS" => "En cours",
             "VALIDEE" => "Validée",
             "TERMINEE" => "Terminée",
-            _ => e
+            _ => string.IsNullOrWhiteSpace(v) ? "—" : v
         };
     }
+
 
 
 
@@ -138,7 +140,8 @@
         <div class="cmd-card__title">Articles commandés</div>
 
         <div class="items">
-            @foreach (var l in Model.Lignes)
+            
+            @foreach (var l in (Model.Lignes ?? Enumerable.Empty<BrasilBurgerCSharp.DTOs.LigneCommandeDto>()))
             {
                 <div class="item">
                     <div class="item__img">
