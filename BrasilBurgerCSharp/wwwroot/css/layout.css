@@ -50,6 +50,13 @@
   font-size:18px;
 }
 
+
+.bb-cart__ico{
+  width: 22px;
+  height: 22px;
+  display:block;
+}
+
 .bb-badge{
   position: absolute;
   top: -8px;
@@ -214,13 +221,20 @@
 
 .bb-drawer__nav{
   display: grid;
-  gap: 6px;
+  gap: 2px;
   padding: 12px;
 }
 .bb-drawer__link{
+  display: flex;
+  align-items: center; 
   padding: 10px 12px;
-  line-height: 1.2;
+  line-height: 1;    
+  min-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
+
 
 
 .bb-drawer__header{

@@ -92,7 +92,12 @@
 
             <a class="bb-icon-link" asp-controller="Commande" asp-action="Panier" title="Panier" aria-label="Panier">
                 <span class="bb-cart">
-                    🛒
+                        <svg class="bb-cart__ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M6 6h15l-1.5 9H7.5L6 6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M6 6 5 3H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M7 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" fill="currentColor"/>
+                            <path d="M17 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" fill="currentColor"/>
+                        </svg>
                     <span class="bb-badge @(cartCount==0 ? "is-hidden" : "")" id="bbCartCount">@cartCount</span>
                 </span>
             </a>

@@ -9,8 +9,11 @@ namespace BrasilBurgerCSharp.Controllers;
 public sealed class AuthController : Controller
 {
     private readonly IAuthService _auth;
-
-    public AuthController(IAuthService auth) => _auth = auth;
+    private readonly IConfiguration _config;
+    public AuthController(IAuthService auth,IConfiguration config) { 
+    _auth = auth;
+    _config = config;
+    }
 
     [HttpGet]
     public IActionResult Login(string? returnUrl = null)
@@ -102,6 +105,14 @@ public sealed class AuthController : Controller
     [HttpGet]
     public IActionResult Gestionnaire()
     {
-        return Redirect("https://example.com/gestion");
+        var url = Environment.GetEnvironmentVariable("BB_GESTIONNAIRE_URL");
+
+        if (string.IsNullOrWhiteSpace(url))
+            url = _config["ExternalLinks:GestionnaireUrl"];
+
+        if (string.IsNullOrWhiteSpace(url))
+            url = "https://example.com/gestion";
+
+        return Redirect(url);
     }
 }

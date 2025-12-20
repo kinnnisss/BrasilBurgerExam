@@ -152,17 +152,6 @@
   gap: 14px;
 }
 
-.bb-qty-btn{
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 0;
-  background: var(--bb-blue);
-  color:#fff;
-  font-size: 22px;
-  font-weight: 900;
-  cursor:pointer;
-}
 
 .bb-qty-btn--ghost{
   background: #e5e7eb;
@@ -270,6 +259,23 @@
   color:#fff;
   font-weight: 900;
   cursor:pointer;
+}
+
+.bb-qty-btn {
+  display: inline-flex;
+  align-items: center;        
+  justify-content: center;    
+  line-height: 1;             
+  padding: 0;                 
+  border-radius: 50%;   
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: var(--bb-blue);
+  color:#fff;
+  font-size: 22px;
+  font-weight: 900;
+  cursor:pointer;      
 }
 
 @media (min-width: 992px){
