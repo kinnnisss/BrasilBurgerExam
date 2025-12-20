@@ -15,17 +15,31 @@
         _ => 1
     };
 
-    string ConsoIco(string t)
-    {
-        t = (t ?? "").Trim().ToUpperInvariant();
-        return t switch
-        {
-            "LIVRAISON" => "🏍",
-            "A_EMPORTER" => "🛍",
-            "SUR_PLACE" => "🪑",
-            _ => "🍔"
-        };
-    }
+
+  string BadgeClass(string? e)
+  {
+      var v = (e ?? "").Trim().ToUpperInvariant();
+      return v switch
+      {
+          "EN_COURS" => "badge badge--encours",
+          "LIVREE" => "badge badge--livree",
+          "ANNULEE" => "badge badge--annulee",
+          _ => "badge"
+      };
+  }
+
+  string ConsoIco(string? t)
+  {
+      var v = (t ?? "").Trim().ToUpperInvariant();
+      return v switch
+      {
+          "SUR_PLACE" => "🪑",
+          "A_EMPORTER" => "🛍️",
+          "LIVRAISON" => "🏍️",
+          _ => "🍔"
+      };
+  }
+
 
     string ConsoLabel(string t)
     {
@@ -51,17 +65,7 @@
         };
     }
 
-    string BadgeClass(string e)
-    {
-        e = (e ?? "").Trim().ToUpperInvariant();
-        return e switch
-        {
-            "ENCOURS" => "is-running",
-            "VALIDEE" => "is-ok",
-            "TERMINEE" => "is-done",
-            _ => "is-running"
-        };
-    }
+
 
     string FormatDate(DateTime d) => d.ToString("d MMMM yyyy 'à' HH:mm", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
 
