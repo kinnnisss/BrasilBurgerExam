@@ -79,6 +79,11 @@ class BurgerRepository extends ServiceEntityRepository
         return (int) $burger->getIdBurger();
     }
 
+    public function update(Burger $burger): bool
+    {
+        $this->getEntityManager()->flush();
+        return true;
+    }
 
 
 }
