@@ -112,5 +112,44 @@ class CommandeRepository extends ServiceEntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
+    /** @return LigneCommandeDto[] */
+    public function findLignesByCommande(int $idCommande): array
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->from(LigneCommande::class, 'lc')
+            ->leftJoin('lc.burger', 'b')
+            ->leftJoin('lc.menu', 'm')
+            ->leftJoin('lc.complement', 'cp')
+            ->andWhere('lc.commande = :id')
+            ->setParameter('id', $idCommande)
+            ->orderBy('lc.idLigneCommande', 'ASC');
+
+        $qb->select(sprintf(
+            'NEW %s(
+                lc.typeArticle, lc.quantite, lc.prixUnitaire, lc.prixTotal,
+                b.idBurger, b.nom, b.image,
+                m.idMenu, m.nom, m.image,
+                cp.idComplement, cp.nom, cp.image
+            )',
+            LigneCommandeRowRawDto::class
+        ));
+
+        /** @var LigneCommandeRowRawDto[] $rows */
+        $rows = $qb->getQuery()->getResult();
+
+        $items = [];
+        foreach ($rows as $r) {
+            $items[] = new LigneCommandeDto(
+                $r->typeArticle,
+                $r->getDesignation(),
+                $r->getImage(),
+                (int)$r->quantite,
+                (string)$r->prixUnitaire,
+                (string)$r->prixTotal
+            );
+        }
+        return $items;
+    }
+
 
 }
