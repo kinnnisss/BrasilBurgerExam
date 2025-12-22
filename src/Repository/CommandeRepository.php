@@ -86,5 +86,31 @@ class CommandeRepository extends ServiceEntityRepository
         return new PagedResultDto($items, $page, $pageSize, $totalItems);
     }
 
+    public function findDetailsById(int $idCommande): ?CommandeDetailsRawDto
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->innerJoin('c.client', 'cl')
+            ->leftJoin('c.zone', 'z')
+            ->leftJoin('c.quartier', 'q')
+            ->leftJoin('c.livreur', 'l')
+            ->leftJoin('c.paiement', 'p')
+            ->andWhere('c.idCommande = :id')
+            ->setParameter('id', $idCommande);
+
+        $qb->select(sprintf(
+            'NEW %s(
+                c.idCommande, c.reference, c.dateCommande, c.etat, c.typeConsommation, c.montantTotal,
+                cl.idClient, cl.nom, cl.prenom, cl.telephone, cl.login,
+                z.idZone, z.libelle,
+                q.idQuartier, q.libelle,
+                l.idLivreur, l.nom, l.prenom, l.telephone,
+                p.idPaiement, p.datePaiement, p.montant, p.modePaiement
+            )',
+            CommandeDetailsRawDto::class
+        ));
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
 
 }
