@@ -134,6 +134,15 @@ class ComplementRepository extends ServiceEntityRepository
         return $items;
     }
 
+    public function findActiveById(int $idComplement): ?Complement
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.idComplement = :id')
+            ->andWhere('c.isArchived = false')
+            ->setParameter('id', $idComplement)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 
 }
