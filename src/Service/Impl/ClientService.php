@@ -23,4 +23,22 @@ class ClientService implements ClientServiceInterface
         return $this->clientRepository->search($filter);
     }
 
+    public function getDetails(int $idClient, ClientCommandeFilterDto $filter): ClientDetailsDto
+    {
+        $client = $this->clientRepository->findById($idClient);
+        if ($client === null) {
+            throw new \RuntimeException("Client introuvable.");
+        }
+
+        $clientInfo = new ClientInfoDto(
+            (int)$client->getIdClient(),
+            trim($client->getNom().' '.$client->getPrenom()),
+            $client->getTelephone(),
+            $client->getLogin()
+        );
+
+        $commandes = $this->clientCommandeRepository->searchCommandesByClient($idClient, $filter);
+
+        return new ClientDetailsDto($clientInfo, $commandes);
+    }
 }
