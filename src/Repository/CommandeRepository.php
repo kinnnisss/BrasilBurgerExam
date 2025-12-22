@@ -161,5 +161,19 @@ class CommandeRepository extends ServiceEntityRepository
         return true;
     }
 
+    public function belongsToClient(int $idCommande, int $idClient): bool
+    {
+        $count = (int)$this->createQueryBuilder('c')
+            ->select('COUNT(c.idCommande)')
+            ->andWhere('c.idCommande = :idCmd')
+            ->andWhere('c.client = :idClient')
+            ->setParameter('idCmd', $idCommande)
+            ->setParameter('idClient', $idClient)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count > 0;
+    }
+
 
 }
