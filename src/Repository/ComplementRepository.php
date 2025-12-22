@@ -77,5 +77,10 @@ class ComplementRepository extends ServiceEntityRepository
         return new PagedResultDto($items, $page, $pageSize, $totalItems);
     }
 
+    public function findById(int $idComplement): ?Complement
+    {
+        return $this->find($idComplement);
+    }
+
 
 }
