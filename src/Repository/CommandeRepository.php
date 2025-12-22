@@ -151,5 +151,15 @@ class CommandeRepository extends ServiceEntityRepository
         return $items;
     }
 
+   public function updateEtat(int $idCommande, $newEtat): bool
+    {
+        $cmd = $this->find($idCommande);
+        if (!$cmd) return false;
+
+        $cmd->setEtat($newEtat);
+        $this->getEntityManager()->flush();
+        return true;
+    }
+
 
 }
