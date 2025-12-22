@@ -73,5 +73,9 @@ class StatistiqueRepository extends ServiceEntityRepository
         $val = $qb->getQuery()->getSingleScalarResult();
         return number_format((float)$val, 2, '.', '');
     }
+   public function countCommandesEnCoursDuJour(\DateTimeInterface $day): int
+    {
+        return $this->countByEtatForDay($day, EtatCommandeEnum::ENCOURS);
+    }
 
 }
