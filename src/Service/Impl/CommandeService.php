@@ -98,5 +98,24 @@ class CommandeService implements CommandeServiceInterface
             $actions
         );
     }
+    public function cancel(int $idCommande): ActionResultDto
+    {
+        $cmd = $this->commandeRepository->findById($idCommande);
+        if ($cmd === null) {
+            return ActionResultDto::fail("Commande introuvable.");
+        }
+
+        $etat = $cmd->getEtat();
+
+        if (!in_array($etat, [EtatCommandeEnum::ENCOURS, EtatCommandeEnum::VALIDEE], true)) {
+            return ActionResultDto::fail("Cette commande ne peut plus être annulée.");
+        }
+
+        $ok = $this->commandeRepository->updateEtat($idCommande, EtatCommandeEnum::ANNULEE);
+
+        return $ok
+            ? ActionResultDto::ok("Commande annulée.")
+            : ActionResultDto::fail("Impossible d'annuler la commande.");
+    }
 
 }
