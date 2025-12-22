@@ -97,5 +97,20 @@ class ComplementRepository extends ServiceEntityRepository
         return true;
     }
 
+    public function setArchived(int $idComplement, bool $archived): bool
+    {
+        $em = $this->getEntityManager();
+        $c = $this->find($idComplement);
+
+        if (!$c) {
+            return false;
+        }
+
+        $c->setIsArchived($archived);
+        $em->flush();
+
+        return true;
+    }
+
 
 }
