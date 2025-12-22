@@ -99,6 +99,25 @@ class BurgerRepository extends ServiceEntityRepository
         return true;
     }
 
+    /**
+     * @return SelectItemDto[]
+     */
+    public function findActiveForSelect(): array
+    {
+        $rows = $this->createQueryBuilder('b')
+            ->andWhere('b.isArchived = false')
+            ->orderBy('b.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
 
+        $items = [];
+        foreach ($rows as $burger) {
+            /** @var Burger $burger */
+            $label = sprintf('%s - %s', $burger->getNom(), (string) $burger->getPrix());
+            $items[] = new SelectItemDto((int) $burger->getIdBurger(), $label);
+        }
+
+        return $items;
+    }
 
 }
