@@ -101,4 +101,20 @@ class LivraisonService implements LivraisonServiceInterface
         return new LivraisonBoardDto($zones);
     }
 
+
+    public function assignLivreur(int $idCommande, LivraisonAssignDto $dto): ActionResultDto
+    {
+        $livreurId = (int)$dto->livreurId;
+
+        $livreur = $this->livreurRepository->findById($livreurId);
+        if ($livreur === null) {
+            return ActionResultDto::fail("Livreur introuvable.");
+        }
+
+        $ok = $this->livraisonRepository->assignLivreur($idCommande, $livreurId);
+
+        return $ok
+            ? ActionResultDto::ok("Livreur affecté.")
+            : ActionResultDto::fail("Impossible d'affecter ce livreur (commande non affectable).");
+    }
 }
