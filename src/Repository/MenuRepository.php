@@ -70,5 +70,14 @@ class MenuRepository extends ServiceEntityRepository
         return $this->find($idMenu);
     }
 
+    public function insert(Menu $menu): int
+    {
+        $em = $this->getEntityManager();
+        $em->persist($menu);
+        $em->flush();
+
+        return (int) $menu->getIdMenu();
+    }
+
 
 }
