@@ -62,4 +62,29 @@ class LivraisonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function assignLivreur(int $idCommande, int $idLivreur): void
+    {
+        $cmd = $this->find($idCommande);
+        if (!$cmd) {
+            throw new \InvalidArgumentException("Commande introuvable.");
+        }
+
+        if ($cmd->getTypeConsommation() !== TypeConsommationEnum::LIVRAISON) {
+            throw new \DomainException("La commande n'est pas une livraison.");
+        }
+
+        if ($cmd->getEtat() !== EtatCommandeEnum::VALIDEE) {
+            throw new \DomainException("La commande doit être validée avant assignation.");
+        }
+
+        if ($cmd->getLivreur() !== null) {
+            throw new \DomainException("La commande a déjà un livreur.");
+        }
+
+        $livreurRef = $this->getEntityManager()->getReference(\App\Entity\Livreur::class, $idLivreur);
+        $cmd->setLivreur($livreurRef);
+
+        $this->getEntityManager()->flush();
+    }
+
 }
