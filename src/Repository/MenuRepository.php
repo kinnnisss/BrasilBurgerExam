@@ -2,13 +2,13 @@
 
 namespace App\Repository;
 
+use App\Dto\Catalogue\MenuListItemDto;
+use App\Dto\Common\PagedResultDto;
+use App\Dto\Common\SelectItemDto;
 use App\Entity\Menu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Menu>
- */
 class MenuRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +16,59 @@ class MenuRepository extends ServiceEntityRepository
         parent::__construct($registry, Menu::class);
     }
 
-    //    /**
-    //     * @return Menu[] Returns an array of Menu objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return PagedResultDto items = MenuListItemDto[]
+     */
+    public function search(?string $q, ?bool $archived, int $page, int $pageSize): PagedResultDto
+    {
+        $page = max(1, $page);
+        $pageSize = max(1, min(200, $pageSize));
 
-    //    public function findOneBySomeField($value): ?Menu
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb = $this->createQueryBuilder('m');
+
+        if ($q !== null && trim($q) !== '') {
+            $qb->andWhere('LOWER(m.nom) LIKE :q')
+               ->setParameter('q', '%' . mb_strtolower(trim($q)) . '%');
+        }
+
+        if ($archived !== null) {
+            $qb->andWhere('m.isArchived = :archived')
+               ->setParameter('archived', $archived);
+        }
+
+        $qb->orderBy('m.nom', 'ASC');
+
+        $countQb = clone $qb;
+        $totalItems = (int) $countQb
+            ->select('COUNT(m.idMenu)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $rows = $qb->select('m')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getResult();
+
+        $items = [];
+        foreach ($rows as $menu) {
+            /** @var Menu $menu */
+            $items[] = new MenuListItemDto(
+                (int) $menu->getIdMenu(),
+                $menu->getNom(),
+                (string) $menu->getPrix(),
+                $menu->getImage(),
+                (bool) $menu->isArchived()
+            );
+        }
+
+        return new PagedResultDto($items, $page, $pageSize, $totalItems);
+    }
+
+    public function findById(int $idMenu): ?Menu
+    {
+        return $this->find($idMenu);
+    }
+
+
 }
