@@ -2,6 +2,7 @@
 
 namespace App\Service\Impl;
 
+use App\Dto\Common\ActionResultDto;
 use App\Dto\Commande\CommandeActionsDto;
 use App\Enum\EtatCommandeEnum;
 use App\Repository\CommandeRepository;
@@ -27,4 +28,13 @@ class CommandeService implements CommandeServiceInterface
             $canTerminate
         );
     }
+    public function cancelForClient(int $idClient, int $idCommande): ActionResultDto
+    {
+        if (!$this->commandeRepository->belongsToClient($idCommande, $idClient)) {
+            return ActionResultDto::fail("Cette commande n'appartient pas à ce client.");
+        }
+
+        return $this->cancel($idCommande);
+    }
+
 }
