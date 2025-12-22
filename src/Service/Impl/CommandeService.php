@@ -3,7 +3,7 @@
 namespace App\Service\Impl;
 
 use App\Dto\Common\{ActionResultDto, PagedResultDto};
-use App\Dto\Commande\{CommandeActionsDto, CommandeListFilterDto};
+use App\Dto\Commande\{CommandeActionsDto, CommandeListFilterDto, CommandeDetailsDto, CommandeHeaderDto, LigneCommandeDto, PaiementDto, ClientInfoDto};
 use App\Enum\EtatCommandeEnum;
 use App\Repository\CommandeRepository;
 use App\Repository\PaiementRepository;
@@ -41,7 +41,62 @@ class CommandeService implements CommandeServiceInterface
     {
         return $this->commandeRepository->searchForList($filter);
     }
+    public function getDetails(int $idCommande): CommandeDetailsDto
+    {
+        $raw = $this->commandeRepository->findDetailsById($idCommande);
+        if ($raw === null) {
+            throw new \RuntimeException("Commande introuvable.");
+        }
 
+        /** @var LigneCommandeDto[] $lignes */
+        $lignes = $this->commandeRepository->findLignesByCommande($idCommande);
 
+        $paiementDto = null;
+        if ($raw->idPaiement !== null) {
+            $paiementDto = new PaiementDto(
+                $raw->datePaiement,
+                (string) $raw->montantPaiement,
+                $raw->modePaiement
+            );
+        } else {
+            $p = $this->paiementRepository->findByCommandeId($idCommande);
+            if ($p !== null) {
+                $paiementDto = new PaiementDto(
+                    $p->getDatePaiement(),
+                    (string) $p->getMontant(),
+                    $p->getModePaiement()
+                );
+            }
+        }
+
+        $header = new CommandeHeaderDto(
+            $raw->idCommande,
+            $raw->reference,
+            $raw->dateCommande,
+            $raw->etat,
+            $raw->typeConsommation,
+            (string) $raw->montantTotal,
+            $raw->zoneLibelle,
+            $raw->quartierLibelle,
+            $raw->getLivreurNomComplet()
+        );
+
+        $client = new ClientInfoDto(
+            $raw->idClient,
+            $raw->getClientNomComplet(),
+            $raw->clientTelephone,
+            $raw->clientLogin
+        );
+
+        $actions = $this->computeActions($raw->etat);
+
+        return new CommandeDetailsDto(
+            $header,
+            $client,
+            $lignes,
+            $paiementDto,
+            $actions
+        );
+    }
 
 }
