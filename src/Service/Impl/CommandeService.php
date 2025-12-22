@@ -136,4 +136,21 @@ class CommandeService implements CommandeServiceInterface
             : ActionResultDto::fail("Impossible de valider la commande.");
     }
 
+        public function terminate(int $idCommande): ActionResultDto
+    {
+        $cmd = $this->commandeRepository->findById($idCommande);
+        if ($cmd === null) {
+            return ActionResultDto::fail("Commande introuvable.");
+        }
+
+        if ($cmd->getEtat() !== EtatCommandeEnum::VALIDEE) {
+            return ActionResultDto::fail("Seule une commande VALIDEE peut être terminée.");
+        }
+
+        $ok = $this->commandeRepository->updateEtat($idCommande, EtatCommandeEnum::TERMINER);
+
+        return $ok
+            ? ActionResultDto::ok("Commande terminée.")
+            : ActionResultDto::fail("Impossible de terminer la commande.");
+    }
 }
