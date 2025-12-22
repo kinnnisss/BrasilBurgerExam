@@ -41,4 +41,5 @@ class ClientService implements ClientServiceInterface
 
         return new ClientDetailsDto($clientInfo, $commandes);
     }
+
 }
