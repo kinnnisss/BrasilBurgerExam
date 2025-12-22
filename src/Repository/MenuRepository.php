@@ -79,5 +79,10 @@ class MenuRepository extends ServiceEntityRepository
         return (int) $menu->getIdMenu();
     }
 
+    public function update(Menu $menu): bool
+    {
+        $this->getEntityManager()->flush();
+        return true;
+    }
 
 }
