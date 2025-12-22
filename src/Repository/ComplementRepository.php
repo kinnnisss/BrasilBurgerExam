@@ -2,13 +2,14 @@
 
 namespace App\Repository;
 
+use App\Dto\Catalogue\ComplementListItemDto;
+use App\Dto\Common\PagedResultDto;
+use App\Dto\Common\SelectItemDto;
 use App\Entity\Complement;
+use App\Enum\TypeComplementEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Complement>
- */
 class ComplementRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +17,65 @@ class ComplementRepository extends ServiceEntityRepository
         parent::__construct($registry, Complement::class);
     }
 
-    //    /**
-    //     * @return Complement[] Returns an array of Complement objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return PagedResultDto items = ComplementListItemDto[]
+     */
+    public function search(
+        ?string $q,
+        ?TypeComplementEnum $type,
+        ?bool $archived,
+        int $page,
+        int $pageSize
+    ): PagedResultDto {
+        $page = max(1, $page);
+        $pageSize = max(1, min(200, $pageSize));
 
-    //    public function findOneBySomeField($value): ?Complement
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb = $this->createQueryBuilder('c');
+
+        if ($q !== null && trim($q) !== '') {
+            $qb->andWhere('LOWER(c.nom) LIKE :q')
+               ->setParameter('q', '%' . mb_strtolower(trim($q)) . '%');
+        }
+
+        if ($type !== null) {
+            $qb->andWhere('c.typeComplement = :type')
+               ->setParameter('type', $type);
+        }
+
+        if ($archived !== null) {
+            $qb->andWhere('c.isArchived = :archived')
+               ->setParameter('archived', $archived);
+        }
+
+        $qb->orderBy('c.nom', 'ASC');
+
+        $countQb = clone $qb;
+        $totalItems = (int) $countQb
+            ->select('COUNT(c.idComplement)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $rows = $qb->select('c')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getResult();
+
+        $items = [];
+        foreach ($rows as $c) {
+            /** @var Complement $c */
+            $items[] = new ComplementListItemDto(
+                $c->getIdComplement(),
+                $c->getNom(),
+                $c->getTypeComplement(),
+                (string) $c->getPrix(),
+                $c->getImage(),
+                (bool) $c->isArchived()
+            );
+        }
+
+        return new PagedResultDto($items, $page, $pageSize, $totalItems);
+    }
+
+
 }
