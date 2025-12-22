@@ -37,6 +37,9 @@ class LivreurRepository extends ServiceEntityRepository
 
         return $items;
     }
-
+    public function findById(int $idLivreur): ?Livreur
+    {
+        return $this->find($idLivreur);
+    }
 
 }
