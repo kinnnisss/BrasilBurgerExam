@@ -85,4 +85,20 @@ class MenuRepository extends ServiceEntityRepository
         return true;
     }
 
+    public function setArchived(int $idMenu, bool $archived): bool
+    {
+        $em = $this->getEntityManager();
+        $menu = $this->find($idMenu);
+
+        if (!$menu) {
+            return false;
+        }
+
+        $menu->setIsArchived($archived);
+        $em->flush();
+
+        return true;
+    }
+
+
 }
