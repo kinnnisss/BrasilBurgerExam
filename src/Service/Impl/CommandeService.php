@@ -2,8 +2,8 @@
 
 namespace App\Service\Impl;
 
-use App\Dto\Common\ActionResultDto;
-use App\Dto\Commande\CommandeActionsDto;
+use App\Dto\Common\{ActionResultDto, PagedResultDto};
+use App\Dto\Commande\{CommandeActionsDto, CommandeListFilterDto};
 use App\Enum\EtatCommandeEnum;
 use App\Repository\CommandeRepository;
 use App\Repository\PaiementRepository;
@@ -36,5 +36,12 @@ class CommandeService implements CommandeServiceInterface
 
         return $this->cancel($idCommande);
     }
+
+    public function search(CommandeListFilterDto $filter): PagedResultDto
+    {
+        return $this->commandeRepository->searchForList($filter);
+    }
+
+
 
 }
