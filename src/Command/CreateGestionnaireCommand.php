@@ -23,5 +23,15 @@ class CreateGestionnaireCommand extends Command
     ) {
         parent::__construct();
     }
+    protected function configure(): void
+    {
+        $this
+            ->addArgument('nom', InputArgument::REQUIRED)
+            ->addArgument('prenom', InputArgument::REQUIRED)
+            ->addArgument('login', InputArgument::REQUIRED)
+            ->addArgument('password', InputArgument::REQUIRED);
+    }
+
+
 
 }
