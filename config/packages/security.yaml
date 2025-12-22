@@ -1,0 +1,36 @@
+security:
+  password_hashers:
+    App\Entity\Gestionnaire: 'auto'
+
+  providers:
+    gestionnaire_provider:
+      entity:
+        class: App\Entity\Gestionnaire
+        property: login
+
+  firewalls:
+    dev:
+      pattern: ^/(_profiler|_wdt|assets|build)/
+      security: false
+
+    main:
+      lazy: true
+      provider: gestionnaire_provider
+      custom_authenticator: App\Security\GestionnaireAuthenticator
+
+      logout:
+        path: app_logout
+        target: /login
+
+  access_control:
+    - { path: ^/login$, roles: PUBLIC_ACCESS }
+    - { path: ^/, roles: ROLE_GESTIONNAIRE }
+
+when@test:
+  security:
+    password_hashers:
+      App\Entity\Gestionnaire:
+        algorithm: auto
+        cost: 4
+        time_cost: 3
+        memory_cost: 10
