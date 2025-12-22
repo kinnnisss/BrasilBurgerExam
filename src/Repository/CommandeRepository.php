@@ -175,5 +175,8 @@ class CommandeRepository extends ServiceEntityRepository
         return $count > 0;
     }
 
-
+    public function findById(int $idCommande): ?Commande
+    {
+        return $this->find($idCommande);
+    }
 }
