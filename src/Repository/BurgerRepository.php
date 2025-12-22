@@ -84,6 +84,21 @@ class BurgerRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
         return true;
     }
+    public function setArchived(int $idBurger, bool $archived): bool
+    {
+        $em = $this->getEntityManager();
+        $burger = $this->find($idBurger);
+
+        if (!$burger) {
+            return false;
+        }
+
+        $burger->setIsArchived($archived);
+        $em->flush();
+
+        return true;
+    }
+
 
 
 }
