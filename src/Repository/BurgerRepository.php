@@ -65,5 +65,10 @@ class BurgerRepository extends ServiceEntityRepository
         return new PagedResultDto($items, $page, $pageSize, $totalItems);
     }
 
+    public function findById(int $idBurger): ?Burger
+    {
+        return $this->find($idBurger);
+    }
+
 
 }
