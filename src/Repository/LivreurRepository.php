@@ -2,13 +2,11 @@
 
 namespace App\Repository;
 
+use App\Dto\Common\SelectItemDto;
 use App\Entity\Livreur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Livreur>
- */
 class LivreurRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +14,29 @@ class LivreurRepository extends ServiceEntityRepository
         parent::__construct($registry, Livreur::class);
     }
 
-    //    /**
-    //     * @return Livreur[] Returns an array of Livreur objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /** @return SelectItemDto[] */
+    public function findAllForSelect(): array
+    {
+        $rows = $this->createQueryBuilder('l')
+            ->orderBy('l.nom', 'ASC')
+            ->addOrderBy('l.prenom', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?Livreur
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $items = [];
+        foreach ($rows as $l) {
+            /** @var Livreur $l */
+            $label = sprintf(
+                '%s %s (%s)',
+                $l->getNom(),
+                $l->getPrenom(),
+                $l->getTelephone()
+            );
+            $items[] = new SelectItemDto((int)$l->getIdLivreur(), $label);
+        }
+
+        return $items;
+    }
+
+
 }
