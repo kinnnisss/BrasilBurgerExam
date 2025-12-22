@@ -100,5 +100,24 @@ class MenuRepository extends ServiceEntityRepository
         return true;
     }
 
+    /**
+     * @return SelectItemDto[]
+     */
+    public function findActiveForSelect(): array
+    {
+        $rows = $this->createQueryBuilder('m')
+            ->andWhere('m.isArchived = false')
+            ->orderBy('m.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
 
+        $items = [];
+        foreach ($rows as $m) {
+            /** @var Menu $m */
+            $label = sprintf('%s - %s', $m->getNom(), (string) $m->getPrix());
+            $items[] = new SelectItemDto((int) $m->getIdMenu(), $label);
+        }
+
+        return $items;
+    }
 }
