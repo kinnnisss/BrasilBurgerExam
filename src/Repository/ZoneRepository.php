@@ -30,5 +30,8 @@ class ZoneRepository extends ServiceEntityRepository
         return $items;
     }
 
-
+    public function findById(int $idZone): ?Zone
+    {
+        return $this->find($idZone);
+    }
 }
