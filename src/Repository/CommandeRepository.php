@@ -2,13 +2,18 @@
 
 namespace App\Repository;
 
+use App\Dto\Commande\CommandeListFilterDto;
+use App\Dto\Commande\CommandeListItemDto;
+use App\Dto\Commande\LigneCommandeDto;
+use App\Dto\Common\PagedResultDto;
+use App\Dto\Raw\CommandeDetailsRawDto;
+use App\Dto\Raw\LigneCommandeRowRawDto;
 use App\Entity\Commande;
+use App\Entity\LigneCommande;
+use App\Enum\TypeArticleEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Commande>
- */
 class CommandeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +21,70 @@ class CommandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Commande::class);
     }
 
-    //    /**
-    //     * @return Commande[] Returns an array of Commande objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /** @return PagedResultDto items = CommandeListItemDto[] */
+    public function searchForList(CommandeListFilterDto $filter): PagedResultDto
+    {
+        $page = max(1, (int)$filter->page);
+        $pageSize = max(1, min(200, (int)$filter->pageSize));
 
-    //    public function findOneBySomeField($value): ?Commande
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb = $this->createQueryBuilder('c')
+            ->innerJoin('c.client', 'cl');
+
+        if ($filter->date !== null) {
+            $start = \DateTimeImmutable::createFromInterface($filter->date)->setTime(0, 0, 0);
+            $end   = $start->modify('+1 day');
+
+            $qb->andWhere('c.dateCommande >= :start AND c.dateCommande < :end')
+               ->setParameter('start', $start)
+               ->setParameter('end', $end);
+        }
+
+        if ($filter->etat !== null) {
+            $qb->andWhere('c.etat = :etat')
+               ->setParameter('etat', $filter->etat);
+        }
+
+        if ($filter->typeArticle !== null) {
+            $qb->innerJoin('c.lignes', 'lc_type')
+               ->andWhere('lc_type.typeArticle = :ta')
+               ->setParameter('ta', $filter->typeArticle)
+               ->groupBy('c.idCommande');
+
+        }
+
+        $countQb = clone $qb;
+        $totalItems = (int)$countQb
+            ->select('COUNT(DISTINCT c.idCommande)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $rows = $qb->select('c', 'cl')
+            ->orderBy('c.dateCommande', 'DESC')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getResult();
+
+        $items = [];
+        foreach ($rows as $row) {
+            $commande = is_array($row) ? $row[0] : $row;
+            /** @var Commande $commande */
+            $client = $commande->getClient();
+
+            $items[] = new CommandeListItemDto(
+                (int)$commande->getIdCommande(),
+                $commande->getReference(),
+                $commande->getDateCommande(),
+                trim($client->getNom().' '.$client->getPrenom()),
+                $client->getTelephone(),
+                $commande->getTypeConsommation(),
+                (string)$commande->getMontantTotal(),
+                $commande->getEtat()
+            );
+        }
+
+        return new PagedResultDto($items, $page, $pageSize, $totalItems);
+    }
+
+
 }

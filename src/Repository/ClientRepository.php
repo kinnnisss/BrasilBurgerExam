@@ -58,4 +58,8 @@ class ClientRepository extends ServiceEntityRepository
         return new PagedResultDto($items, $page, $pageSize, $totalItems);
     }
 
+        public function findById(int $idClient): ?Client
+    {
+        return $this->find($idClient);
+    }
 }
