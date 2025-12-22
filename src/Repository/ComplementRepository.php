@@ -82,5 +82,15 @@ class ComplementRepository extends ServiceEntityRepository
         return $this->find($idComplement);
     }
 
+    public function insert(Complement $complement): int
+    {
+        $em = $this->getEntityManager();
+        $em->persist($complement);
+        $em->flush();
+
+        return (int) $complement->getIdComplement();
+    }
+
+
 
 }
