@@ -70,5 +70,15 @@ class BurgerRepository extends ServiceEntityRepository
         return $this->find($idBurger);
     }
 
+    public function insert(Burger $burger): int
+    {
+        $em = $this->getEntityManager();
+        $em->persist($burger);
+        $em->flush();
+
+        return (int) $burger->getIdBurger();
+    }
+
+
 
 }
