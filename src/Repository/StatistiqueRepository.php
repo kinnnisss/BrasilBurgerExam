@@ -58,4 +58,20 @@ class StatistiqueRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function sumRecettesDuJour(\DateTimeInterface $day): string
+    {
+        $start = \DateTimeImmutable::createFromInterface($day)->setTime(0, 0, 0);
+        $end   = $start->modify('+1 day');
+
+        $qb = $this->createQueryBuilder('c')
+            ->innerJoin('c.paiement', 'p')
+            ->andWhere('c.dateCommande >= :start AND c.dateCommande < :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->select('COALESCE(SUM(p.montant), 0)');
+
+        $val = $qb->getQuery()->getSingleScalarResult();
+        return number_format((float)$val, 2, '.', '');
+    }
+
 }
