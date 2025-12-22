@@ -31,4 +31,12 @@ class LivraisonService implements LivraisonServiceInterface
         );
     }
 
+    private function moneyAdd(string $a, string $b): string
+    {
+        if (function_exists('bcadd')) {
+            return bcadd($a, $b, 2);
+        }
+        return number_format(((float)$a + (float)$b), 2, '.', '');
+    }
+
 }
