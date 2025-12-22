@@ -91,6 +91,11 @@ class ComplementRepository extends ServiceEntityRepository
         return (int) $complement->getIdComplement();
     }
 
+   public function update(Complement $complement): bool
+    {
+        $this->getEntityManager()->flush();
+        return true;
+    }
 
 
 }
