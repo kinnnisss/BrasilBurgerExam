@@ -24,4 +24,22 @@ class BurgerService implements BurgerServiceInterface
         return $this->burgerRepository->search($q, $archived, $page, $pageSize);
     }
 
+    public function getEditData(int $idBurger): BurgerEditDto
+    {
+        $burger = $this->burgerRepository->findById($idBurger);
+
+        if (!$burger) {
+            // On reste strict : le controller gère 404
+            throw new \RuntimeException("Burger introuvable (id=$idBurger).");
+        }
+
+        return new BurgerEditDto(
+            (int) $burger->getIdBurger(),
+            $burger->getNom(),
+            (string) $burger->getPrix(),
+            $burger->getImage(),
+            (bool) $burger->isArchived()
+        );
+    }
+
 }
