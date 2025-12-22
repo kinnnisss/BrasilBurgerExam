@@ -2,13 +2,13 @@
 
 namespace App\Repository;
 
+use App\Dto\Client\ClientFilterDto;
+use App\Dto\Client\ClientListItemDto;
+use App\Dto\Common\PagedResultDto;
 use App\Entity\Client;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Client>
- */
 class ClientRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +16,46 @@ class ClientRepository extends ServiceEntityRepository
         parent::__construct($registry, Client::class);
     }
 
-    //    /**
-    //     * @return Client[] Returns an array of Client objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /** @return PagedResultDto items = ClientListItemDto[] */
+    public function search(ClientFilterDto $filter): PagedResultDto
+    {
+        $page = max(1, $filter->page);
+        $pageSize = max(1, min(200, $filter->pageSize));
+        $q = $filter->q !== null ? trim($filter->q) : null;
 
-    //    public function findOneBySomeField($value): ?Client
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb = $this->createQueryBuilder('c');
+
+        if ($q !== null && $q !== '') {
+            $qq = '%' . mb_strtolower($q) . '%';
+            $qb->andWhere('LOWER(c.nom) LIKE :q OR LOWER(c.prenom) LIKE :q OR LOWER(c.telephone) LIKE :q')
+               ->setParameter('q', $qq);
+        }
+
+        $qb->orderBy('c.nom', 'ASC')->addOrderBy('c.prenom', 'ASC');
+
+        $countQb = clone $qb;
+        $totalItems = (int)$countQb->select('COUNT(c.idClient)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $rows = $qb->select('c')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getResult();
+
+        $items = [];
+        foreach ($rows as $c) {
+            /** @var Client $c */
+            $items[] = new ClientListItemDto(
+                (int)$c->getIdClient(),
+                trim($c->getNom() . ' ' . $c->getPrenom()),
+                $c->getTelephone(),
+                $c->getLogin()
+            );
+        }
+
+        return new PagedResultDto($items, $page, $pageSize, $totalItems);
+    }
+
 }
