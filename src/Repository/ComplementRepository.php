@@ -111,6 +111,29 @@ class ComplementRepository extends ServiceEntityRepository
 
         return true;
     }
+    /**
+     * @return SelectItemDto[]
+     */
+    public function findActiveForSelectByType(TypeComplementEnum $type): array
+    {
+        $rows = $this->createQueryBuilder('c')
+            ->andWhere('c.isArchived = false')
+            ->andWhere('c.typeComplement = :type')
+            ->setParameter('type', $type)
+            ->orderBy('c.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $items = [];
+        foreach ($rows as $c) {
+            /** @var Complement $c */
+            $label = sprintf('%s - %s', $c->getNom(), (string) $c->getPrix());
+            $items[] = new SelectItemDto((int) $c->getIdComplement(), $label);
+        }
+
+        return $items;
+    }
+
 
 
 }
