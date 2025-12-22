@@ -118,4 +118,22 @@ class CommandeService implements CommandeServiceInterface
             : ActionResultDto::fail("Impossible d'annuler la commande.");
     }
 
+    public function validate(int $idCommande): ActionResultDto
+    {
+        $cmd = $this->commandeRepository->findById($idCommande);
+        if ($cmd === null) {
+            return ActionResultDto::fail("Commande introuvable.");
+        }
+
+        if ($cmd->getEtat() !== EtatCommandeEnum::ENCOURS) {
+            return ActionResultDto::fail("Seule une commande ENCOURS peut être validée.");
+        }
+
+        $ok = $this->commandeRepository->updateEtat($idCommande, EtatCommandeEnum::VALIDEE);
+
+        return $ok
+            ? ActionResultDto::ok("Commande validée.")
+            : ActionResultDto::fail("Impossible de valider la commande.");
+    }
+
 }
