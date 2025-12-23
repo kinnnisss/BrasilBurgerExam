@@ -35,6 +35,15 @@ class ImageStorageService implements ImageStorageServiceInterface
 
         return $folder . '/' . $name;
     }
+    public function delete(string $relativePath): void
+    {
+        $relativePath = ltrim($relativePath, '/');
+        $path = rtrim($this->uploadDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $relativePath;
+
+        if ($this->filesystem->exists($path)) {
+            $this->filesystem->remove($path);
+        }
+    }
 
 
 }
