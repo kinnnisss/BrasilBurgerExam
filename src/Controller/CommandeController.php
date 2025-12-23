@@ -55,4 +55,12 @@ class CommandeController extends AbstractController
         return $this->redirectToRoute('commande_details', ['id' => $id]);
     }
 
+    #[Route('/gestionnaire/commandes/{id}/validate', name: 'commande_validate', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function validate(int $id): Response
+    {
+        $res = $this->commandeService->validate($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('commande_details', ['id' => $id]);
+    }
+
 }
