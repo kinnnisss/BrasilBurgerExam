@@ -132,5 +132,11 @@ class ComplementService implements ComplementServiceInterface
         return $ok ? ActionResultDto::ok("Complément archivé.") : ActionResultDto::fail("Complément introuvable.");
     }
 
+    public function unarchive(int $idComplement): ActionResultDto
+    {
+        $ok = $this->complementRepository->setArchived($idComplement, false);
+        return $ok ? ActionResultDto::ok("Complément désarchivé.") : ActionResultDto::fail("Complément introuvable.");
+    }
+
 
 }
