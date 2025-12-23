@@ -1,0 +1,70 @@
+{# templates/partials/sidebar.html.twig #}
+
+<aside class="bb-sidebar">
+  <!-- Profil -->
+  <div class="bb-sidebar__profile">
+    <img
+      class="bb-sidebar__avatar"
+      src="{{ asset('assets/images/admin-avatar.png') }}"
+      alt="Admin"
+    >
+
+    <div class="bb-sidebar__profile-text">
+      <div class="bb-sidebar__name">Brasil Burger</div>
+      <div class="bb-sidebar__role">Admin</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="bb-sidebar__nav">
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
+       href="{{ path('dashboard_index') }}">
+      <span class="icon">⬛</span>
+      Dashboard
+    </a>
+
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'burger' %}active{% endif %}"
+       href="{{ path('burger_index') }}">
+      <span class="icon">🍔</span>
+      Burgers
+    </a>
+
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'menu' %}active{% endif %}"
+       href="{{ path('menu_index') }}">
+      <span class="icon">📋</span>
+      Menus
+    </a>
+
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'complement' %}active{% endif %}"
+       href="{{ path('complement_index') }}">
+      <span class="icon">➕</span>
+      Compléments
+    </a>
+
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'commande' %}active{% endif %}"
+       href="{{ path('commande_index') }}">
+      <span class="icon">🛒</span>
+      Commandes
+    </a>
+
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'livraison' %}active{% endif %}"
+       href="{{ path('livraison_board') }}">
+      <span class="icon">🚚</span>
+      Livraisons
+    </a>
+
+    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'client' %}active{% endif %}"
+       href="{{ path('client_index') }}">
+      <span class="icon">👥</span>
+      Clients
+    </a>
+  </nav>
+
+  <!-- Déconnexion -->
+  <div class="bb-sidebar__logout">
+    <a href="{{ path('app_logout') }}">
+      <span class="icon">↩</span>
+      Déconnexion
+    </a>
+  </div>
+</aside>

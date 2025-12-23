@@ -1,0 +1,158 @@
+/* ===== Page Login (Gestionnaire) ===== */
+
+body.bb-auth{
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  background: linear-gradient(180deg, #ff6a00 0%, #1d3b8f 100%);
+}
+
+.bb-auth__wrap{
+  width: min(520px, calc(100% - 28px));
+  padding: 24px 0;
+}
+
+.bb-auth-card{
+  background: #ffffff;
+  color: #1b1b1b;
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.25);
+  padding: 26px 28px 22px;
+}
+
+.bb-auth-card__top{
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.bb-auth-logo{
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 12px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #1b3c98;
+}
+
+.bb-auth-logo__emoji{
+  font-size: 28px;
+}
+
+.bb-auth-title{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.bb-auth-subtitle{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #1b3c98;
+}
+
+.bb-auth-alert{
+  margin: 12px 0 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff2f2;
+  border: 1px solid rgba(255,77,77,.35);
+  color: #b10000;
+  font-size: 13px;
+}
+
+.bb-auth-form{
+  display: grid;
+  gap: 14px;
+}
+
+.bb-field{
+  display: grid;
+  gap: 8px;
+}
+
+.bb-label{
+  font-size: 13px;
+  color: #1b3c98;
+  font-weight: 600;
+}
+
+.bb-required{
+  color: #ff3b30;
+}
+
+.bb-input{
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.10);
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+}
+
+.bb-input:focus{
+  border-color: rgba(27,60,152,.45);
+  box-shadow: 0 0 0 4px rgba(27,60,152,.12);
+}
+
+.bb-remember{
+  margin-top: -4px;
+}
+
+.bb-remember__label{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba(0,0,0,.65);
+}
+
+.bb-auth-btn{
+  height: 46px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+  background: #1b3c98;
+  transition: transform .12s ease, filter .12s ease;
+}
+
+.bb-auth-btn:hover{
+  filter: brightness(1.05);
+}
+
+.bb-auth-btn:active{
+  transform: translateY(1px);
+}
+
+.bb-auth-divider{
+  height: 1px;
+  background: rgba(0,0,0,.08);
+  margin: 18px 0 14px;
+}
+
+.bb-auth-footer{
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  padding-bottom: 6px;
+}
+
+.bb-auth-footer__text{
+  font-size: 13px;
+  color: rgba(0,0,0,.65);
+}
+
+.bb-auth-link{
+  font-size: 13px;
+  color: #1b3c98;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.bb-auth-link:hover{
+  text-decoration: underline;
+}

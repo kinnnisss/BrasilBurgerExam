@@ -1,0 +1,161 @@
+{# templates/dashboard/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
+{% block page_subtitle %}{{ "now"|date("l d F Y") }}{% endblock %}
+
+{% block body %}
+
+  <section class="db-cards">
+    <article class="db-card">
+      <div class="db-card__icon is-orange">🛒</div>
+      <div class="db-card__meta">
+        <div class="db-card__label">Commandes en cours</div>
+        <div class="db-card__value">{{ dto.enCours }}</div>
+      </div>
+    </article>
+
+    <article class="db-card">
+      <div class="db-card__icon is-blue">✅</div>
+      <div class="db-card__meta">
+        <div class="db-card__label">Commandes validées</div>
+        <div class="db-card__value">{{ dto.validees }}</div>
+      </div>
+    </article>
+
+    <article class="db-card">
+      <div class="db-card__icon is-green">✅</div>
+      <div class="db-card__meta">
+        <div class="db-card__label">Commandes terminées</div>
+        <div class="db-card__value">{{ dto.terminees }}</div>
+      </div>
+    </article>
+
+    <article class="db-card">
+      <div class="db-card__icon is-red">✖</div>
+      <div class="db-card__meta">
+        <div class="db-card__label">Commandes annulées</div>
+        <div class="db-card__value">{{ dto.annulees }}</div>
+      </div>
+    </article>
+
+    <article class="db-card">
+      <div class="db-card__icon is-green">$</div>
+      <div class="db-card__meta">
+        <div class="db-card__label">Recettes du jour</div>
+        <div class="db-card__value">
+          {{ dto.recettes }} <span class="db-card__unit">FCFA</span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="db-panel">
+    <div class="db-panel__head">
+      <h3 class="db-panel__title">Ventes de la semaine</h3>
+      <span class="db-panel__trend">📈</span>
+    </div>
+
+    <div class="db-chart">
+      <canvas id="salesWeekChart" height="120"></canvas>
+    </div>
+  </section>
+
+  <section class="db-panel">
+    <div class="db-panel__head">
+      <h3 class="db-panel__title">Produits les plus vendus</h3>
+    </div>
+
+    <div class="db-top">
+      {% for item in dto.topBurgers %}
+        <div class="db-top__row">
+          <div class="db-top__left">
+            <div class="db-top__rank">{{ loop.index }}</div>
+            <div class="db-top__info">
+              <div class="db-top__name">{{ item.nom }}</div>
+              <div class="db-top__sub">{{ item.totalQuantite }} vendus</div>
+            </div>
+          </div>
+          <div class="db-top__amount">— FCFA</div>
+        </div>
+      {% else %}
+        <div class="db-empty">Aucune vente aujourd’hui.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="db-panel">
+    <div class="db-panel__head">
+      <h3 class="db-panel__title">Dernières commandes</h3>
+    </div>
+
+    <div class="db-table">
+      <table class="db-table__table">
+        <thead>
+        <tr>
+          <th>Référence</th>
+          <th>Client</th>
+          <th>Date</th>
+          <th>Montant</th>
+          <th>État</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for c in lastOrders %}
+          <tr>
+            <td class="db-strong">{{ c.reference }}</td>
+            <td>{{ c.clientNomComplet }}</td>
+            <td>{{ c.dateCommande|date('d/m/Y') }}</td>
+            <td class="db-amount">{{ c.montantTotal }} FCFA</td>
+            <td>
+              <span class="db-badge
+                {% if c.etat.value == 'ENCOURS' %} is-warn{% endif %}
+                {% if c.etat.value == 'VALIDEE' %} is-blue{% endif %}
+                {% if c.etat.value == 'TERMINER' %} is-green{% endif %}
+                {% if c.etat.value == 'ANNULEE' %} is-red{% endif %}
+              ">
+                {{ c.etat.value }}
+              </span>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="db-empty-row">Aucune commande trouvée.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block javascripts %}
+  {# Chart.js via CDN (simple) #}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    const labels = {{ weekLabels|json_encode|raw }};
+    const values = {{ weekValues|json_encode|raw }};
+
+    const ctx = document.getElementById('salesWeekChart');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'FCFA',
+          data: values
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+{% endblock %}

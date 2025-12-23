@@ -1,3 +1,91 @@
-body {
-    background-color: skyblue;
+/* ===== SIDEBAR ===== */
+@import "./pages/login.css";
+@import "./pages/dashboard.css";
+
+.bb-sidebar{
+  width: 260px;
+  min-height: 100vh;
+  background: #1b3c98;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+}
+
+.bb-sidebar__profile{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.bb-sidebar__avatar{
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bb-sidebar__name{
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.bb-sidebar__role{
+  font-size: 13px;
+  opacity: .8;
+}
+
+.bb-sidebar__nav{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bb-sidebar__link{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background .15s ease, color .15s ease;
+}
+
+.bb-sidebar__link .icon{
+  width: 20px;
+  text-align: center;
+}
+
+.bb-sidebar__link:hover{
+  background: rgba(255,255,255,.12);
+}
+
+.bb-sidebar__link.active{
+  background: #fff;
+  color: #1b3c98;
+  font-weight: 600;
+}
+
+.bb-sidebar__logout{
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.2);
+}
+
+.bb-sidebar__logout a{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.bb-sidebar__logout a:hover{
+  background: rgba(255,255,255,.12);
 }
