@@ -44,4 +44,25 @@ class LivraisonController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/livraisons/{idCommande}/assign', name: 'livraison_assign', requirements: ['idCommande' => '\d+'], methods: ['POST'])]
+    public function assign(int $idCommande, Request $request): Response
+    {
+        $dto = new LivraisonAssignDto();
+
+        $filterData = $this->livraisonService->getFilterData();
+
+        $form = $this->createForm(AssignLivreurFormType::class, $dto, [
+            'livreurs' => $filterData->livreurs,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->livraisonService->assignLivreur($idCommande, $dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        } else {
+            $this->addFlash('danger', 'Formulaire invalide.');
+        }
+
+        return $this->redirectToRoute('livraison_board');
+    }
 }
