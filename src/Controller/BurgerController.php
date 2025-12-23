@@ -48,5 +48,26 @@ class BurgerController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/burgers/create', name: 'burger_create', methods: ['GET', 'POST'])]
+    public function create(Request $request): Response
+    {
+        $dto = new BurgerUpsertDto();
+        $form = $this->createForm(BurgerCreateFormType::class, $dto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->burgerService->create($dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+            if ($res->success) {
+                return $this->redirectToRoute('burger_index');
+            }
+        }
+
+        return $this->render('burger/create.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
 
 }
