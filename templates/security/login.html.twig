@@ -1,34 +1,82 @@
-{% extends 'base.html.twig' %}
+{# templates/security/login.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - Brasil Burger</title>
 
-{% block title %}Log in!{% endblock %}
+  <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/pages/login.css') }}">
+</head>
 
-{% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<body class="bb-auth">
+  <main class="bb-auth__wrap">
+    <section class="bb-auth-card" aria-label="Connexion gestionnaire">
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+      <div class="bb-auth-card__top">
+        <div class="bb-auth-logo" aria-hidden="true">
+          <span class="bb-auth-logo__emoji">🍔</span>
         </div>
-    {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputLogin">Login</label>
-    <input type="text" value="{{ last_username }}" name="login" id="inputLogin" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        <h1 class="bb-auth-title">Brasil Burger</h1>
+        <p class="bb-auth-subtitle">Espace Gestionnaire</p>
+      </div>
 
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
-    </div>
+      {% if error %}
+        <div class="bb-auth-alert" role="alert">
+          Identifiant ou mot de passe incorrect.
+        </div>
+      {% endif %}
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
-{% endblock %}
+      <form class="bb-auth-form" method="post" action="{{ path('app_login') }}">
+        <div class="bb-field">
+          <label class="bb-label" for="login">Login <span class="bb-required">*</span></label>
+          <input
+            class="bb-input"
+            type="text"
+            id="login"
+            name="login"
+            value="{{ last_username }}"
+            placeholder="Votre identifiant"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="bb-field">
+          <label class="bb-label" for="password">Mot de passe <span class="bb-required">*</span></label>
+          <input
+            class="bb-input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <div class="bb-remember">
+          <label class="bb-remember__label">
+            <input type="checkbox" name="_remember_me">
+            <span>Rester connecté</span>
+          </label>
+        </div>
+
+        <button class="bb-auth-btn" type="submit">Se connecter</button>
+      </form>
+
+      <div class="bb-auth-divider"></div>
+
+      <div class="bb-auth-footer">
+        <div class="bb-auth-footer__text">Vous êtes client ?</div>
+
+        <a class="bb-auth-link" href="{{ path('client_home') }}">Accéder à l'interface client</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -86,4 +86,9 @@ class StatistiqueRepository extends ServiceEntityRepository
     {
         return $this->countByEtatForDay($day, EtatCommandeEnum::ANNULEE);
     }
+    public function countCommandesTermineesDuJour(\DateTimeInterface $day): int
+    {
+        return $this->countByEtatForDay($day, EtatCommandeEnum::TERMINER);
+    }
+
 }
