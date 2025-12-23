@@ -65,4 +65,11 @@ class MenuPriceService implements MenuPriceServiceInterface
         return new MenuPriceDto($total, $economyPercent, $economyAmount);
     }
 
+    public function calculateEconomy(MenuPriceDto $base, int $percent): MenuPriceDto
+    {
+        $p = max(0, min(100, $percent));
+        $economyAmount = $this->moneyRound($this->moneyMulPercent($base->total, $p));
+        return new MenuPriceDto($base->total, $p, $economyAmount);
+    }
+
 }
