@@ -47,4 +47,12 @@ class CommandeController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/commandes/{id}/cancel', name: 'commande_cancel', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function cancel(int $id): Response
+    {
+        $res = $this->commandeService->cancel($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('commande_details', ['id' => $id]);
+    }
+
 }
