@@ -27,7 +27,7 @@ class DashboardController extends AbstractController
         $filter = new CommandeListFilterDto();
         $filter->page = 1;
         $filter->pageSize = 5;
-
+        $filter->date = $today;
 
         $paged = $this->commandeRepository->searchForList($filter);
         $lastOrders = $paged->items;
