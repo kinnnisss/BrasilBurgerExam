@@ -48,5 +48,12 @@ class ComplementService implements ComplementServiceInterface
         );
     }
 
+    private function isPositiveNumber(string $value): bool
+    {
+        if (!is_numeric($value)) {
+            return false;
+        }
+        return (float) $value > 0;
+    }
 
 }
