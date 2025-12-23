@@ -112,4 +112,13 @@ class BurgerService implements BurgerServiceInterface
 
         return ActionResultDto::ok("Burger modifié avec succès.", $idBurger);
     }
+
+    public function archive(int $idBurger): ActionResultDto
+    {
+        $ok = $this->burgerRepository->setArchived($idBurger, true);
+        return $ok
+            ? ActionResultDto::ok("Burger archivé.")
+            : ActionResultDto::fail("Burger introuvable.");
+    }
+
 }
