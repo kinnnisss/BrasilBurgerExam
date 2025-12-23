@@ -125,6 +125,58 @@ class MenuService implements MenuServiceInterface
             return ActionResultDto::fail("Erreur création menu: " . $e->getMessage());
         }
     }
+    public function update(int $idMenu, MenuUpdateDto $dto): ActionResultDto
+    {
+        $menu = $this->menuRepository->findById($idMenu);
+        if (!$menu) {
+            return ActionResultDto::fail("Menu introuvable.");
+        }
+
+        $nom = trim((string)$dto->nom);
+        if ($nom === '') {
+            return ActionResultDto::fail("Le nom du menu est obligatoire.");
+        }
+
+        try {
+            $burger = $this->burgerRepository->findById((int)$dto->burgerId);
+            if (!$burger || $burger->isArchived()) {
+                return ActionResultDto::fail("Burger invalide ou archivé.");
+            }
+
+            $frites = $this->complementRepository->findActiveById((int)$dto->fritesId);
+            if (!$frites || $frites->getTypeComplement() !== TypeComplementEnum::FRITE) {
+                return ActionResultDto::fail("Frites invalides.");
+            }
+
+            $boisson = $this->complementRepository->findActiveById((int)$dto->boissonId);
+            if (!$boisson || $boisson->getTypeComplement() !== TypeComplementEnum::BOISSON) {
+                return ActionResultDto::fail("Boisson invalide.");
+            }
+
+            $priceDto = $this->menuPriceService->calculate((int)$dto->burgerId, (int)$dto->fritesId, (int)$dto->boissonId);
+
+            $menu->setNom($nom);
+            $menu->setPrix($priceDto->total);
+
+            if ($dto->imageFile !== null) {
+                $newPath = $this->imageStorage->replace($menu->getImage(), $dto->imageFile, 'menus');
+                $menu->setImage($newPath);
+            }
+
+            $menu->getBurgers()->clear();
+            $menu->getComplements()->clear();
+            $menu->getBurgers()->add($burger);
+            $menu->getComplements()->add($frites);
+            $menu->getComplements()->add($boisson);
+
+            $this->menuRepository->update($menu);
+
+            return ActionResultDto::ok("Menu modifié avec succès.", $idMenu);
+
+        } catch (\Throwable $e) {
+            return ActionResultDto::fail("Erreur modification menu: " . $e->getMessage());
+        }
+    }
 
 
 }
