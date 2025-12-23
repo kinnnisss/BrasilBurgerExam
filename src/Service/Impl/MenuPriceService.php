@@ -35,5 +35,34 @@ class MenuPriceService implements MenuPriceServiceInterface
         }
         return number_format(((float)$a + (float)$b), 2, '.', '');
     }
+    public function calculate(int $burgerId, int $fritesId, int $boissonId): MenuPriceDto
+    {
+        $burger = $this->burgerRepository->findById($burgerId);
+        if (!$burger || $burger->isArchived()) {
+            throw new \RuntimeException("Burger invalide ou archivé.");
+        }
+
+        $frites = $this->complementRepository->findActiveById($fritesId);
+        if (!$frites) {
+            throw new \RuntimeException("Frites invalides ou archivées.");
+        }
+
+        $boisson = $this->complementRepository->findActiveById($boissonId);
+        if (!$boisson) {
+            throw new \RuntimeException("Boisson invalide ou archivée.");
+        }
+
+        $total = $this->moneyAdd(
+            $this->moneyAdd((string)$burger->getPrix(), (string)$frites->getPrix()),
+            (string)$boisson->getPrix()
+        );
+
+        $economyPercent = 15;
+        $economyAmount = $this->moneyRound(
+            $this->moneyMulPercent($total, $economyPercent)
+        );
+
+        return new MenuPriceDto($total, $economyPercent, $economyAmount);
+    }
 
 }
