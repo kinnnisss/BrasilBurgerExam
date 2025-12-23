@@ -18,6 +18,7 @@ class DashboardService implements DashboardServiceInterface
         $validees = $this->statistiqueRepository->countCommandesValideesDuJour($day);
         $annulees = $this->statistiqueRepository->countCommandesAnnuleesDuJour($day);
         $recettes = $this->statistiqueRepository->sumRecettesDuJour($day);
+        $terminees = $this->statistiqueRepository->countCommandesTermineesDuJour($day);
 
         $topBurgers = $this->statistiqueRepository->topBurgersDuJour($day, 5);
 
@@ -26,7 +27,8 @@ class DashboardService implements DashboardServiceInterface
             $validees,
             $annulees,
             (string)$recettes,
-            $topBurgers
+            $topBurgers,
+            $terminees
         );
     }
 }

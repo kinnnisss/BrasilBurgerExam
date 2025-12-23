@@ -10,6 +10,7 @@ class DashboardDto
     public int $validees;
     public int $annulees;
     public string $recettes;
+    public int $terminees;
 
     /** @var TopBurgerDto[] */
     public array $topBurgers = [];
@@ -17,12 +18,13 @@ class DashboardDto
     /**
      * @param TopBurgerDto[] $topBurgers
      */
-    public function __construct(int $enCours, int $validees, int $annulees, string $recettes, array $topBurgers)
+    public function __construct(int $enCours, int $validees, int $annulees, string $recettes, array $topBurgers,int $terminees)
     {
         $this->enCours = $enCours;
         $this->validees = $validees;
         $this->annulees = $annulees;
         $this->recettes = $recettes;
         $this->topBurgers = $topBurgers;
+        $this->terminees = $terminees;
     }
 }
