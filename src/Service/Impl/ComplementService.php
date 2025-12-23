@@ -126,5 +126,11 @@ class ComplementService implements ComplementServiceInterface
         return ActionResultDto::ok("Complément modifié avec succès.", $idComplement);
     }
 
+    public function archive(int $idComplement): ActionResultDto
+    {
+        $ok = $this->complementRepository->setArchived($idComplement, true);
+        return $ok ? ActionResultDto::ok("Complément archivé.") : ActionResultDto::fail("Complément introuvable.");
+    }
+
 
 }
