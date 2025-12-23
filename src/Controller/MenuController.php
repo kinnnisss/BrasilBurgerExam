@@ -49,4 +49,69 @@ class MenuController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/menus/create', name: 'menu_create', methods: ['GET', 'POST'])]
+    public function create(Request $request): Response
+    {
+        $data = $this->menuService->getCreateData();
+
+        $dto = new MenuCreateDto();
+        $form = $this->createForm(MenuCreateFormType::class, $dto, [
+            'burgers' => $data->burgers,
+            'frites' => $data->frites,
+            'boissons' => $data->boissons,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->menuService->create($dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+            if ($res->success) {
+                return $this->redirectToRoute('menu_index');
+            }
+        }
+
+        return $this->render('menu/create.html.twig', [
+            'form' => $form->createView(),
+            'data' => $data,
+        ]);
+    }
+
+    #[Route('/gestionnaire/menus/{id}/edit', name: 'menu_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(int $id, Request $request): Response
+    {
+        $edit = $this->menuService->getEditData($id);
+        $data = $this->menuService->getCreateData();
+
+        $dto = new MenuUpdateDto();
+        $dto->nom = $edit->nom;
+        $dto->burgerId = $edit->burgerId;
+        $dto->fritesId = $edit->fritesId;
+        $dto->boissonId = $edit->boissonId;
+        $dto->imageFile = null;
+
+        $form = $this->createForm(MenuUpdateFormType::class, $dto, [
+            'burgers' => $data->burgers,
+            'frites' => $data->frites,
+            'boissons' => $data->boissons,
+            'currentImagePath' => $edit->currentImagePath,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->menuService->update($id, $dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+            if ($res->success) {
+                return $this->redirectToRoute('menu_index');
+            }
+        }
+
+        return $this->render('menu/edit.html.twig', [
+            'form' => $form->createView(),
+            'edit' => $edit,
+            'data' => $data,
+        ]);
+    }
+
 }
