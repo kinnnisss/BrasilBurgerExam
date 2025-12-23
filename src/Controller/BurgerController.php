@@ -107,5 +107,12 @@ class BurgerController extends AbstractController
         return $this->redirectToRoute('burger_index');
     }
 
+    #[Route('/gestionnaire/burgers/{id}/unarchive', name: 'burger_unarchive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function unarchive(int $id): Response
+    {
+        $res = $this->burgerService->unarchive($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('burger_index');
+    }
 
 }
