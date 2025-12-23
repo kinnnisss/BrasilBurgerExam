@@ -45,5 +45,18 @@ class ImageStorageService implements ImageStorageServiceInterface
         }
     }
 
+    public function replace(?string $oldPath, ?UploadedFile $newFile, string $folder): ?string
+    {
+        if ($newFile === null) {
+            return $oldPath;
+        }
 
+        $newPath = $this->store($newFile, $folder);
+
+        if ($oldPath !== null && trim($oldPath) !== '') {
+            $this->delete($oldPath);
+        }
+
+        return $newPath;
+    }
 }
