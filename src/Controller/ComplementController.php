@@ -106,4 +106,11 @@ class ComplementController extends AbstractController
         $this->addFlash($res->success ? 'success' : 'danger', $res->message);
         return $this->redirectToRoute('complement_index');
     }
+    #[Route('/gestionnaire/complements/{id}/unarchive', name: 'complement_unarchive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function unarchive(int $id): Response
+    {
+        $res = $this->complementService->unarchive($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('complement_index');
+    }
 }
