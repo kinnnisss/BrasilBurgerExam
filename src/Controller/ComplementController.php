@@ -48,5 +48,25 @@ class ComplementController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/complements/create', name: 'complement_create', methods: ['GET', 'POST'])]
+    public function create(Request $request): Response
+    {
+        $dto = new ComplementUpsertDto();
+        $form = $this->createForm(ComplementUpsertFormType::class, $dto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->complementService->create($dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+            if ($res->success) {
+                return $this->redirectToRoute('complement_index');
+            }
+        }
+
+        return $this->render('complement/create.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
 
 }
