@@ -37,4 +37,14 @@ class CommandeController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/commandes/{id}', name: 'commande_details', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function details(int $id): Response
+    {
+        $dto = $this->commandeService->getDetails($id);
+
+        return $this->render('commande/details.html.twig', [
+            'dto' => $dto,
+        ]);
+    }
+
 }
