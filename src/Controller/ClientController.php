@@ -62,4 +62,12 @@ class ClientController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/clients/{idClient}/commandes/{idCommande}/cancel', name: 'client_commande_cancel', requirements: ['idClient' => '\d+', 'idCommande' => '\d+'], methods: ['POST'])]
+    public function cancelCommandeForClient(int $idClient, int $idCommande): Response
+    {
+        $res = $this->commandeService->cancelForClient($idClient, $idCommande);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+        return $this->redirectToRoute('client_details', ['id' => $idClient]);
+    }
 }
