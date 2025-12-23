@@ -183,4 +183,9 @@ class MenuService implements MenuServiceInterface
         return $ok ? ActionResultDto::ok("Menu archivé.") : ActionResultDto::fail("Menu introuvable.");
     }
 
+       public function unarchive(int $idMenu): ActionResultDto
+    {
+        $ok = $this->menuRepository->setArchived($idMenu, false);
+        return $ok ? ActionResultDto::ok("Menu désarchivé.") : ActionResultDto::fail("Menu introuvable.");
+    } 
 }
