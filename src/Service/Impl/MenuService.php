@@ -177,6 +177,10 @@ class MenuService implements MenuServiceInterface
             return ActionResultDto::fail("Erreur modification menu: " . $e->getMessage());
         }
     }
-
+    public function archive(int $idMenu): ActionResultDto
+    {
+        $ok = $this->menuRepository->setArchived($idMenu, true);
+        return $ok ? ActionResultDto::ok("Menu archivé.") : ActionResultDto::fail("Menu introuvable.");
+    }
 
 }
