@@ -56,4 +56,37 @@ class ComplementService implements ComplementServiceInterface
         return (float) $value > 0;
     }
 
+    public function create(ComplementUpsertDto $dto): ActionResultDto
+    {
+        $nom = trim((string) $dto->nom);
+        $prix = trim((string) $dto->prix);
+
+        if ($nom === '') {
+            return ActionResultDto::fail("Le nom du complément est obligatoire.");
+        }
+
+        if (!($dto->type instanceof TypeComplementEnum)) {
+            return ActionResultDto::fail("Le type de complément est obligatoire.");
+        }
+
+        if (!$this->isPositiveNumber($prix)) {
+            return ActionResultDto::fail("Le prix doit être un nombre strictement supérieur à 0.");
+        }
+
+        $c = new Complement();
+        $c->setNom($nom);
+        $c->setTypeComplement($dto->type);
+        $c->setPrix($prix);
+        $c->setIsArchived(false);
+
+        if ($dto->imageFile !== null) {
+            $path = $this->imageStorage->store($dto->imageFile, 'complements');
+            $c->setImage($path);
+        }
+
+        $id = $this->complementRepository->insert($c);
+
+        return ActionResultDto::ok("Complément créé avec succès.", $id);
+    }
+
 }
