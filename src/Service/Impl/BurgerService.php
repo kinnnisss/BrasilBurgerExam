@@ -121,4 +121,11 @@ class BurgerService implements BurgerServiceInterface
             : ActionResultDto::fail("Burger introuvable.");
     }
 
+    public function unarchive(int $idBurger): ActionResultDto
+    {
+        $ok = $this->burgerRepository->setArchived($idBurger, false);
+        return $ok
+            ? ActionResultDto::ok("Burger désarchivé.")
+            : ActionResultDto::fail("Burger introuvable.");
+    }
 }
