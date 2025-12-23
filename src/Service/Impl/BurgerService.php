@@ -53,5 +53,32 @@ class BurgerService implements BurgerServiceInterface
         return $this->burgerRepository->findActiveForSelect();
     }
 
+    public function create(BurgerUpsertDto $dto): ActionResultDto
+    {
+        $nom = trim((string) $dto->nom);
+        $prix = trim((string) $dto->prix);
+
+        if ($nom === '') {
+            return ActionResultDto::fail("Le nom du burger est obligatoire.");
+        }
+
+        if (!$this->isPositiveNumber($prix)) {
+            return ActionResultDto::fail("Le prix doit être un nombre strictement supérieur à 0.");
+        }
+
+        $burger = new Burger();
+        $burger->setNom($nom);
+        $burger->setPrix($prix);
+        $burger->setIsArchived(false);
+
+        if ($dto->imageFile !== null) {
+            $path = $this->imageStorage->store($dto->imageFile, 'burgers');
+            $burger->setImage($path);
+        }
+
+        $id = $this->burgerRepository->insert($burger);
+
+        return ActionResultDto::ok("Burger créé avec succès.", $id);
+    }
 
 }
