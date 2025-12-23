@@ -32,4 +32,13 @@ class MenuService implements MenuServiceInterface
         return $this->menuRepository->search($q, $archived, $page, $pageSize);
     }
 
+    public function getCreateData(): MenuFormDataDto
+    {
+        return new MenuFormDataDto(
+            $this->burgerRepository->findActiveForSelect(),
+            $this->complementRepository->findActiveForSelectByType(TypeComplementEnum::FRITE),
+            $this->complementRepository->findActiveForSelectByType(TypeComplementEnum::BOISSON)
+        );
+    }
+
 }
