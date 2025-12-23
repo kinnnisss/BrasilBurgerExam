@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Service\Impl;
+
+use App\Dto\Catalogue\ComplementEditDto;
+use App\Dto\Catalogue\ComplementUpsertDto;
+use App\Dto\Common\ActionResultDto;
+use App\Dto\Common\PagedResultDto;
+use App\Dto\Common\SelectItemDto;
+use App\Entity\Complement;
+use App\Enum\TypeComplementEnum;
+use App\Repository\ComplementRepository;
+use App\Service\ComplementServiceInterface;
+use App\Service\ImageStorageServiceInterface;
+
+class ComplementService implements ComplementServiceInterface
+{
+    public function __construct(
+        private readonly ComplementRepository $complementRepository,
+        private readonly ImageStorageServiceInterface $imageStorage
+    ) {}
+
+    public function search(
+        ?string $q,
+        ?TypeComplementEnum $type,
+        ?bool $archived,
+        int $page,
+        int $pageSize
+    ): PagedResultDto {
+        return $this->complementRepository->search($q, $type, $archived, $page, $pageSize);
+    }
+
+}
