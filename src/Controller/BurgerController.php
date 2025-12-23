@@ -69,5 +69,34 @@ class BurgerController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/burgers/{id}/edit', name: 'burger_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(int $id, Request $request): Response
+    {
+        $edit = $this->burgerService->getEditData($id);
+
+        $dto = new BurgerUpsertDto();
+        $dto->nom = $edit->nom;
+        $dto->prix = $edit->prix;
+        $dto->imageFile = null;
+
+        $form = $this->createForm(BurgerUpdateFormType::class, $dto, [
+            'currentImagePath' => $edit->currentImagePath
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->burgerService->update($id, $dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+            if ($res->success) {
+                return $this->redirectToRoute('burger_index');
+            }
+        }
+
+        return $this->render('burger/edit.html.twig', [
+            'form' => $form->createView(),
+            'edit' => $edit,
+        ]);
+    }
 
 }
