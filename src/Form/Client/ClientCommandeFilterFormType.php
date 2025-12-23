@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Client;
 
 use App\Dto\Client\ClientCommandeFilterDto;
 use App\Enum\EtatCommandeEnum;
