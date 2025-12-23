@@ -18,4 +18,13 @@ class MenuPriceService implements MenuPriceServiceInterface
     {
         return number_format((float)$amount, 2, '.', '');
     }
+
+    private function moneyMulPercent(string $amount, int $percent): string
+    {
+        $factor = (string) ($percent / 100);
+        if (function_exists('bcmul')) {
+            return bcmul($amount, $factor, 4);
+        }
+        return (string) ((float)$amount * ((float)$percent / 100));
+    }
 }
