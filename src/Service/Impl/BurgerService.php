@@ -47,5 +47,11 @@ class BurgerService implements BurgerServiceInterface
         if (!is_numeric($value)) return false;
         return (float) $value > 0;
     }
+    /** @return SelectItemDto[] */
+    public function getSelectActiveBurgers(): array
+    {
+        return $this->burgerRepository->findActiveForSelect();
+    }
+
 
 }
