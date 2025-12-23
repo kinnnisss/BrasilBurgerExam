@@ -63,4 +63,11 @@ class CommandeController extends AbstractController
         return $this->redirectToRoute('commande_details', ['id' => $id]);
     }
 
+    #[Route('/gestionnaire/commandes/{id}/terminate', name: 'commande_terminate', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function terminate(int $id): Response
+    {
+        $res = $this->commandeService->terminate($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('commande_details', ['id' => $id]);
+    }
 }
