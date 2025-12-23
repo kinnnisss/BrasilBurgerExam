@@ -1,70 +1,78 @@
 {# templates/partials/sidebar.html.twig #}
 
-<aside class="bb-sidebar">
-  <!-- Profil -->
-  <div class="bb-sidebar__profile">
-    <img
-      class="bb-sidebar__avatar"
-      src="{{ asset('assets/images/admin-avatar.png') }}"
-      alt="Admin"
-    >
-
-    <div class="bb-sidebar__profile-text">
-      <div class="bb-sidebar__name">Brasil Burger</div>
-      <div class="bb-sidebar__role">Admin</div>
+<nav class="sidebar" aria-label="Navigation">
+  <div class="sidebar__top">
+    <div class="sidebar__brand">
+      <div class="sidebar__avatar">👤</div>
+      <div>
+        <div class="sidebar__title">Brasil Burger</div>
+        <div class="sidebar__role">Admin</div>
+      </div>
     </div>
+
+    <ul class="sidebar__menu">
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'dashboard' %}is-active{% endif %}"
+           href="{{ path('dashboard_index') }}">
+          <span class="sidebar__icon">⬛</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'burger' %}is-active{% endif %}"
+           href="{{ path('burger_index') }}">
+          <span class="sidebar__icon">🍔</span>
+          <span>Burgers</span>
+        </a>
+      </li>
+
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'menu' %}is-active{% endif %}"
+           href="{{ path('menu_index') }}">
+          <span class="sidebar__icon">📋</span>
+          <span>Menus</span>
+        </a>
+      </li>
+
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'complement' %}is-active{% endif %}"
+           href="{{ path('complement_index') }}">
+          <span class="sidebar__icon">➕</span>
+          <span>Compléments</span>
+        </a>
+      </li>
+
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'commande' %}is-active{% endif %}"
+           href="{{ path('commande_index') }}">
+          <span class="sidebar__icon">🛒</span>
+          <span>Commandes</span>
+        </a>
+      </li>
+
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'livraison' %}is-active{% endif %}"
+           href="{{ path('livraison_board') }}">
+          <span class="sidebar__icon">🚚</span>
+          <span>Livraisons</span>
+        </a>
+      </li>
+
+      <li class="sidebar__item">
+        <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'client' %}is-active{% endif %}"
+           href="{{ path('client_index') }}">
+          <span class="sidebar__icon">👥</span>
+          <span>Clients</span>
+        </a>
+      </li>
+    </ul>
   </div>
 
-  <!-- Navigation -->
-  <nav class="bb-sidebar__nav">
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'dashboard' %}active{% endif %}"
-       href="{{ path('dashboard_index') }}">
-      <span class="icon">⬛</span>
-      Dashboard
-    </a>
-
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'burger' %}active{% endif %}"
-       href="{{ path('burger_index') }}">
-      <span class="icon">🍔</span>
-      Burgers
-    </a>
-
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'menu' %}active{% endif %}"
-       href="{{ path('menu_index') }}">
-      <span class="icon">📋</span>
-      Menus
-    </a>
-
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'complement' %}active{% endif %}"
-       href="{{ path('complement_index') }}">
-      <span class="icon">➕</span>
-      Compléments
-    </a>
-
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'commande' %}active{% endif %}"
-       href="{{ path('commande_index') }}">
-      <span class="icon">🛒</span>
-      Commandes
-    </a>
-
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'livraison' %}active{% endif %}"
-       href="{{ path('livraison_board') }}">
-      <span class="icon">🚚</span>
-      Livraisons
-    </a>
-
-    <a class="bb-sidebar__link {% if app.request.attributes.get('_route') starts with 'client' %}active{% endif %}"
-       href="{{ path('client_index') }}">
-      <span class="icon">👥</span>
-      Clients
-    </a>
-  </nav>
-
-  <!-- Déconnexion -->
-  <div class="bb-sidebar__logout">
-    <a href="{{ path('app_logout') }}">
-      <span class="icon">↩</span>
-      Déconnexion
+  <div class="sidebar__bottom">
+    <a class="sidebar__logout" href="{{ path('app_logout') }}">
+      <span class="sidebar__icon">↩</span>
+      <span>Déconnexion</span>
     </a>
   </div>
-</aside>
+</nav>

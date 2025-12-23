@@ -1,26 +1,32 @@
-<!DOCTYPE html>
+{# templates/base.html.twig #}
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Brasil Burger – Gestion{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Brasil Burger{% endblock %}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    {# CSS global #}
-    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
-
-    {% block stylesheets %}{% endblock %}
+  <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
 </head>
 <body>
 
-<div class="layout">
-    {% include 'partials/sidebar.html.twig' %}
-    <main class="content">
-        {% include 'partials/flash.html.twig' %}
-        {% block body %}{% endblock %}
-    </main>
-</div>
+  <div class="bb-shell">
+    <aside class="bb-sidebar">
+      {% include 'partials/sidebar.html.twig' %}
+    </aside>
 
-{% block javascripts %}{% endblock %}
+    <main class="bb-main">
+      <header class="bb-pagehead">
+        <h1 class="bb-pagehead__title">{% block page_title %}{% endblock %}</h1>
+        <div class="bb-pagehead__sub">{% block page_subtitle %}{% endblock %}</div>
+      </header>
+
+      <div class="bb-content">
+        {% block body %}{% endblock %}
+      </div>
+    </main>
+  </div>
+
+  {% block javascripts %}{% endblock %}
 </body>
 </html>
