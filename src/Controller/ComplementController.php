@@ -68,5 +68,35 @@ class ComplementController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+    #[Route('/gestionnaire/complements/{id}/edit', name: 'complement_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(int $id, Request $request): Response
+    {
+        $edit = $this->complementService->getEditData($id);
+
+        $dto = new ComplementUpsertDto();
+        $dto->nom = $edit->nom;
+        $dto->type = $edit->type;
+        $dto->prix = $edit->prix;
+        $dto->imageFile = null;
+
+        $form = $this->createForm(ComplementUpsertFormType::class, $dto, [
+            'currentImagePath' => $edit->currentImagePath
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $res = $this->complementService->update($id, $dto);
+            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+            if ($res->success) {
+                return $this->redirectToRoute('complement_index');
+            }
+        }
+
+        return $this->render('complement/edit.html.twig', [
+            'form' => $form->createView(),
+            'edit' => $edit
+        ]);
+    }
 
 }
