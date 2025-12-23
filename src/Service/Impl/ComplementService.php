@@ -30,4 +30,23 @@ class ComplementService implements ComplementServiceInterface
         return $this->complementRepository->search($q, $type, $archived, $page, $pageSize);
     }
 
+    public function getEditData(int $idComplement): ComplementEditDto
+    {
+        $c = $this->complementRepository->findById($idComplement);
+
+        if (!$c) {
+            throw new \RuntimeException("Complément introuvable (id=$idComplement).");
+        }
+
+        return new ComplementEditDto(
+            (int) $c->getIdComplement(),
+            $c->getNom(),
+            $c->getTypeComplement(),
+            (string) $c->getPrix(),
+            $c->getImage(),
+            (bool) $c->isArchived()
+        );
+    }
+
+
 }
