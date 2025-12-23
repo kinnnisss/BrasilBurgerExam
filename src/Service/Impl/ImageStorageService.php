@@ -3,60 +3,41 @@
 namespace App\Service\Impl;
 
 use App\Service\ImageStorageServiceInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use Cloudinary\Cloudinary;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageStorageService implements ImageStorageServiceInterface
 {
     public function __construct(
-        private readonly Filesystem $filesystem,
-        private readonly string $uploadDir
+        private readonly Cloudinary $cloudinary
     ) {}
 
     public function store(UploadedFile $file, string $folder): string
     {
         $folder = trim($folder, '/');
-        $targetDir = rtrim($this->uploadDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $folder;
 
-        if (!$this->filesystem->exists($targetDir)) {
-            $this->filesystem->mkdir($targetDir, 0775);
-        }
-
-        $ext = $file->guessExtension() ?: $file->getClientOriginalExtension() ?: 'bin';
-        $ext = strtolower($ext);
-
+        $ext = strtolower($file->guessExtension() ?: $file->getClientOriginalExtension() ?: 'bin');
         $allowed = ['jpg', 'jpeg', 'png', 'webp'];
         if (!in_array($ext, $allowed, true)) {
             throw new \RuntimeException("Extension non autorisée: .$ext");
         }
 
-        $name = bin2hex(random_bytes(16)) . '.' . $ext;
-        $file->move($targetDir, $name);
+        $result = $this->cloudinary->uploadApi()->upload(
+            $file->getRealPath(),
+            [
+                'folder' => $folder,
+                'resource_type' => 'image',
+                'unique_filename' => true,
+                'use_filename' => false,
+            ]
+        );
 
-        return $folder . '/' . $name;
-    }
-    public function delete(string $relativePath): void
-    {
-        $relativePath = ltrim($relativePath, '/');
-        $path = rtrim($this->uploadDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $relativePath;
-
-        if ($this->filesystem->exists($path)) {
-            $this->filesystem->remove($path);
-        }
-    }
-
-    public function replace(?string $oldPath, ?UploadedFile $newFile, string $folder): ?string
-    {
-        if ($newFile === null) {
-            return $oldPath;
+        $url = (string)($result['secure_url'] ?? '');
+        if ($url === '') {
+            throw new \RuntimeException("Upload Cloudinary échoué.");
         }
 
-        $newPath = $this->store($newFile, $folder);
-
-        if ($oldPath !== null && trim($oldPath) !== '') {
-            $this->delete($oldPath);
-        }
-
-        return $newPath;
+        return $url;
     }
+
 }

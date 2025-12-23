@@ -8,7 +8,5 @@ interface ImageStorageServiceInterface
 {
     public function store(UploadedFile $file, string $folder): string;
 
-    public function delete(string $relativePath): void;
-
     public function replace(?string $oldPath, ?UploadedFile $newFile, string $folder): ?string;
 }
