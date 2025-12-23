@@ -7,6 +7,7 @@ use App\Entity\Commande;
 use App\Entity\LigneCommande;
 use App\Enum\EtatCommandeEnum;
 use App\Enum\TypeArticleEnum;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -90,30 +91,39 @@ class StatistiqueRepository extends ServiceEntityRepository
     {
         return $this->countByEtatForDay($day, EtatCommandeEnum::TERMINER);
     }
+
+
     public function recettesSemaine(\DateTimeInterface $day): array
     {
         $d = \DateTimeImmutable::createFromInterface($day);
-
         $start = $d->modify('monday this week')->setTime(0, 0, 0);
         $end   = $start->modify('+7 days');
 
-        $rows = $this->createQueryBuilder('c')
-            ->innerJoin('c.paiement', 'p')
-            ->andWhere('c.dateCommande >= :start AND c.dateCommande < :end')
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->select("DATE(c.dateCommande) AS jour, COALESCE(SUM(p.montant), 0) AS total")
-            ->groupBy('jour')
-            ->orderBy('jour', 'ASC')
-            ->getQuery()
-            ->getArrayResult();
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = <<<SQL
+            SELECT
+                DATE(c.date_commande) AS jour,
+                COALESCE(SUM(p.montant), 0) AS total
+            FROM commande c
+            INNER JOIN paiement p ON p.id_commande = c.id_commande
+            WHERE c.date_commande >= :start
+              AND c.date_commande < :end
+            GROUP BY jour
+            ORDER BY jour ASC
+        SQL;
+
+        $rows = $conn->executeQuery($sql, [
+            'start' => $start->format('Y-m-d H:i:s'),
+            'end'   => $end->format('Y-m-d H:i:s'),
+        ])->fetchAllAssociative();
 
         $map = [];
-        foreach ($rows as $r) {
-            $map[$r['jour']] = (float)$r['total'];
+        foreach ($rows as $row) {
+            $map[$row['jour']] = (float)$row['total'];
         }
 
-        $labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        $labels = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
         $values = [];
 
         for ($i = 0; $i < 7; $i++) {
@@ -121,10 +131,7 @@ class StatistiqueRepository extends ServiceEntityRepository
             $values[] = $map[$key] ?? 0.0;
         }
 
-        return [
-            'labels' => $labels,
-            'values' => $values,
-        ];
+        return ['labels' => $labels, 'values' => $values];
     }
 
 }

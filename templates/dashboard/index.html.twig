@@ -7,7 +7,11 @@
 
 {% block body %}
 
+  {# =======================
+     Cartes statistiques du jour
+     ======================= #}
   <section class="db-cards">
+
     <article class="db-card">
       <div class="db-card__icon is-orange">🛒</div>
       <div class="db-card__meta">
@@ -49,8 +53,12 @@
         </div>
       </div>
     </article>
+
   </section>
 
+  {# =======================
+     Ventes de la semaine (Chart.js)
+     ======================= #}
   <section class="db-panel">
     <div class="db-panel__head">
       <h3 class="db-panel__title">Ventes de la semaine</h3>
@@ -62,6 +70,9 @@
     </div>
   </section>
 
+  {# =======================
+     Top burgers du jour
+     ======================= #}
   <section class="db-panel">
     <div class="db-panel__head">
       <h3 class="db-panel__title">Produits les plus vendus</h3>
@@ -77,6 +88,8 @@
               <div class="db-top__sub">{{ item.totalQuantite }} vendus</div>
             </div>
           </div>
+
+          {# CA par produit non fourni dans TopBurgerDto, on laisse volontairement en placeholder #}
           <div class="db-top__amount">— FCFA</div>
         </div>
       {% else %}
@@ -85,9 +98,16 @@
     </div>
   </section>
 
+  {# =======================
+     Dernières commandes du jour
+     ======================= #}
   <section class="db-panel">
     <div class="db-panel__head">
       <h3 class="db-panel__title">Dernières commandes</h3>
+    </div>
+
+    <div class="db-panel__hint">
+      Aujourd’hui — {{ "now"|date("d/m/Y") }}
     </div>
 
     <div class="db-table">
@@ -101,11 +121,17 @@
           <th>État</th>
         </tr>
         </thead>
+
         <tbody>
         {% for c in lastOrders %}
           <tr>
             <td class="db-strong">{{ c.reference }}</td>
-            <td>{{ c.clientNomComplet }}</td>
+            <td>
+              <div class="db-client">
+                <div class="db-client__name">{{ c.clientNomComplet }}</div>
+                <div class="db-client__tel">{{ c.clientTelephone }}</div>
+              </div>
+            </td>
             <td>{{ c.dateCommande|date('d/m/Y') }}</td>
             <td class="db-amount">{{ c.montantTotal }} FCFA</td>
             <td>
@@ -120,7 +146,9 @@
             </td>
           </tr>
         {% else %}
-          <tr><td colspan="5" class="db-empty-row">Aucune commande trouvée.</td></tr>
+          <tr>
+            <td colspan="5" class="db-empty-row">Aucune commande aujourd’hui.</td>
+          </tr>
         {% endfor %}
         </tbody>
       </table>
@@ -130,7 +158,6 @@
 {% endblock %}
 
 {% block javascripts %}
-  {# Chart.js via CDN (simple) #}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
@@ -138,22 +165,32 @@
     const values = {{ weekValues|json_encode|raw }};
 
     const ctx = document.getElementById('salesWeekChart');
+
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          label: 'FCFA',
-          data: values
+          label: 'Recettes (FCFA)',
+          data: values,
+          borderWidth: 1
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: { enabled: true }
         },
         scales: {
-          y: { beginAtZero: true }
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return value + ' FCFA';
+              }
+            }
+          }
         }
       }
     });
