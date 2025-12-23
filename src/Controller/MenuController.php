@@ -122,4 +122,11 @@ class MenuController extends AbstractController
         return $this->redirectToRoute('menu_index');
     }
 
+    #[Route('/gestionnaire/menus/{id}/unarchive', name: 'menu_unarchive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function unarchive(int $id): Response
+    {
+        $res = $this->menuService->unarchive($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('menu_index');
+    }
 }
