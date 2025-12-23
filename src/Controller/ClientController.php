@@ -41,4 +41,25 @@ class ClientController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/clients/{id}', name: 'client_details', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function details(int $id, Request $request): Response
+    {
+        $filter = new ClientCommandeFilterDto();
+        $filter->page = (int) $request->query->get('page', 1);
+        $filter->pageSize = 10;
+
+        $form = $this->createForm(ClientCommandeFilterFormType::class, $filter, [
+            'method' => 'GET',
+            'csrf_protection' => false,
+        ]);
+        $form->handleRequest($request);
+
+        $dto = $this->clientService->getDetails($id, $filter);
+
+        return $this->render('client/details.html.twig', [
+            'filterForm' => $form->createView(),
+            'dto' => $dto,
+        ]);
+    }
+
 }
