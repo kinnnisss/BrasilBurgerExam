@@ -114,4 +114,12 @@ class MenuController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/menus/{id}/archive', name: 'menu_archive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function archive(int $id): Response
+    {
+        $res = $this->menuService->archive($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('menu_index');
+    }
+
 }
