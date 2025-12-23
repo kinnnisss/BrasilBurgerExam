@@ -138,5 +138,9 @@ class ComplementService implements ComplementServiceInterface
         return $ok ? ActionResultDto::ok("Complément désarchivé.") : ActionResultDto::fail("Complément introuvable.");
     }
 
-
+    /** @return SelectItemDto[] */
+    public function getSelectComplementsByType(TypeComplementEnum $type): array
+    {
+        return $this->complementRepository->findActiveForSelectByType($type);
+    }
 }
