@@ -99,4 +99,11 @@ class ComplementController extends AbstractController
         ]);
     }
 
+   #[Route('/gestionnaire/complements/{id}/archive', name: 'complement_archive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function archive(int $id): Response
+    {
+        $res = $this->complementService->archive($id);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+        return $this->redirectToRoute('complement_index');
+    }
 }
