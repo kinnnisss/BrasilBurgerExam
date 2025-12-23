@@ -90,5 +90,41 @@ class StatistiqueRepository extends ServiceEntityRepository
     {
         return $this->countByEtatForDay($day, EtatCommandeEnum::TERMINER);
     }
+    public function recettesSemaine(\DateTimeInterface $day): array
+    {
+        $d = \DateTimeImmutable::createFromInterface($day);
+
+        $start = $d->modify('monday this week')->setTime(0, 0, 0);
+        $end   = $start->modify('+7 days');
+
+        $rows = $this->createQueryBuilder('c')
+            ->innerJoin('c.paiement', 'p')
+            ->andWhere('c.dateCommande >= :start AND c.dateCommande < :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->select("DATE(c.dateCommande) AS jour, COALESCE(SUM(p.montant), 0) AS total")
+            ->groupBy('jour')
+            ->orderBy('jour', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        $map = [];
+        foreach ($rows as $r) {
+            $map[$r['jour']] = (float)$r['total'];
+        }
+
+        $labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        $values = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $key = $start->modify("+$i days")->format('Y-m-d');
+            $values[] = $map[$key] ?? 0.0;
+        }
+
+        return [
+            'labels' => $labels,
+            'values' => $values,
+        ];
+    }
 
 }
