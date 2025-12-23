@@ -9,6 +9,15 @@
 parameters:
 
 services:
+  # Cloudinary client (utilise directement CLOUDINARY_URL)
+  Cloudinary\Cloudinary:
+    arguments:
+      $configuration:
+        cloudinary_url: '%env(resolve:CLOUDINARY_URL)%'
+
+#   # Ton ImageStorageService branché sur Cloudinary
+#   App\Service\ImageStorageServiceInterface: '@App\Service\Impl\ImageStorageService'
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
