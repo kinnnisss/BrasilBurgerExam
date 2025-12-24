@@ -40,9 +40,11 @@ class MenuRepository extends ServiceEntityRepository
 
         $countQb = clone $qb;
         $totalItems = (int) $countQb
+            ->resetDQLPart('orderBy')
             ->select('COUNT(m.idMenu)')
             ->getQuery()
             ->getSingleScalarResult();
+
 
         $rows = $qb->select('m')
             ->setFirstResult(($page - 1) * $pageSize)
