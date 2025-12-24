@@ -1,6 +1,7 @@
 /* ===== SIDEBAR ===== */
 @import "./pages/login.css";
 @import "./pages/dashboard.css";
+@import "./pages/menu.css";
 
 /* ===== Layout shell ===== */
 html, body{

@@ -1,11 +1,3 @@
-# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
-
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-# See also https://symfony.com/doc/current/service_container/import.html
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
@@ -13,19 +5,28 @@ services:
     autowire: true
     autoconfigure: true
 
-  # Cloudinary client : utilise directement CLOUDINARY_URL
   Cloudinary\Cloudinary:
     arguments:
       $config:
-        cloudinary_url: '%env(resolve:CLOUDINARY_URL)%'
+        cloud:
+          cloud_name: '%env(CLOUDINARY_CLOUD_NAME)%'
+        api:
+          api_key: '%env(CLOUDINARY_API_KEY)%'
+          api_secret: '%env(CLOUDINARY_API_SECRET)%'
+        url:
+          secure: true
 
-  # Binding interface -> impl
-#   App\Service\ImageStorageServiceInterface: '@App\Service\Impl\ImageStorageService'
-
-  # (optionnel) auto-register classes si pas déjà présent chez toi
   App\:
     resource: '../src/'
     exclude:
       - '../src/DependencyInjection/'
       - '../src/Entity/'
       - '../src/Kernel.php'
+
+
+  App\Controller\:
+    resource: '../src/Controller/'
+    tags: ['controller.service_arguments']
+  App\Service\MenuServiceInterface: '@App\Service\Impl\MenuService'
+  App\Service\ImageStorageServiceInterface: '@App\Service\Impl\ImageStorageService'
+  App\Service\MenuPriceServiceInterface: '@App\Service\Impl\MenuPriceService'
