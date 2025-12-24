@@ -188,4 +188,10 @@ class MenuService implements MenuServiceInterface
         $ok = $this->menuRepository->setArchived($idMenu, false);
         return $ok ? ActionResultDto::ok("Menu désarchivé.") : ActionResultDto::fail("Menu introuvable.");
     } 
+
+    public function findEntitiesByIds(array $ids): array
+    {
+        return $this->menuRepository->findBy(['idMenu' => $ids]);
+    }
+
 }
