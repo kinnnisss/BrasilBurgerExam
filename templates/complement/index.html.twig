@@ -79,8 +79,7 @@
             </td>
 
             <td>
-              {# typeComplement peut être Enum -> value, ou string selon ton DTO #}
-              {% set t = c.typeComplement.value is defined ? c.typeComplement.value : c.typeComplement %}
+              {% set t = c.type.value is defined ? c.type.value : c.type %}
 
               {% if t == 'FRITE' %}
                 <span class="pill pill--yellow">Frites</span>

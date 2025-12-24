@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Enum\TypeComplementEnum;
 
 class ComplementController extends AbstractController
 {
@@ -28,7 +29,10 @@ class ComplementController extends AbstractController
 
         $data = $filterForm->getData() ?? [];
         $q = $data['q'] ?? null;
-        $type = $data['type'] ?? null;
+        $typeValue = $data['type'] ?? null;
+        $type = $typeValue
+        ? TypeComplementEnum::tryFrom($typeValue)
+        : null;
         $status = $data['status'] ?? 'ALL';
 
         $archived = match ($status) {
