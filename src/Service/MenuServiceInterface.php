@@ -26,4 +26,6 @@ interface MenuServiceInterface
     public function archive(int $idMenu): ActionResultDto;
 
     public function unarchive(int $idMenu): ActionResultDto;
+    public function findEntitiesByIds(array $ids): array;
+
 }

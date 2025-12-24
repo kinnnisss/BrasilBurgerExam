@@ -13,14 +13,12 @@
       {{ form_start(form, { attr: { class: 'filterbar' } }) }}
         <div class="filterbar__row">
 
-          {# Champ recherche (si ton FormType a "q") #}
           {% if form.q is defined %}
             <div class="filterbar__field">
               {{ form_widget(form.q, { attr: { class: 'bb-input', placeholder: 'Rechercher un menu...' } }) }}
             </div>
           {% endif %}
 
-          {# Select status (si ton FormType a "status") #}
           {% if form.status is defined %}
             <div class="filterbar__field">
               {{ form_widget(form.status, { attr: { class: 'bb-select' } }) }}
