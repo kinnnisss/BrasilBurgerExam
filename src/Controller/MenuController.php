@@ -42,10 +42,14 @@ class MenuController extends AbstractController
         $pageSize = 12;
 
         $paged = $this->menuService->search($q, $archived, $page, $pageSize);
+        $menusEntities = $this->menuService->findEntitiesByIds(
+    array_map(fn($m) => $m->id, $paged->items)
+);
 
         return $this->render('menu/index.html.twig', [
             'form' => $filterForm->createView(),
             'paged' => $paged,
+            'menusEntities' => $menusEntities,
         ]);
     }
 
