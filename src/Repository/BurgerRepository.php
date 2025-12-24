@@ -40,6 +40,7 @@ class BurgerRepository extends ServiceEntityRepository
 
         $countQb = clone $qb;
         $totalItems = (int) $countQb
+            ->resetDQLPart('orderBy')
             ->select('COUNT(b.idBurger)')
             ->getQuery()
             ->getSingleScalarResult();
