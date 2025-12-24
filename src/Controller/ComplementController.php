@@ -38,7 +38,7 @@ class ComplementController extends AbstractController
         };
 
         $page = (int)($request->query->get('page', 1));
-        $pageSize = 12;
+        $pageSize = 5;
 
         $paged = $this->complementService->search($q, $type, $archived, $page, $pageSize);
 

@@ -1,9 +1,9 @@
-{# templates/menu/index.html.twig #}
+{# templates/complement/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Menus{% endblock %}
-{% block page_title %}Gestion des Menus{% endblock %}
-{% block page_subtitle %}Créez et gérez vos menus composés{% endblock %}
+{% block title %}Compléments{% endblock %}
+{% block page_title %}Gestion des Compléments{% endblock %}
+{% block page_subtitle %}Gérez vos frites et boissons{% endblock %}
 
 {% block body %}
 
@@ -15,7 +15,13 @@
 
           {% if form.q is defined %}
             <div class="filterbar__field">
-              {{ form_widget(form.q, { attr: { class: 'bb-input', placeholder: 'Rechercher un menu...' } }) }}
+              {{ form_widget(form.q, { attr: { class: 'bb-input', placeholder: 'Rechercher un complément...' } }) }}
+            </div>
+          {% endif %}
+
+          {% if form.type is defined %}
+            <div class="filterbar__field">
+              {{ form_widget(form.type, { attr: { class: 'bb-select' } }) }}
             </div>
           {% endif %}
 
@@ -26,18 +32,18 @@
           {% endif %}
 
           <button class="bb-btn bb-btn--ghost" type="submit">Filtrer</button>
-
         </div>
       {{ form_end(form) }}
     </div>
 
     <div class="page-toolbar__right">
-      <a class="bb-btn bb-btn--primary" href="{{ path('menu_create') }}">
+      <a class="bb-btn bb-btn--primary" href="{{ path('complement_create') }}">
         <span class="bb-btn__icon">＋</span>
-        Ajouter un menu
+        Ajouter un complément
       </a>
     </div>
   </section>
+
 
   <section class="card-table">
     <div class="card-table__inner">
@@ -47,7 +53,7 @@
         <tr>
           <th class="col-image">Image</th>
           <th>Nom</th>
-          <th>Composition</th>
+          <th>Type</th>
           <th class="col-price">Prix</th>
           <th class="col-status">Statut</th>
           <th class="col-actions">Actions</th>
@@ -55,52 +61,42 @@
         </thead>
 
         <tbody>
-        {% for m in paged.items %}
+        {% for c in paged.items %}
           <tr>
 
             <td class="col-image">
               <div class="thumb">
-                {% if m.image %}
-                  <img src="{{ m.image }}" alt="{{ m.nom }}">
+                {% if c.image %}
+                  <img src="{{ c.image }}" alt="{{ c.nom }}">
                 {% else %}
-                  <div class="thumb__placeholder">🍔</div>
+                  <div class="thumb__placeholder">➕</div>
                 {% endif %}
               </div>
             </td>
 
             <td class="bb-strong">
-              {{ m.nom }}
+              {{ c.nom }}
             </td>
 
-            <td class="muted">
-              {% set menuEntity = menusEntities|filter(e => e.idMenu == m.id)|first %}
+            <td>
+              {# typeComplement peut être Enum -> value, ou string selon ton DTO #}
+              {% set t = c.typeComplement.value is defined ? c.typeComplement.value : c.typeComplement %}
 
-              {% if menuEntity %}
-                {% set burger = menuEntity.burgers|first %}
-                {% set frite = null %}
-                {% set boisson = null %}
-
-                {% for c in menuEntity.complements %}
-                  {% if c.typeComplement.value == 'FRITE' %}{% set frite = c %}{% endif %}
-                  {% if c.typeComplement.value == 'BOISSON' %}{% set boisson = c %}{% endif %}
-                {% endfor %}
-
-                <div class="m-compo">
-                  <div>🍔 {{ burger ? burger.nom : '—' }}</div>
-                  <div>🍟 {{ frite ? frite.nom : '—' }}</div>
-                  <div>🥤 {{ boisson ? boisson.nom : '—' }}</div>
-                </div>
+              {% if t == 'FRITE' %}
+                <span class="pill pill--yellow">Frites</span>
+              {% elseif t == 'BOISSON' %}
+                <span class="pill pill--blue">Boisson</span>
               {% else %}
-                —
+                <span class="pill pill--gray">{{ t }}</span>
               {% endif %}
             </td>
 
             <td class="col-price price">
-              {{ m.prix }}<br><span class="price__unit">FCFA</span>
+              {{ c.prix }}<br><span class="price__unit">FCFA</span>
             </td>
 
             <td class="col-status">
-              {% if m.isArchived %}
+              {% if c.isArchived %}
                 <span class="pill pill--gray">Archivé</span>
               {% else %}
                 <span class="pill pill--green">Actif</span>
@@ -111,19 +107,17 @@
               <div class="actions">
 
                 <a class="icon-btn"
-                   href="{{ path('menu_edit', { id: m.id }) }}"
-                   title="Modifier">
-                  ✏️
-                </a>
+                   href="{{ path('complement_edit', { id: c.id }) }}"
+                   title="Modifier">✏️</a>
 
-                {% if m.isArchived %}
-                  <form method="post" action="{{ path('menu_unarchive', { id: m.id }) }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('menu_unarchive_' ~ m.id) }}">
+                {% if c.isArchived %}
+                  <form method="post" action="{{ path('complement_unarchive', { id: c.id }) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('complement_unarchive_' ~ c.id) }}">
                     <button class="icon-btn" type="submit" title="Désarchiver">📤</button>
                   </form>
                 {% else %}
-                  <form method="post" action="{{ path('menu_archive', { id: m.id }) }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('menu_archive_' ~ m.id) }}">
+                  <form method="post" action="{{ path('complement_archive', { id: c.id }) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('complement_archive_' ~ c.id) }}">
                     <button class="icon-btn" type="submit" title="Archiver">🗑️</button>
                   </form>
                 {% endif %}
@@ -134,9 +128,7 @@
           </tr>
         {% else %}
           <tr>
-            <td colspan="6" class="empty-row">
-              Aucun menu trouvé.
-            </td>
+            <td colspan="6" class="empty-row">Aucun complément trouvé.</td>
           </tr>
         {% endfor %}
         </tbody>
@@ -144,7 +136,6 @@
 
     </div>
   </section>
-
 
   {% set totalPages = (paged.totalPages is defined) ? paged.totalPages : ((paged.totalItems / paged.pageSize)|round(0, 'ceil')) %}
   {% set current = paged.page %}

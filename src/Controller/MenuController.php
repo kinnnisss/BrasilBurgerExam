@@ -39,7 +39,7 @@ class MenuController extends AbstractController
         };
 
         $page = (int)($request->query->get('page', 1));
-        $pageSize = 12;
+        $pageSize = 5;
 
         $paged = $this->menuService->search($q, $archived, $page, $pageSize);
         $menusEntities = $this->menuService->findEntitiesByIds(

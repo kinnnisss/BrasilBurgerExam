@@ -38,7 +38,7 @@ class BurgerController extends AbstractController
         };
 
         $page = (int)($request->query->get('page', 1));
-        $pageSize = 12;
+        $pageSize = 4;
 
         $paged = $this->burgerService->search($q, $archived, $page, $pageSize);
 
