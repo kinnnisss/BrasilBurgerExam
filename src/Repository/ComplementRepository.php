@@ -51,6 +51,7 @@ class ComplementRepository extends ServiceEntityRepository
 
         $countQb = clone $qb;
         $totalItems = (int) $countQb
+            ->resetDQLPart('orderBy')
             ->select('COUNT(c.idComplement)')
             ->getQuery()
             ->getSingleScalarResult();
