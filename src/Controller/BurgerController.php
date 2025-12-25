@@ -18,7 +18,7 @@ class BurgerController extends AbstractController
         private readonly BurgerServiceInterface $burgerService
     ) {}
 
-    #[Route('/gestionnaire/burgers', name: 'burger_index', methods: ['GET'])]
+    #[Route('/gestionnaire/burgers', name: 'burger_index', methods: ['GET','POST'])]
     public function index(Request $request): Response
     {
         $filterForm = $this->createForm(BurgerFilterFormType::class, null, [
@@ -41,10 +41,77 @@ class BurgerController extends AbstractController
         $pageSize = 4;
 
         $paged = $this->burgerService->search($q, $archived, $page, $pageSize);
+        $showCreateModal = false;
+        $showEditModal = false;
+        $createForm = null;
+        $editForm = null;
+        $editData = null;
+
+        if ($request->query->get('action') === 'create' ||
+            ($request->isMethod('POST') && $request->request->has('burger_create_form'))) {
+            
+            $dto = new BurgerUpsertDto();
+            $createForm = $this->createForm(BurgerCreateFormType::class, $dto, [
+                'action' => $this->generateUrl('burger_index', ['action' => 'create'])
+            ]);
+            $createForm->handleRequest($request);
+
+            if ($createForm->isSubmitted() && $createForm->isValid()) {
+                $res = $this->burgerService->create($dto);
+                $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+                if ($res->success) {
+                    return $this->redirectToRoute('burger_index');
+                }
+            }
+            
+            $showCreateModal = true;
+        }
+        $editId = $request->query->get('edit');
+        
+        if ($request->isMethod('POST') && $request->request->has('burger_update_form')) {
+            $editId = $request->query->get('edit');
+        }
+        
+        if ($editId) {
+            try {
+                $editData = $this->burgerService->getEditData((int)$editId);
+
+                $dto = new BurgerUpsertDto();
+                $dto->nom = $editData->nom;
+                $dto->prix = $editData->prix;
+                $dto->imageFile = null;
+
+                $editForm = $this->createForm(BurgerUpdateFormType::class, $dto, [
+                    'currentImagePath' => $editData->currentImagePath,
+                    'action' => $this->generateUrl('burger_index', ['edit' => $editId])
+                ]);
+                $editForm->handleRequest($request);
+
+                if ($editForm->isSubmitted() && $editForm->isValid()) {
+                    $res = $this->burgerService->update((int)$editId, $dto);
+                    $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+                    if ($res->success) {
+                        return $this->redirectToRoute('burger_index');
+                    }
+                }
+                
+                $showEditModal = true;
+            } catch (\RuntimeException $e) {
+                $this->addFlash('danger', $e->getMessage());
+                return $this->redirectToRoute('burger_index');
+            }
+        }
 
         return $this->render('burger/index.html.twig', [
             'form' => $filterForm->createView(),
             'paged' => $paged,
+            'showCreateModal' => $showCreateModal,
+            'showEditModal' => $showEditModal,
+            'createForm' => $createForm?->createView(),
+            'editForm' => $editForm?->createView(),
+            'editData' => $editData,
         ]);
     }
 
