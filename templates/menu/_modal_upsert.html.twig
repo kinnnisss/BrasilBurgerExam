@@ -39,7 +39,6 @@
             {{ form_widget(createForm.boissonId, { attr: { class: 'bb-select' } }) }}
             {{ form_errors(createForm.boissonId) }}
           </div>
-
           {% if createForm.imageFile is defined %}
             <div class="bb-field">
               <label class="bb-label">Image</label>
@@ -98,6 +97,26 @@
             {{ form_widget(editForm.boissonId, { attr: { class: 'bb-select' } }) }}
             {{ form_errors(editForm.boissonId) }}
           </div>
+            {# ====== Calcul auto (JS) ====== #}
+            <div class="bb-pricebox" data-menu-pricebox>
+            <div class="bb-pricebox__row">
+                <div class="bb-pricebox__label">Total composants</div>
+                <div class="bb-pricebox__value"><span data-total-items>—</span> FCFA</div>
+            </div>
+
+            <div class="bb-pricebox__row">
+                <div class="bb-pricebox__label">Économie (15%)</div>
+                <div class="bb-pricebox__value"><span data-economy-amount>—</span> FCFA</div>
+            </div>
+
+            <div class="bb-pricebox__row bb-pricebox__row--strong">
+                <div class="bb-pricebox__label">Prix menu estimé</div>
+                <div class="bb-pricebox__value">
+                <span data-menu-price>—</span> FCFA
+                <span class="bb-pricebox__badge" data-badge>—</span>
+                </div>
+            </div>
+            </div>
 
           {% if editForm.imageFile is defined %}
             <div class="bb-field">
@@ -124,3 +143,66 @@
     </div>
   </div>
 {% endif %}
+<script>
+(function () {
+  if (window.__bbMenuPriceInit) return;
+  window.__bbMenuPriceInit = true;
+
+  const ECONOMY_PERCENT = 15;
+
+  function parsePriceFromOptionText(text) {
+    const m = String(text).match(/(\d+(?:[.,]\d+)?)\s*$/);
+    if (!m) return 0;
+    return parseFloat(m[1].replace(',', '.')) || 0;
+  }
+
+  function fmt(n) {
+    if (!isFinite(n)) return '0';
+    return Math.round(n).toString();
+  }
+
+  function updateBox(box) {
+    const root = box.closest('.bb-modal') || document;
+    const burgerSel  = root.querySelector('select[name$="[burgerId]"]');
+    const fritesSel  = root.querySelector('select[name$="[fritesId]"]');
+    const boissonSel = root.querySelector('select[name$="[boissonId]"]');
+
+    if (!burgerSel || !fritesSel || !boissonSel) return;
+
+    const burgerText  = burgerSel.options[burgerSel.selectedIndex]?.text || '';
+    const fritesText  = fritesSel.options[fritesSel.selectedIndex]?.text || '';
+    const boissonText = boissonSel.options[boissonSel.selectedIndex]?.text || '';
+
+    const burgerPrice  = parsePriceFromOptionText(burgerText);
+    const fritesPrice  = parsePriceFromOptionText(fritesText);
+    const boissonPrice = parsePriceFromOptionText(boissonText);
+
+    const total = burgerPrice + fritesPrice + boissonPrice;
+    const economyAmount = total * (ECONOMY_PERCENT / 100);
+    const menuPrice = total - economyAmount;
+
+    box.querySelector('[data-total-items]').textContent = fmt(total);
+    box.querySelector('[data-economy-amount]').textContent = fmt(economyAmount);
+    box.querySelector('[data-menu-price]').textContent = fmt(menuPrice);
+
+    const badge = box.querySelector('[data-badge]');
+    if (badge) {
+      badge.textContent = `-${ECONOMY_PERCENT}%`;
+      badge.classList.toggle('is-ok', total > 0);
+    }
+  }
+
+  function bindModal(modal) {
+    const box = modal.querySelector('[data-menu-pricebox]');
+    if (!box) return;
+
+    const selects = modal.querySelectorAll('select[name$="[burgerId]"], select[name$="[fritesId]"], select[name$="[boissonId]"]');
+    selects.forEach(s => s.addEventListener('change', () => updateBox(box)));
+
+    updateBox(box);
+  }
+
+  document.querySelectorAll('.bb-modal.is-open').forEach(bindModal);
+
+})();
+</script>

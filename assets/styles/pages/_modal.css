@@ -4,6 +4,14 @@
   z-index: 9999;
   display: none;
 }
+.bb-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .bb-modal.is-open{
   display: block;
@@ -13,6 +21,16 @@
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,.45);
+}
+.bb-modal__panel{
+  width: 100%;
+  max-width: 620px;
+  max-height: calc(100vh - 40px); /* important */
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden; 
 }
 
 .bb-modal__panel{
@@ -59,12 +77,57 @@
 .bb-modal__body{
   padding: 22px;
 }
+.bb-modal__body{
+  padding: 16px;
+  overflow-y: auto; 
+  overscroll-behavior: contain;
+}
 
 .bb-modal__actions{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
   margin-top: 18px;
+}
+
+
+.bb-pricebox{
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  background: rgba(0,0,0,.03);
+}
+
+.bb-pricebox__row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding: 6px 0;
+}
+
+.bb-pricebox__row--strong{
+  border-top: 1px dashed rgba(0,0,0,.15);
+  margin-top: 6px;
+  padding-top: 10px;
+  font-weight: 700;
+}
+
+.bb-pricebox__label{
+  color: rgba(0,0,0,.7);
+}
+
+.bb-pricebox__value{
+  text-align:right;
+}
+
+.bb-pricebox__badge{
+  display:inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: rgba(0,0,0,.08);
 }
 
 @media (max-width: 640px){
