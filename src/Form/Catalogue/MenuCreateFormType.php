@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Dto\Common\SelectItemDto;
 
 class MenuCreateFormType extends AbstractType
 {
@@ -24,19 +25,24 @@ class MenuCreateFormType extends AbstractType
                 'required' => true,
                 'placeholder' => 'Choisir un burger',
                 'choices' => $options['choices_burgers'],
-                'choice_value' => fn ($v) => (string) $v,
+                'choice_label' => fn (?SelectItemDto $c) => $c?->label ?? '',
+                'choice_value' => fn (?SelectItemDto $c) => $c?->id ? (string) $c->id : '',
             ])
+
             ->add('fritesId', ChoiceType::class, [
                 'required' => true,
                 'placeholder' => 'Choisir des frites',
                 'choices' => $options['choices_frites'],
-                'choice_value' => fn ($v) => (string) $v,
+                'choice_label' => fn (?SelectItemDto $c) => $c?->label ?? '',
+                'choice_value' => fn (?SelectItemDto $c) => $c?->id ? (string) $c->id : '',
             ])
+
             ->add('boissonId', ChoiceType::class, [
                 'required' => true,
                 'placeholder' => 'Choisir une boisson',
                 'choices' => $options['choices_boissons'],
-                'choice_value' => fn ($v) => (string) $v,
+                'choice_label' => fn (?SelectItemDto $c) => $c?->label ?? '',
+                'choice_value' => fn (?SelectItemDto $c) => $c?->id ? (string) $c->id : '',
             ])
             ->add('imageFile', FileType::class, [
                 'required' => false,
