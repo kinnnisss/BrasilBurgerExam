@@ -47,7 +47,7 @@ class ComplementRepository extends ServiceEntityRepository
                ->setParameter('archived', $archived);
         }
 
-        $qb->orderBy('c.nom', 'ASC');
+        $qb->orderBy('c.idComplement', 'DESC');
 
         $countQb = clone $qb;
         $totalItems = (int) $countQb
