@@ -42,9 +42,9 @@ class MenuController extends AbstractController
         $pageSize = 5;
         $paged = $this->menuService->search($q, $archived, $page, $pageSize);
 
-        $menusEntities = $this->menuService->findEntitiesByIds(
-            array_map(fn($m) => $m->id, $paged->items)
-        );
+        $ids = array_map(fn($m) => $m->id, $paged->items);
+        $menusEntities = $ids ? $this->menuService->findEntitiesByIds($ids) : [];
+
         $showCreateModal = false;
         $showEditModal = false;
 
