@@ -32,7 +32,7 @@
     </div>
 
     <div class="page-toolbar__right">
-      <a class="bb-btn bb-btn--primary" href="{{ path('menu_create') }}">
+      <a class="bb-btn bb-btn--primary" href="{{ path('menu_index', app.request.query.all|merge({'action':'create','page':1})) }}">
         <span class="bb-btn__icon">＋</span>
         Ajouter un menu
       </a>
@@ -111,7 +111,7 @@
               <div class="actions">
 
                 <a class="icon-btn"
-                   href="{{ path('menu_edit', { id: m.id }) }}"
+                   href="{{ path('menu_index', app.request.query.all|merge({'edit': m.id})) }}"
                    title="Modifier">
                   ✏️
                 </a>
@@ -196,5 +196,12 @@
 
     </nav>
   {% endif %}
+{% include 'menu/_modal_upsert.html.twig' with {
+  showCreateModal: showCreateModal,
+  showEditModal: showEditModal,
+  createForm: createForm,
+  editForm: editForm,
+  editData: editData
+} %}
 
 {% endblock %}

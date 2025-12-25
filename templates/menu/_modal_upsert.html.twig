@@ -1,0 +1,126 @@
+{# templates/menu/_modal_upsert.html.twig #}
+
+{% set closeUrl = path('menu_index', app.request.query.all|merge({'action': null, 'edit': null})) %}
+
+{% if showCreateModal and createForm %}
+  <div class="bb-modal is-open" role="dialog" aria-modal="true" aria-labelledby="modal-title-create-menu">
+    <a class="bb-modal__backdrop" href="{{ closeUrl }}" aria-label="Fermer la fenêtre"></a>
+
+    <div class="bb-modal__panel">
+      <div class="bb-modal__head">
+        <h3 id="modal-title-create-menu" class="bb-modal__title">Ajouter un menu</h3>
+        <a class="bb-modal__close" href="{{ closeUrl }}" aria-label="Fermer">✕</a>
+      </div>
+
+      <div class="bb-modal__body">
+        {{ form_start(createForm, { attr: { class: 'bb-form' } }) }}
+          <input type="hidden" name="mode" value="create">
+
+          <div class="bb-field">
+            <label class="bb-label">Nom <span class="req">*</span></label>
+            {{ form_widget(createForm.nom, { attr: { class: 'bb-input', placeholder: 'Ex: Menu Brasil' } }) }}
+            {{ form_errors(createForm.nom) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Burger <span class="req">*</span></label>
+            {{ form_widget(createForm.burgerId, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(createForm.burgerId) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Frites <span class="req">*</span></label>
+            {{ form_widget(createForm.fritesId, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(createForm.fritesId) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Boisson <span class="req">*</span></label>
+            {{ form_widget(createForm.boissonId, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(createForm.boissonId) }}
+          </div>
+
+          {% if createForm.imageFile is defined %}
+            <div class="bb-field">
+              <label class="bb-label">Image</label>
+              {{ form_widget(createForm.imageFile, { attr: { class: 'bb-input' } }) }}
+              {{ form_errors(createForm.imageFile) }}
+            </div>
+          {% endif %}
+
+          <div class="bb-modal__actions">
+            <a class="bb-btn bb-btn--ghost" href="{{ closeUrl }}">Annuler</a>
+            <button class="bb-btn bb-btn--success" type="submit">Ajouter</button>
+          </div>
+
+        {{ form_end(createForm) }}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+{% if showEditModal and editForm and editData %}
+  <div class="bb-modal is-open" role="dialog" aria-modal="true" aria-labelledby="modal-title-edit-menu">
+    <a class="bb-modal__backdrop" href="{{ closeUrl }}" aria-label="Fermer la fenêtre"></a>
+
+    <div class="bb-modal__panel">
+      <div class="bb-modal__head">
+        <h3 id="modal-title-edit-menu" class="bb-modal__title">Modifier le menu</h3>
+        <a class="bb-modal__close" href="{{ closeUrl }}" aria-label="Fermer">✕</a>
+      </div>
+
+      <div class="bb-modal__body">
+        {{ form_start(editForm, { attr: { class: 'bb-form' } }) }}
+          <input type="hidden" name="mode" value="edit">
+          <input type="hidden" name="editId" value="{{ editData.id }}">
+
+          <div class="bb-field">
+            <label class="bb-label">Nom <span class="req">*</span></label>
+            {{ form_widget(editForm.nom, { attr: { class: 'bb-input' } }) }}
+            {{ form_errors(editForm.nom) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Burger <span class="req">*</span></label>
+            {{ form_widget(editForm.burgerId, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(editForm.burgerId) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Frites <span class="req">*</span></label>
+            {{ form_widget(editForm.fritesId, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(editForm.fritesId) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Boisson <span class="req">*</span></label>
+            {{ form_widget(editForm.boissonId, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(editForm.boissonId) }}
+          </div>
+
+          {% if editForm.imageFile is defined %}
+            <div class="bb-field">
+              <label class="bb-label">Image (optionnel)</label>
+              {{ form_widget(editForm.imageFile, { attr: { class: 'bb-input' } }) }}
+              {{ form_errors(editForm.imageFile) }}
+
+              {% if editData.currentImagePath is defined and editData.currentImagePath %}
+                <div class="bb-hint" style="margin-top:8px;">
+                  Image actuelle :
+                  <a href="{{ editData.currentImagePath }}" target="_blank" rel="noreferrer">voir</a>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="bb-modal__actions">
+            <a class="bb-btn bb-btn--ghost" href="{{ closeUrl }}">Annuler</a>
+            <button class="bb-btn bb-btn--success" type="submit">Modifier</button>
+          </div>
+
+        {{ form_end(editForm) }}
+      </div>
+    </div>
+  </div>
+{% endif %}

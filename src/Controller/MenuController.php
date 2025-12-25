@@ -57,9 +57,9 @@ class MenuController extends AbstractController
         $editId = $request->query->getInt('edit', 0);
         $postedMode = (string) $request->request->get('mode', '');
         $createForm = $this->createForm(MenuCreateFormType::class, $createDto, [
-            'burgers' => $createData->burgers,
-            'frites' => $createData->frites,
-            'boissons' => $createData->boissons,
+            'choices_burgers' => $createData->burgers,
+            'choices_frites' => $createData->frites,
+            'choices_boissons' => $createData->boissons,
             'action' => $this->generateUrl('menu_index', array_filter([
                 'action' => 'create',
                 'page'   => $page,
@@ -101,9 +101,9 @@ class MenuController extends AbstractController
                     $editDto->boissonId = $editData->boissonId;
                     $editDto->imageFile = null;
                     $editForm = $this->createForm(MenuUpdateFormType::class, $editDto, [
-                        'burgers' => $createData->burgers,
-                        'frites' => $createData->frites,
-                        'boissons' => $createData->boissons,
+                        'choices_burgers' => $createData->burgers,
+                        'choices_frites' => $createData->frites,
+                        'choices_boissons' => $createData->boissons,
                         'action' => $this->generateUrl('menu_index', array_filter([
                             'edit'   => $editId,
                             'page'   => $page,
