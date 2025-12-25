@@ -1,0 +1,132 @@
+{# templates/complement/_modal_upsert.html.twig #}
+
+{% if showCreateModal and createForm %}
+  <div class="bb-modal is-open" role="dialog" aria-modal="true" aria-labelledby="modal-title-create">
+    <a class="bb-modal__backdrop"
+       href="{{ path('complement_index', app.request.query.all|merge({'action': null, 'edit': null})) }}"
+       aria-label="Fermer la fenêtre"></a>
+
+    <div class="bb-modal__panel">
+      <div class="bb-modal__head">
+        <h3 id="modal-title-create" class="bb-modal__title">Ajouter un complément</h3>
+
+        <a class="bb-modal__close"
+           href="{{ path('complement_index', app.request.query.all|merge({'action': null, 'edit': null})) }}"
+           aria-label="Fermer">
+          ✕
+        </a>
+      </div>
+
+      <div class="bb-modal__body">
+        {{ form_start(createForm, { attr: { class: 'bb-form' } }) }}
+          <input type="hidden" name="mode" value="create">
+
+          <div class="bb-field">
+            <label class="bb-label">Nom <span class="req">*</span></label>
+            {{ form_widget(createForm.nom, { attr: { class: 'bb-input', placeholder: 'Ex: Frites Classiques' } }) }}
+            {{ form_errors(createForm.nom) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Type <span class="req">*</span></label>
+            {{ form_widget(createForm.type, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(createForm.type) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Prix (FCFA) <span class="req">*</span></label>
+            {{ form_widget(createForm.prix, { attr: { class: 'bb-input', placeholder: 'Ex: 1000' } }) }}
+            {{ form_errors(createForm.prix) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Image</label>
+            {{ form_widget(createForm.imageFile, { attr: { class: 'bb-input' } }) }}
+            {{ form_errors(createForm.imageFile) }}
+          </div>
+
+          <div class="bb-modal__actions">
+            <a class="bb-btn bb-btn--ghost"
+               href="{{ path('complement_index', app.request.query.all|merge({'action': null, 'edit': null})) }}">
+              Annuler
+            </a>
+
+            <button class="bb-btn bb-btn--success" type="submit">
+              Ajouter
+            </button>
+          </div>
+        {{ form_end(createForm) }}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+{% if showEditModal and editForm and editData %}
+  <div class="bb-modal is-open" role="dialog" aria-modal="true" aria-labelledby="modal-title-edit">
+    <a class="bb-modal__backdrop"
+       href="{{ path('complement_index', app.request.query.all|merge({'action': null, 'edit': null})) }}"
+       aria-label="Fermer la fenêtre"></a>
+
+    <div class="bb-modal__panel">
+      <div class="bb-modal__head">
+        <h3 id="modal-title-edit" class="bb-modal__title">Modifier le complément</h3>
+
+        <a class="bb-modal__close"
+           href="{{ path('complement_index', app.request.query.all|merge({'action': null, 'edit': null})) }}"
+           aria-label="Fermer">
+          ✕
+        </a>
+      </div>
+
+      <div class="bb-modal__body">
+        {{ form_start(editForm, { attr: { class: 'bb-form' } }) }}
+          <input type="hidden" name="mode" value="edit">
+          <input type="hidden" name="editId" value="{{ editData.id }}">
+
+          <div class="bb-field">
+            <label class="bb-label">Nom <span class="req">*</span></label>
+            {{ form_widget(editForm.nom, { attr: { class: 'bb-input' } }) }}
+            {{ form_errors(editForm.nom) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Type <span class="req">*</span></label>
+            {{ form_widget(editForm.type, { attr: { class: 'bb-select' } }) }}
+            {{ form_errors(editForm.type) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Prix (FCFA) <span class="req">*</span></label>
+            {{ form_widget(editForm.prix, { attr: { class: 'bb-input' } }) }}
+            {{ form_errors(editForm.prix) }}
+          </div>
+
+          <div class="bb-field">
+            <label class="bb-label">Image (optionnel)</label>
+            {{ form_widget(editForm.imageFile, { attr: { class: 'bb-input' } }) }}
+            {{ form_errors(editForm.imageFile) }}
+
+            {% if editData.currentImagePath is defined and editData.currentImagePath %}
+              <div class="bb-hint" style="margin-top:8px;">
+                Image actuelle :
+                <a href="{{ editData.currentImagePath }}" target="_blank" rel="noreferrer">voir</a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="bb-modal__actions">
+            <a class="bb-btn bb-btn--ghost"
+               href="{{ path('complement_index', app.request.query.all|merge({'action': null, 'edit': null})) }}">
+              Annuler
+            </a>
+
+            <button class="bb-btn bb-btn--success" type="submit">
+              Modifier
+            </button>
+          </div>
+        {{ form_end(editForm) }}
+      </div>
+    </div>
+  </div>
+{% endif %}

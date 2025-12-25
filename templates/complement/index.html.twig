@@ -37,7 +37,8 @@
     </div>
 
     <div class="page-toolbar__right">
-      <a class="bb-btn bb-btn--primary" href="{{ path('complement_create') }}">
+      <a class="bb-btn bb-btn--primary"
+      href="{{ path('complement_index', app.request.query.all|merge({'action':'create','page':1})) }}">
         <span class="bb-btn__icon">＋</span>
         Ajouter un complément
       </a>
@@ -106,7 +107,7 @@
               <div class="actions">
 
                 <a class="icon-btn"
-                   href="{{ path('complement_edit', { id: c.id }) }}"
+                   href="{{ path('complement_index', app.request.query.all|merge({'edit': c.id})) }}"
                    title="Modifier">✏️</a>
 
                 {% if c.isArchived %}
@@ -186,5 +187,12 @@
 
     </nav>
   {% endif %}
+{% include 'complement/_modal_upsert.html.twig' with {
+  showCreateModal: showCreateModal,
+  showEditModal: showEditModal,
+  createForm: createForm,
+  editForm: editForm,
+  editData: editData
+} %}
 
 {% endblock %}
