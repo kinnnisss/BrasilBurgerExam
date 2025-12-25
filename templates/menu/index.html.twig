@@ -73,26 +73,33 @@
             </td>
 
             <td class="muted">
-              {% set menuEntity = menusEntities|filter(e => e.idMenu == m.id)|first %}
-
-              {% if menuEntity %}
-                {% set burger = menuEntity.burgers|first %}
-                {% set frite = null %}
-                {% set boisson = null %}
-
-                {% for c in menuEntity.complements %}
-                  {% if c.typeComplement.value == 'FRITE' %}{% set frite = c %}{% endif %}
-                  {% if c.typeComplement.value == 'BOISSON' %}{% set boisson = c %}{% endif %}
+              {% set menuEntity = null %}
+                {% for e in menusEntities %}
+                  {% if e.idMenu == m.id %}
+                    {% set menuEntity = e %}
+                  {% endif %}
                 {% endfor %}
 
-                <div class="m-compo">
-                  <div>🍔 {{ burger ? burger.nom : '—' }}</div>
-                  <div>🍟 {{ frite ? frite.nom : '—' }}</div>
-                  <div>🥤 {{ boisson ? boisson.nom : '—' }}</div>
-                </div>
-              {% else %}
-                —
-              {% endif %}
+                {% if menuEntity %}
+                  {% set burger = menuEntity.burgers|first %}
+                  {% set frite = null %}
+                  {% set boisson = null %}
+
+                  {% for c in menuEntity.complements %}
+                    {% set t = c.typeComplement.value is defined ? c.typeComplement.value : c.typeComplement %}
+                    {% if t == 'FRITE' %}{% set frite = c %}{% endif %}
+                    {% if t == 'BOISSON' %}{% set boisson = c %}{% endif %}
+                  {% endfor %}
+
+                  <div class="m-compo">
+                    <div>🍔 {{ burger ? burger.nom : '—' }}</div>
+                    <div>🍟 {{ frite ? frite.nom : '—' }}</div>
+                    <div>🥤 {{ boisson ? boisson.nom : '—' }}</div>
+                  </div>
+                {% else %}
+                  —
+                {% endif %}
+
             </td>
 
             <td class="col-price price">
