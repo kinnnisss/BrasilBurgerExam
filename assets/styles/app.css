@@ -2,6 +2,7 @@
 @import "./pages/login.css";
 @import "./pages/dashboard.css";
 @import "./pages/menu.css";
+@import "./pages/_modal.css";
 
 /* ===== Layout shell ===== */
 html, body{

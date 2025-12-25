@@ -1,0 +1,70 @@
+{# templates/burger/_modal_upsert.html.twig #}
+
+<div class="bb-modal is-open"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modal-title">
+
+  <a class="bb-modal__backdrop"
+     href="{{ path('burger_index') }}"
+     aria-label="Fermer la fenêtre (retour à la liste)"></a>
+
+  <div class="bb-modal__panel" role="document">
+    <div class="bb-modal__head">
+      <h3 id="modal-title" class="bb-modal__title">
+        {{ modal.type == 'edit' ? 'Modifier le burger' : 'Ajouter un burger' }}
+      </h3>
+
+      <a class="bb-modal__close"
+         href="{{ path('burger_index') }}"
+         aria-label="Fermer">
+        ✕
+      </a>
+    </div>
+
+    <div class="bb-modal__body">
+      {{ form_start(modal.form, { attr: { class: 'bb-form' } }) }}
+        <div class="bb-field">
+          <label class="bb-label">Nom du burger <span class="req">*</span></label>
+          {{ form_widget(modal.form.nom, { attr: { class: 'bb-input', placeholder: 'Ex: Classic Brasil' } }) }}
+          {{ form_errors(modal.form.nom) }}
+        </div>
+
+        <div class="bb-field">
+          <label class="bb-label">Prix (FCFA) <span class="req">*</span></label>
+          {{ form_widget(modal.form.prix, { attr: { class: 'bb-input', placeholder: 'Ex: 4500' } }) }}
+          {{ form_errors(modal.form.prix) }}
+        </div>
+
+        {% if modal.form.description is defined %}
+          <div class="bb-field">
+            <label class="bb-label">Description</label>
+            {{ form_widget(modal.form.description, { attr: { class: 'bb-textarea', placeholder: 'Décrivez votre burger...' } }) }}
+            {{ form_errors(modal.form.description) }}
+          </div>
+        {% endif %}
+
+        <div class="bb-field">
+          <label class="bb-label">Image</label>
+          {{ form_widget(modal.form.imageFile, { attr: { class: 'bb-input' } }) }}
+          {{ form_errors(modal.form.imageFile) }}
+
+          {% if modal.type == 'edit' and modal.edit is defined and modal.edit.currentImagePath %}
+            <div class="bb-hint" style="margin-top:8px;">
+              Image actuelle :
+              <a href="{{ modal.edit.currentImagePath }}" target="_blank" rel="noreferrer">voir</a>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="bb-modal__actions">
+          <a class="bb-btn bb-btn--ghost" href="{{ path('burger_index') }}">Annuler</a>
+          <button class="bb-btn bb-btn--success" type="submit">
+            {{ modal.type == 'edit' ? 'Modifier' : 'Ajouter' }}
+          </button>
+        </div>
+
+      {{ form_end(modal.form) }}
+    </div>
+  </div>
+</div>

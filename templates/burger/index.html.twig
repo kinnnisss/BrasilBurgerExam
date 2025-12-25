@@ -41,8 +41,10 @@
     </div>
 
     <div class="page-toolbar__right">
-      <a class="bb-btn bb-btn--primary" href="{{ path('burger_create') }}">
-        <span class="bb-btn__icon">＋</span>
+        {% set qs = app.request.query.all %}
+        <a class="bb-btn bb-btn--primary"
+          href="{{ path('burger_index', qs|merge({ action: 'create' })) }}">
+          <span class="bb-btn__icon">＋</span>
         Ajouter un burger
       </a>
     </div>
@@ -105,8 +107,8 @@
               <div class="actions">
 
                 <a class="icon-btn"
-                   href="{{ path('burger_edit', { id: b.id }) }}"
-                   title="Modifier">
+                href="{{ path('burger_index', qs|merge({ edit: b.id })) }}"
+                title="Modifier">
                   ✏️
                 </a>
 
@@ -221,4 +223,44 @@
     </nav>
   {% endif %}
 
+  {% if showCreateModal and createForm %}
+    {% include 'burger/_modal_upsert.html.twig' with {
+      modal: {
+        type: 'create',
+        form: createForm
+      }
+    } %}
+  {% endif %}
+
+  {% if showEditModal and editForm %}
+    {% include 'burger/_modal_upsert.html.twig' with {
+      modal: {
+        type: 'edit',
+        form: editForm,
+        edit: editData
+      }
+    } %}
+  {% endif %}
+
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    (function () {
+      const modal = document.querySelector('.bb-modal.is-open');
+      if (!modal) return;
+
+      document.documentElement.classList.add('bb-modal-open');
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          window.location.href = "{{ path('burger_index') }}";
+        }
+      }, { once: true });
+
+      window.addEventListener('beforeunload', function(){
+        document.documentElement.classList.remove('bb-modal-open');
+      });
+    })();
+  </script>
 {% endblock %}
