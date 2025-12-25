@@ -18,7 +18,7 @@ class ComplementController extends AbstractController
         private readonly ComplementServiceInterface $complementService
     ) {}
 
-    #[Route('/gestionnaire/complements', name: 'complement_index', methods: ['GET'])]
+    #[Route('/gestionnaire/complements', name: 'complement_index', methods: ['GET','POST'])]
     public function index(Request $request): Response
     {
     $filterForm = $this->createForm(ComplementFilterFormType::class, null, [
