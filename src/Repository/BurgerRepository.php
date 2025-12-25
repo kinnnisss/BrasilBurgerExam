@@ -36,7 +36,7 @@ class BurgerRepository extends ServiceEntityRepository
                ->setParameter('archived', $archived);
         }
 
-        $qb->orderBy('b.nom', 'ASC');
+        $qb->orderBy('b.idBurger', 'DESC');
 
         $countQb = clone $qb;
         $totalItems = (int) $countQb
