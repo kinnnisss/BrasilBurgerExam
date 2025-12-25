@@ -19,7 +19,7 @@ class MenuController extends AbstractController
         private readonly MenuServiceInterface $menuService
     ) {}
 
-    #[Route('/gestionnaire/menus', name: 'menu_index', methods: ['GET'])]
+    #[Route('/gestionnaire/menus', name: 'menu_index', methods: ['GET','POST'])]
     public function index(Request $request): Response
     {
         $filterForm = $this->createForm(MenuFilterFormType::class, null, [
@@ -30,91 +30,124 @@ class MenuController extends AbstractController
 
         $data = $filterForm->getData() ?? [];
         $q = $data['q'] ?? null;
-        $status = $data['status'] ?? 'ALL';
 
+        $status = $data['status'] ?? 'ALL';
         $archived = match ($status) {
             'ACTIVE' => false,
             'ARCHIVED' => true,
             default => null,
         };
 
-        $page = (int)($request->query->get('page', 1));
+        $page = (int) $request->query->get('page', 1);
         $pageSize = 5;
-
         $paged = $this->menuService->search($q, $archived, $page, $pageSize);
-        $menusEntities = $this->menuService->findEntitiesByIds(
-    array_map(fn($m) => $m->id, $paged->items)
-);
 
+        $menusEntities = $this->menuService->findEntitiesByIds(
+            array_map(fn($m) => $m->id, $paged->items)
+        );
+        $showCreateModal = false;
+        $showEditModal = false;
+
+        $createData = $this->menuService->getCreateData();
+        $createDto  = new MenuCreateDto();
+        $editDto    = new MenuUpdateDto();
+        $editData   = null;
+
+        $action = (string) $request->query->get('action', '');
+        $editId = $request->query->getInt('edit', 0);
+        $postedMode = (string) $request->request->get('mode', '');
+        $createForm = $this->createForm(MenuCreateFormType::class, $createDto, [
+            'burgers' => $createData->burgers,
+            'frites' => $createData->frites,
+            'boissons' => $createData->boissons,
+            'action' => $this->generateUrl('menu_index', array_filter([
+                'action' => 'create',
+                'page'   => $page,
+                'q'      => $request->query->get('q'),
+                'status' => $request->query->get('status'),
+            ])),
+        ]);
+        $createForm->handleRequest($request);
+
+        if ($action === 'create' || ($request->isMethod('POST') && $postedMode === 'create')) {
+            $showCreateModal = true;
+
+            if ($createForm->isSubmitted() && $createForm->isValid()) {
+                $res = $this->menuService->create($createDto);
+                $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+                if ($res->success) {
+                    return $this->redirectToRoute('menu_index', array_filter([
+                        'page'   => 1,
+                        'q'      => $request->query->get('q'),
+                        'status' => $request->query->get('status'),
+                    ]));
+                }
+            }
+        }
+        if ($editId > 0 || ($request->isMethod('POST') && $postedMode === 'edit')) {
+
+            if ($request->isMethod('POST') && $postedMode === 'edit') {
+                $editId = (int) $request->request->get('editId', 0);
+            }
+
+            if ($editId > 0) {
+                try {
+                    $editData = $this->menuService->getEditData($editId);
+
+                    $editDto->nom = $editData->nom;
+                    $editDto->burgerId = $editData->burgerId;
+                    $editDto->fritesId = $editData->fritesId;
+                    $editDto->boissonId = $editData->boissonId;
+                    $editDto->imageFile = null;
+                    $editForm = $this->createForm(MenuUpdateFormType::class, $editDto, [
+                        'burgers' => $createData->burgers,
+                        'frites' => $createData->frites,
+                        'boissons' => $createData->boissons,
+                        'action' => $this->generateUrl('menu_index', array_filter([
+                            'edit'   => $editId,
+                            'page'   => $page,
+                            'q'      => $request->query->get('q'),
+                            'status' => $request->query->get('status'),
+                        ])),
+                    ]);
+                    $editForm->handleRequest($request);
+
+                    $showEditModal = true;
+
+                    if ($editForm->isSubmitted() && $editForm->isValid()) {
+                        $res = $this->menuService->update($editId, $editDto);
+                        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+
+                        if ($res->success) {
+                            return $this->redirectToRoute('menu_index', array_filter([
+                                'page'   => $page,
+                                'q'      => $request->query->get('q'),
+                                'status' => $request->query->get('status'),
+                            ]));
+                        }
+                    }
+
+                } catch (\RuntimeException $e) {
+                    $this->addFlash('danger', $e->getMessage());
+                    return $this->redirectToRoute('menu_index');
+                }
+            }
+
+        } else {
+            $editForm = null;
+        }
         return $this->render('menu/index.html.twig', [
             'form' => $filterForm->createView(),
             'paged' => $paged,
             'menusEntities' => $menusEntities,
-        ]);
-    }
 
-    #[Route('/gestionnaire/menus/create', name: 'menu_create', methods: ['GET', 'POST'])]
-    public function create(Request $request): Response
-    {
-        $data = $this->menuService->getCreateData();
+            'showCreateModal' => $showCreateModal,
+            'showEditModal' => $showEditModal,
 
-        $dto = new MenuCreateDto();
-        $form = $this->createForm(MenuCreateFormType::class, $dto, [
-            'burgers' => $data->burgers,
-            'frites' => $data->frites,
-            'boissons' => $data->boissons,
-        ]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $res = $this->menuService->create($dto);
-            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
-
-            if ($res->success) {
-                return $this->redirectToRoute('menu_index');
-            }
-        }
-
-        return $this->render('menu/create.html.twig', [
-            'form' => $form->createView(),
-            'data' => $data,
-        ]);
-    }
-
-    #[Route('/gestionnaire/menus/{id}/edit', name: 'menu_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(int $id, Request $request): Response
-    {
-        $edit = $this->menuService->getEditData($id);
-        $data = $this->menuService->getCreateData();
-
-        $dto = new MenuUpdateDto();
-        $dto->nom = $edit->nom;
-        $dto->burgerId = $edit->burgerId;
-        $dto->fritesId = $edit->fritesId;
-        $dto->boissonId = $edit->boissonId;
-        $dto->imageFile = null;
-
-        $form = $this->createForm(MenuUpdateFormType::class, $dto, [
-            'burgers' => $data->burgers,
-            'frites' => $data->frites,
-            'boissons' => $data->boissons,
-            'currentImagePath' => $edit->currentImagePath,
-        ]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $res = $this->menuService->update($id, $dto);
-            $this->addFlash($res->success ? 'success' : 'danger', $res->message);
-
-            if ($res->success) {
-                return $this->redirectToRoute('menu_index');
-            }
-        }
-
-        return $this->render('menu/edit.html.twig', [
-            'form' => $form->createView(),
-            'edit' => $edit,
-            'data' => $data,
+            'createForm' => $createForm->createView(),
+            'editForm' => isset($editForm) && $editForm ? $editForm->createView() : null,
+            'editData' => $editData,
         ]);
     }
 
