@@ -152,25 +152,27 @@ class CommandeRepository extends ServiceEntityRepository
         return $items;
     }
 
-   public function updateEtat(int $idCommande, $newEtat): bool
+    public function updateEtat(int $idCommande, $newEtat): bool
     {
-    $cmd = $this->find($idCommande);
-    if (!$cmd) {
-        return false;
+        $cmd = $this->find($idCommande);
+        if (!$cmd) {
+            return false;
+        }
+
+        $cmd->setEtat($newEtat);
+
+        if ($newEtat === EtatCommandeEnum::TERMINER && $cmd->getDateTerminaison() === null) {
+            $cmd->setDateTerminaison(new \DateTimeImmutable());
+        }
+
+        if ($newEtat === EtatCommandeEnum::ANNULEE && $cmd->getDateTerminaison() === null) {
+            $cmd->setDateTerminaison(new \DateTimeImmutable());
+        }
+
+        $this->getEntityManager()->flush();
+        return true;
     }
 
-    $cmd->setEtat($newEtat);
-
-    if ($newEtat === EtatCommandeEnum::TERMINER) {
-        $cmd->setDateTerminaison(new \DateTimeImmutable());
-    }
-    if ($newEtat === EtatCommandeEnum::ANNULEE) {
-        $cmd->setDateTerminaison(null);
-    }
-
-    $this->getEntityManager()->flush();
-    return true;
-    }
 
     public function belongsToClient(int $idCommande, int $idClient): bool
     {
