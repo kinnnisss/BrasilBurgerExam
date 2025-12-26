@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la commande{% endblock %}
+
+{% block body %}
+<div class="bb-cmd-details">
+
+  <div class="bb-cmd-details__top">
+    <a class="bb-back" href="{{ path('commande_index') }}" aria-label="Retour">←</a>
+
+    <div class="bb-cmd-details__titles">
+      <h1 class="bb-cmd-details__title">Détails de la commande</h1>
+      <div class="bb-cmd-details__ref">Référence: {{ dto.header.reference }}</div>
+    </div>
+
+    {% set etatValue = dto.header.etat.value %}
+    {% set etatLabel =
+      etatValue == 'ENCOURS' ? 'En cours' :
+      (etatValue == 'VALIDEE' ? 'Validée' :
+      (etatValue == 'TERMINER' ? 'Terminée' : 'Annulée'))
+    %}
+
+    {% set etatClass =
+      etatValue == 'ENCOURS' ? 'bb-pill--warn' :
+      (etatValue == 'VALIDEE' ? 'bb-pill--info' :
+      (etatValue == 'TERMINER' ? 'bb-pill--success' : 'bb-pill--danger'))
+    %}
+
+    <span class="bb-pill {{ etatClass }}">{{ etatLabel }}</span>
+  </div>
+
+  <section class="bb-card">
+    <div class="bb-card__head">
+      <h2 class="bb-card__title">Informations client</h2>
+    </div>
+
+    <div class="bb-card__body bb-info">
+      <div class="bb-info__row">
+        <div class="bb-info__icon">👤</div>
+        <div class="bb-info__text">
+          <div class="bb-info__label">Nom complet</div>
+          <div class="bb-info__value">{{ dto.client.nomComplet }}</div>
+        </div>
+      </div>
+
+      <div class="bb-info__row">
+        <div class="bb-info__icon">📞</div>
+        <div class="bb-info__text">
+          <div class="bb-info__label">Téléphone</div>
+          <div class="bb-info__value">{{ dto.client.telephone }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bb-card">
+    <div class="bb-card__head">
+      <h2 class="bb-card__title">Articles commandés</h2>
+    </div>
+
+    <div class="bb-card__body bb-items">
+      {% for l in dto.lignes %}
+        <div class="bb-item">
+          <div class="bb-item__thumb">
+            {% if l.image %}
+              <img src="{{ asset(l.image) }}" alt="{{ l.designation }}">
+            {% else %}
+              <span class="bb-item__ph">
+                {{ l.typeArticle.value == 'BURGER' ? '🍔' : (l.typeArticle.value == 'MENU' ? '🍟' : '➕') }}
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="bb-item__main">
+            <div class="bb-item__name">{{ l.designation }}</div>
+            <div class="bb-item__meta">Quantité: {{ l.quantite }}</div>
+            <div class="bb-item__meta muted">{{ l.prixUnitaire }} FCFA × {{ l.quantite }}</div>
+          </div>
+
+          <div class="bb-item__price">{{ l.prixTotal }} FCFA</div>
+        </div>
+
+        {% if not loop.last %}
+          <div class="bb-sep"></div>
+        {% endif %}
+      {% else %}
+        <div class="bb-empty">Aucun article.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="bb-card">
+    <div class="bb-card__head">
+      <h2 class="bb-card__title">Type de consommation</h2>
+    </div>
+
+    <div class="bb-card__body bb-cons">
+      {% set tc = dto.header.typeConsommation.value %}
+      {% set tcLabel = tc == 'LIVRAISON' ? 'Livraison' : (tc == 'SUR_PLACE' ? 'Sur place' : 'À emporter') %}
+      {% set tcIcon = tc == 'LIVRAISON' ? '🛵' : (tc == 'SUR_PLACE' ? '🍽️' : '👜') %}
+
+      <div class="bb-cons__row">
+        <div class="bb-cons__icon">{{ tcIcon }}</div>
+        <div class="bb-cons__text">
+          <div class="bb-cons__value">{{ tcLabel }}</div>
+        </div>
+      </div>
+
+      {% if tc == 'LIVRAISON' %}
+        <div class="bb-sep"></div>
+
+        <div class="bb-cons__row">
+          <div class="bb-cons__icon">📍</div>
+          <div class="bb-cons__text">
+            <div class="bb-cons__label">Adresse de livraison</div>
+            <div class="bb-cons__value">{{ dto.header.quartier ? dto.header.quartier : '—' }}</div>
+            {% if dto.header.zone %}
+              <div class="bb-cons__sub">{{ dto.header.zone }}</div>
+            {% endif %}
+            {% if dto.header.livreur %}
+              <div class="bb-cons__sub"><span class="muted">Livreur :</span> {{ dto.header.livreur }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="bb-card">
+    <div class="bb-card__head">
+      <h2 class="bb-card__title">Paiement</h2>
+    </div>
+
+    <div class="bb-card__body bb-pay">
+      <div class="bb-pay__row">
+        <div class="bb-pay__label">Total</div>
+        <div class="bb-pay__value is-strong">{{ dto.header.montantTotal }} FCFA</div>
+      </div>
+
+      <div class="bb-pay__row bb-pay__row--box">
+        <div class="bb-pay__label">Mode de paiement</div>
+        <div class="bb-pay__value">{{ dto.paiement ? dto.paiement.modePaiement.value : '—' }}</div>
+      </div>
+
+      {% if dto.paiement %}
+        <div class="bb-alert bb-alert--success">✓ Paiement effectué</div>
+      {% else %}
+        <div class="bb-alert bb-alert--muted">Paiement non enregistré</div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="bb-card">
+    <div class="bb-card__head">
+      <h2 class="bb-card__title">Chronologie</h2>
+    </div>
+
+    <div class="bb-card__body bb-time">
+      <div class="bb-time__item">
+        <div class="bb-time__dot">✓</div>
+        <div class="bb-time__content">
+          <div class="bb-time__title">Commande reçue</div>
+          <div class="bb-time__sub">{{ dto.header.dateCommande|date('d/m/Y H:i:s') }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if dto.actions.canValidate or dto.actions.canTerminate or dto.actions.canCancel %}
+    <section class="bb-card">
+      <div class="bb-card__head">
+        <h2 class="bb-card__title">Actions</h2>
+      </div>
+
+      <div class="bb-card__body bb-actions">
+        {% if dto.actions.canValidate %}
+          <form method="post" action="{{ path('commande_validate', {id: dto.header.id}) }}">
+            <button class="bb-act bb-act--blue" type="submit">Valider la commande</button>
+          </form>
+        {% endif %}
+
+        {% if dto.actions.canTerminate %}
+          <form method="post" action="{{ path('commande_terminate', {id: dto.header.id}) }}">
+            <button class="bb-act bb-act--green" type="submit">Marquer comme terminée</button>
+          </form>
+        {% endif %}
+
+        {% if dto.actions.canCancel %}
+          <form method="post"
+                action="{{ path('commande_cancel', {id: dto.header.id}) }}"
+                onsubmit="return confirm('Confirmer l\\'annulation de la commande ?');">
+            <button class="bb-act bb-act--red" type="submit">Annuler la commande</button>
+          </form>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="bb-card">
+    <div class="bb-card__head">
+      <h2 class="bb-card__title">Informations</h2>
+    </div>
+
+    <div class="bb-card__body bb-kv">
+      <div class="bb-kv__row">
+        <div class="bb-kv__k">Date de commande</div>
+        <div class="bb-kv__v">{{ dto.header.dateCommande|date('d/m/Y H:i') }}</div>
+      </div>
+      <div class="bb-kv__row">
+        <div class="bb-kv__k">Référence</div>
+        <div class="bb-kv__v">{{ dto.header.reference }}</div>
+      </div>
+      <div class="bb-kv__row">
+        <div class="bb-kv__k">Nombre d'articles</div>
+        <div class="bb-kv__v">{{ dto.lignes|length }}</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
