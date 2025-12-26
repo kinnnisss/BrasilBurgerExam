@@ -54,6 +54,9 @@ class Commande
     #[ORM\OneToOne(mappedBy: 'commande', targetEntity: Paiement::class, cascade: ['persist', 'remove'])]
     private ?Paiement $paiement = null;
 
+    #[ORM\Column(name: 'date_terminaison', type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $dateTerminaison = null;
+
     public function __construct()
     {
         $this->lignes = new ArrayCollection();
@@ -88,4 +91,15 @@ class Commande
 
     public function getPaiement(): ?Paiement { return $this->paiement; }
     public function setPaiement(?Paiement $p): self { $this->paiement = $p; return $this; }
+
+    public function getDateTerminaison(): ?\DateTimeImmutable
+    {
+        return $this->dateTerminaison;
+    }
+
+    public function setDateTerminaison(?\DateTimeImmutable $dateTerminaison): self
+    {
+        $this->dateTerminaison = $dateTerminaison;
+        return $this;
+    }
 }
