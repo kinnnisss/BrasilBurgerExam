@@ -1,53 +1,43 @@
 {# templates/partials/pagination.html.twig #}
-{% if paged.totalPages > 1 %}
-  <nav class="bb-pagination" aria-label="Pagination">
 
-    {# Précédent #}
-    {% if paged.hasPrev %}
-      <a class="bb-page" href="{{ app.request.uri|replace({'page=' ~ paged.page: 'page=' ~ (paged.page - 1)}) }}">Précédent</a>
+{% set page = paged.page ?? 1 %}
+{% set pageSize = paged.pageSize ?? 12 %}
+{% set totalItems = paged.totalItems ?? 0 %}
+
+{% set totalPages = (totalItems / pageSize)|round(0, 'ceil') %}
+{% if totalPages < 1 %}{% set totalPages = 1 %}{% endif %}
+
+{% set query = app.request.query.all %}
+
+<nav class="bb-pagination" aria-label="Pagination">
+
+    {% if page > 1 %}
+        <a class="bb-page"
+           href="{{ path(route, query|merge({ page: page - 1 })) }}">
+            Précédent
+        </a>
     {% else %}
-      <span class="bb-page is-disabled">Précédent</span>
+        <span class="bb-page is-disabled">Précédent</span>
     {% endif %}
 
-    {# Pages (window) #}
-    {% set current = paged.page %}
-    {% set total = paged.totalPages %}
-    {% set start = current - 2 %}
-    {% set end = current + 2 %}
-    {% if start < 1 %}{% set start = 1 %}{% endif %}
-    {% if end > total %}{% set end = total %}{% endif %}
-
-    {# 1 + ... #}
-    {% if start > 1 %}
-      <a class="bb-page" href="{{ app.request.uri|replace({'page=' ~ current: 'page=1'}) }}">1</a>
-      {% if start > 2 %}
-        <span class="bb-page is-disabled">…</span>
-      {% endif %}
-    {% endif %}
-
-    {# window #}
-    {% for p in start..end %}
-      {% if p == current %}
-        <span class="bb-page is-active">{{ p }}</span>
-      {% else %}
-        <a class="bb-page" href="{{ app.request.uri|replace({'page=' ~ current: 'page=' ~ p}) }}">{{ p }}</a>
-      {% endif %}
+    {% for p in 1..totalPages %}
+        {% if p == page %}
+            <span class="bb-page is-active">{{ p }}</span>
+        {% else %}
+            <a class="bb-page"
+               href="{{ path(route, query|merge({ page: p })) }}">
+                {{ p }}
+            </a>
+        {% endif %}
     {% endfor %}
 
-    {# ... + last #}
-    {% if end < total %}
-      {% if end < total - 1 %}
-        <span class="bb-page is-disabled">…</span>
-      {% endif %}
-      <a class="bb-page" href="{{ app.request.uri|replace({'page=' ~ current: 'page=' ~ total}) }}">{{ total }}</a>
-    {% endif %}
-
-    {# Suivant #}
-    {% if paged.hasNext %}
-      <a class="bb-page" href="{{ app.request.uri|replace({'page=' ~ paged.page: 'page=' ~ (paged.page + 1)}) }}">Suivant</a>
+    {% if page < totalPages %}
+        <a class="bb-page"
+           href="{{ path(route, query|merge({ page: page + 1 })) }}">
+            Suivant
+        </a>
     {% else %}
-      <span class="bb-page is-disabled">Suivant</span>
+        <span class="bb-page is-disabled">Suivant</span>
     {% endif %}
 
-  </nav>
-{% endif %}
+</nav>

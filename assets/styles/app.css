@@ -3,6 +3,7 @@
 @import "./pages/dashboard.css";
 @import "./pages/menu.css";
 @import "./pages/_modal.css";
+@import "./pages/commande.css";
 
 /* ===== Layout shell ===== */
 html, body{
@@ -175,7 +176,38 @@ body{
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.bb-pagination{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0 4px;
+}
 
+.bb-page{
+  min-width: 40px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(15,23,42,.10);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: rgba(15,23,42,.85);
+  font-weight: 800;
+}
+
+.bb-page.is-active{
+  background: #0b2a6f;
+  color: #fff;
+  border-color: transparent;
+}
+
+.bb-page.is-disabled{
+  opacity: .55;
+  pointer-events: none;
+}
 @media (max-width: 980px){
   body{ overflow: auto; }
   .bb-shell{ height: auto; min-height: 100vh; }

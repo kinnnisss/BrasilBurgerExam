@@ -137,62 +137,13 @@
     </div>
   </section>
 
-  {% set totalPages = (paged.totalPages is defined) ? paged.totalPages : ((paged.totalItems / paged.pageSize)|round(0, 'ceil')) %}
-  {% set current = paged.page %}
-
-  {% if totalPages > 1 %}
-    <nav class="bb-pagination" aria-label="Pagination">
-
-      {% set baseQuery = app.request.query.all %}
-      {% set baseQuery = baseQuery|merge({'page': null}) %}
-
-      {% if current > 1 %}
-        <a class="bb-page" href="{{ path(app.request.attributes.get('_route'), baseQuery|merge({'page': current - 1})) }}">Précédent</a>
-      {% else %}
-        <span class="bb-page is-disabled">Précédent</span>
-      {% endif %}
-
-      {% set start = current - 2 %}
-      {% set end = current + 2 %}
-      {% if start < 1 %}{% set start = 1 %}{% endif %}
-      {% if end > totalPages %}{% set end = totalPages %}{% endif %}
-
-      {% if start > 1 %}
-        <a class="bb-page" href="{{ path(app.request.attributes.get('_route'), baseQuery|merge({'page': 1})) }}">1</a>
-        {% if start > 2 %}
-          <span class="bb-page is-disabled">…</span>
-        {% endif %}
-      {% endif %}
-
-      {% for p in start..end %}
-        {% if p == current %}
-          <span class="bb-page is-active">{{ p }}</span>
-        {% else %}
-          <a class="bb-page" href="{{ path(app.request.attributes.get('_route'), baseQuery|merge({'page': p})) }}">{{ p }}</a>
-        {% endif %}
-      {% endfor %}
-
-      {% if end < totalPages %}
-        {% if end < totalPages - 1 %}
-          <span class="bb-page is-disabled">…</span>
-        {% endif %}
-        <a class="bb-page" href="{{ path(app.request.attributes.get('_route'), baseQuery|merge({'page': totalPages})) }}">{{ totalPages }}</a>
-      {% endif %}
-
-      {% if current < totalPages %}
-        <a class="bb-page" href="{{ path(app.request.attributes.get('_route'), baseQuery|merge({'page': current + 1})) }}">Suivant</a>
-      {% else %}
-        <span class="bb-page is-disabled">Suivant</span>
-      {% endif %}
-
-    </nav>
-  {% endif %}
-{% include 'complement/_modal_upsert.html.twig' with {
-  showCreateModal: showCreateModal,
-  showEditModal: showEditModal,
-  createForm: createForm,
-  editForm: editForm,
-  editData: editData
+  {% include 'partials/pagination.html.twig' with { paged: paged, route: 'complement_index' } %}
+          {% include 'complement/_modal_upsert.html.twig' with {
+            showCreateModal: showCreateModal,
+            showEditModal: showEditModal,
+            createForm: createForm,
+            editForm: editForm,
+            editData: editData
 } %}
 
 {% endblock %}
