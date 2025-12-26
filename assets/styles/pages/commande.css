@@ -78,6 +78,64 @@
   gap: 6px;
   min-width: 0;
 }
+.bb-cmd .bb-btn--primary{
+  background: var(--bb-orange, #ff6a00);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 10px 20px rgba(255,106,0,.22);
+}
+.bb-cmd .bb-btn--primary:hover{ filter: brightness(1.03); }
+
+
+
+
+.bb-cmd .bb-filter-grid{
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  gap: 18px; 
+  align-items: end;
+}
+
+.bb-cmd .bb-field{
+  min-width: 0;
+}
+
+.bb-cmd input[type="date"].bb-input{
+  width: 160px;
+}
+
+.bb-cmd select.bb-input{
+  width: 160px;
+  min-width: 160px;
+}
+
+.bb-cmd .bb-filter-actions{
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding-left: 10px;
+}
+
+.bb-cmd .bb-btn--primary{
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: var(--bb-orange, #ff6a00);
+  color: #fff;
+  font-weight: 900;
+  border: none;
+  box-shadow: 0 8px 18px rgba(255,106,0,.22);
+}
+
+.bb-cmd .bb-btn--primary:hover{
+  filter: brightness(1.04);
+}
+
+.bb-cmd .bb-btn--ghost{
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 12px;
+}
 
 .bb-cmd .bb-label{
   font-size: 12px;
