@@ -12,21 +12,24 @@
         "ENCOURS" => 1,
         "VALIDEE" => 2,
         "TERMINEE" => 3,
+        "TERMINER" => 3,
         _ => 1
     };
 
 
-  string BadgeClass(string? e)
-  {
-      var v = (e ?? "").Trim().ToUpperInvariant();
-      return v switch
-      {
-          "EN_COURS" => "badge badge--encours",
-          "LIVREE" => "badge badge--livree",
-          "ANNULEE" => "badge badge--annulee",
-          _ => "badge"
-      };
-  }
+    string BadgeClass(string? e)
+    {
+        var v = (e ?? "").Trim().ToUpperInvariant();
+        return v switch
+        {
+            "ENCOURS" => "badge badge--encours",
+            "VALIDEE" => "badge badge--validee",
+            "TERMINER" => "badge badge--terminee",
+            "ANNULEE" => "badge badge--annulee",
+            _ => "badge"
+        };
+    }
+
 
   string ConsoIco(string? t)
   {
@@ -62,6 +65,7 @@
             "ENCOURS" => "En cours",
             "VALIDEE" => "Validée",
             "TERMINEE" => "Terminée",
+            "TERMINER" => "Terminée",
             _ => string.IsNullOrWhiteSpace(v) ? "—" : v
         };
     }

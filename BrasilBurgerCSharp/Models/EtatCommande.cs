@@ -10,6 +10,9 @@ public enum EtatCommande
     [PgName("VALIDEE")]
     VALIDEE,
 
+    [PgName("TERMINER")]
+    TERMINER,
+    
     [PgName("ANNULEE")]
     ANNULEE
 }
