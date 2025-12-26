@@ -11,6 +11,7 @@ use App\Dto\Raw\LigneCommandeRowRawDto;
 use App\Entity\Commande;
 use App\Entity\LigneCommande;
 use App\Enum\TypeArticleEnum;
+use App\Enum\EtatCommandeEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -153,12 +154,22 @@ class CommandeRepository extends ServiceEntityRepository
 
    public function updateEtat(int $idCommande, $newEtat): bool
     {
-        $cmd = $this->find($idCommande);
-        if (!$cmd) return false;
+    $cmd = $this->find($idCommande);
+    if (!$cmd) {
+        return false;
+    }
 
-        $cmd->setEtat($newEtat);
-        $this->getEntityManager()->flush();
-        return true;
+    $cmd->setEtat($newEtat);
+
+    if ($newEtat === EtatCommandeEnum::TERMINER) {
+        $cmd->setDateTerminaison(new \DateTimeImmutable());
+    }
+    if ($newEtat === EtatCommandeEnum::ANNULEE) {
+        $cmd->setDateTerminaison(null);
+    }
+
+    $this->getEntityManager()->flush();
+    return true;
     }
 
     public function belongsToClient(int $idCommande, int $idClient): bool
