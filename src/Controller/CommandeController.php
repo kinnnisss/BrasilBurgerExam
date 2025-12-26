@@ -21,7 +21,7 @@ class CommandeController extends AbstractController
     {
         $filter = new CommandeListFilterDto();
         $filter->page = (int) $request->query->get('page', 1);
-        $filter->pageSize = 12;
+        $filter->pageSize = 4;
 
         $form = $this->createForm(CommandeListFilterFormType::class, $filter, [
             'method' => 'GET',
