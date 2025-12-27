@@ -101,10 +101,8 @@ body{
 }
 
 .sidebar__top{
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto; 
 }
-
 .sidebar__menu{
   list-style: none;
   padding: 10px 0 0;
