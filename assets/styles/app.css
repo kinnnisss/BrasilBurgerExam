@@ -5,6 +5,7 @@
 @import "./pages/_modal.css";
 @import "./pages/commande.css";
 @import "./pages/commande-details.css";
+@import "./pages/livraison.css";
 
 /* ===== Layout shell ===== */
 html, body{

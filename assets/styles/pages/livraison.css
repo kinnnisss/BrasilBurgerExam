@@ -1,0 +1,170 @@
+
+    .liv-board{ max-width: 720px; margin: 0 auto; padding: 18px 12px 40px; }
+
+    .liv-zone-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    @media (max-width: 820px){ .liv-zone-grid{ grid-template-columns: 1fr; } }
+
+    .liv-zone-card{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:16px;
+      padding:18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      min-height: 280px;
+      display:flex; flex-direction:column;
+    }
+    .liv-zone-top{ display:flex; gap:14px; align-items:flex-start; margin-bottom:10px; }
+    .liv-zone-ico{ width:44px; height:44px; border-radius:12px; background:#ff4d00; margin-top:6px; }
+    .liv-zone-title{ font-weight:900; font-size:18px; color:#111827; line-height:1.15; }
+    .liv-zone-sub{ font-size:13px; color:#556070; margin-top:6px; }
+
+    .liv-zone-kpi{ margin: 12px 0 16px; }
+    .liv-pill{
+      display:flex; align-items:center; justify-content:space-between;
+      background:#f3f4f6; border-radius:12px; padding:10px 12px;
+    }
+    .liv-pill__label{ font-size:13px; color:#5b6675; }
+    .liv-pill__value{ font-weight:900; color:#111827; }
+
+    .liv-zone-label{ font-size:13px; color:#667085; margin: 4px 0 10px; }
+    .liv-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+    .liv-tag{
+      display:inline-flex; align-items:center;
+      padding: 6px 10px; border-radius:10px;
+      background:#eef4ff; color:#2563eb;
+      font-size:12px; font-weight:700;
+    }
+    .liv-tag--muted{ background:#f3f4f6; color:#6b7280; }
+
+    .liv-btn{
+      border:0; cursor:pointer; font-weight:800;
+      border-radius:12px; padding: 12px 14px;
+    }
+    .liv-btn--soft{
+      margin-top:auto;
+      width: 68%;
+      align-self:center;
+      background:#f3f4f6; color:#111827;
+      line-height:1.15;
+    }
+    .liv-btn--soft:hover{ background:#eaecef; }
+
+    .liv-panel{ margin-top: 22px; }
+    .liv-panel-card{
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+      border-radius:16px; padding:18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .liv-panel-title{ font-size:20px; font-weight:900; margin: 6px 0 14px; color:#111827; }
+
+    .liv-table-wrap{ overflow:auto; border-radius:12px; background:#f8fafc; padding: 10px; }
+    .liv-table{ width:100%; border-collapse:separate; border-spacing:0; }
+    .liv-table th{
+      text-align:left; font-size:13px; color:#475569;
+      padding: 10px 10px; background:#f8fafc;
+    }
+    .liv-table td{
+      padding: 14px 10px; font-size:14px; color:#0f172a;
+      border-top: 1px solid rgba(15,23,42,.06);
+      background:#fff;
+      vertical-align:middle;
+    }
+    .liv-money{ color:#ff4d00; font-weight:900; }
+.liv-badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 12px;
+  min-height: 28px;
+  
+  border-radius: 999px;
+  background: #ffe6d9;
+  color: #d9480f;
+
+  font-weight: 900;
+  font-size: 12px;
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+    .liv-row-select{ cursor:pointer; }
+    .liv-row-select:hover td{ background:#f9fafb; }
+
+    .liv-panel-actions{ margin-top: 14px; display:flex; }
+    .liv-btn--ghost{ background:#e5e7eb; color:#111827; padding: 10px 18px; }
+
+    .liv-assign{ margin-top: 22px; }
+    .liv-assign-card{
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+      border-radius:16px; padding:18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .liv-assign-head{ display:flex; gap:10px; align-items:center; margin-bottom: 12px; color:#111827; }
+    .liv-truck-ico{ display:inline-flex; }
+    .liv-assign-title{ font-size:18px; font-weight:900; margin:0; }
+
+    .liv-assign-form{
+      display:grid; grid-template-columns: 1fr 1fr auto; gap: 14px;
+      align-items:end;
+      margin-top: 10px;
+    }
+    @media (max-width: 820px){
+      .liv-assign-form{ grid-template-columns: 1fr; }
+      .liv-btn--primary{ width:100%; }
+    }
+
+    .liv-field{ display:flex; flex-direction:column; gap:6px; }
+    .liv-label{ font-size:12px; font-weight:900; color:#475569; }
+
+    .liv-input{
+      height: 44px;
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+      outline: none;
+      background:#fff;
+    }
+    .liv-input:focus{ border-color:#94a3b8; box-shadow: 0 0 0 4px rgba(148,163,184,.25); }
+
+    .liv-btn--primary{
+      min-width: 160px;
+      height: 44px;
+      background:#1e3a8a; color:#fff;
+    }
+    .liv-btn--primary:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .liv-subtitle{ margin: 18px 0 10px; font-size:16px; font-weight:900; color:#111827; }
+
+    .liv-livreur-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 820px){ .liv-livreur-grid{ grid-template-columns: 1fr; } }
+
+    .liv-livreur-card{
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.08);
+      padding: 12px;
+      display:flex; gap: 10px; align-items:center;
+      background:#fff;
+      min-height: 74px;
+    }
+    .liv-livreur-card--ok{ background:#ecfdf5; border-color:#86efac; }
+    .liv-livreur-card--busy{ background:#f8fafc; border-color:#e5e7eb; }
+
+    .liv-avatar{
+      width:42px; height:42px; border-radius:999px;
+      background:#e5e7eb;
+      display:flex; align-items:center; justify-content:center;
+      color:#475569;
+      flex: 0 0 auto;
+    }
+    .liv-livreur-name{ font-weight:900; font-size:13px; color:#0f172a; }
+    .liv-livreur-status{ font-size:12px; font-weight:900; margin-top:2px; line-height:1.05; }
+    .liv-livreur-status--ok{ color:#16a34a; }
+    .liv-livreur-status--busy{ color:#64748b; }
+
+    .liv-empty{ text-align:center; padding: 30px 12px; color:#64748b; }
+    .liv-empty__ico{ font-size:34px; }
+    .liv-empty__title{ font-weight:900; color:#111827; margin-top: 8px; }
+    .liv-empty__sub{ margin-top:4px; font-size:13px; }
+    .liv-empty-mini{ color:#6b7280; font-size:13px; padding: 8px 0; }

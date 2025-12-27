@@ -1,0 +1,286 @@
+{# templates/livraison/board.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Livraisons{% endblock %}
+
+{% block body %}
+  <div class="bb-pagehead">
+    <h1 class="bb-pagehead__title">Gestion des Livraisons</h1>
+    <div class="bb-pagehead__sub">Organisez les livraisons par zone et affectez les livreurs</div>
+  </div>
+
+  <div class="bb-content liv-board"
+     data-assign-url-pattern="{{ path('livraison_assign', { idCommande: 0 }) }}"
+     data-details-url-pattern="{{ path('commande_details', { id: 0 }) }}">
+
+
+    <section class="liv-zones">
+      {% if board.zones is empty %}
+        <div class="liv-empty">
+          <div class="liv-empty__ico">📦</div>
+          <div class="liv-empty__title">Aucune livraison à afficher</div>
+          <div class="liv-empty__sub">Aucune commande en livraison n’a été trouvée.</div>
+        </div>
+      {% else %}
+        <div class="liv-zone-grid">
+          {% for zone in board.zones %}
+            {% set qMap = {} %}
+            {% for c in zone.commandes %}
+              {% if c.quartier is not empty %}
+                {% set qMap = qMap|merge({ (c.quartier): true }) %}
+              {% endif %}
+            {% endfor %}
+
+            <article class="liv-zone-card"
+                     data-zone-id="{{ zone.zoneId }}"
+                     data-zone-label="{{ zone.zoneLibelle }}">
+              <div class="liv-zone-top">
+                <div class="liv-zone-ico"></div>
+                <div class="liv-zone-meta">
+                  <div class="liv-zone-title">Zone<br>{{ zone.zoneLibelle }}</div>
+                  <div class="liv-zone-sub">{{ zone.montantTotal }} FCFA</div>
+                </div>
+              </div>
+
+              <div class="liv-zone-kpi">
+                <div class="liv-pill">
+                  <span class="liv-pill__label">Commandes</span>
+                  <span class="liv-pill__value">{{ zone.nbCommandes }}</span>
+                </div>
+              </div>
+
+              <div class="liv-zone-label">Quartiers</div>
+              <div class="liv-tags">
+                {% for quartierLabel, _ in qMap %}
+                  <span class="liv-tag">{{ quartierLabel }}</span>
+                {% else %}
+                  <span class="liv-tag liv-tag--muted">—</span>
+                {% endfor %}
+              </div>
+
+              <button type="button"
+                      class="liv-btn liv-btn--soft js-open-zone"
+                      data-zone="{{ zone.zoneId }}">
+                Voir les<br>commandes
+              </button>
+
+              <script type="application/json" class="js-zone-data" data-zone="{{ zone.zoneId }}">
+                {
+                  "zoneId": {{ zone.zoneId }},
+                  "zoneLibelle": {{ zone.zoneLibelle|json_encode|raw }},
+                  "commandes": [
+                    {% for c in zone.commandes %}
+                      {
+                        "idCommande": {{ c.idCommande }},
+                        "reference": {{ c.reference|json_encode|raw }},
+                        "clientNom": {{ c.clientNom|json_encode|raw }},
+                        "clientTel": {{ c.clientTelephone|json_encode|raw }},
+                        "quartier": {{ c.quartier|json_encode|raw }},
+                        "montant": {{ c.montant|json_encode|raw }},
+                        "etat": {{ c.etat.value|json_encode|raw }}
+                      }{{ not loop.last ? ',' : '' }}
+                    {% endfor %}
+                  ]
+                }
+              </script>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+
+    <section class="liv-panel js-zone-panel" hidden>
+      <div class="liv-panel-card">
+        <div class="liv-panel-head">
+          <h2 class="liv-panel-title">
+            Commandes - <span class="js-zone-title">—</span>
+          </h2>
+        </div>
+
+        <div class="liv-table-wrap">
+          <table class="liv-table">
+            <thead>
+              <tr>
+                <th>Référence</th>
+                <th>Client</th>
+                <th>Quartier</th>
+                <th>Montant</th>
+                <th>État</th>
+              </tr>
+            </thead>
+            <tbody class="js-zone-tbody">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="liv-panel-actions">
+          <button type="button" class="liv-btn liv-btn--ghost js-close-zone">Fermer</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="liv-assign">
+      <div class="liv-assign-card">
+        <div class="liv-assign-head">
+          <div class="liv-truck-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 7h11v9H3V7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M14 10h4l3 3v3h-7v-6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M7 20a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M18 20a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <h2 class="liv-assign-title">Affecter un livreur</h2>
+        </div>
+
+        <form method="post"
+              class="liv-assign-form js-assign-form"
+              action="{{ path('livraison_assign', { idCommande: 0 }) }}">
+
+          <div class="liv-field">
+            <label class="liv-label">Zone</label>
+            <select class="liv-input js-assign-zone-select" name="zoneUi">
+              <option value="">—</option>
+              {% for z in board.zones %}
+                <option value="{{ z.zoneId }}">{{ z.zoneLibelle }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="liv-field">
+            <label class="liv-label">Livreur</label>
+            <select class="liv-input" name="assign_livreur_form[livreurId]" required>
+              <option value="">—</option>
+              {% for l in filterData.livreurs %}
+                <option value="{{ l.id }}">{{ l.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <button type="submit" class="liv-btn liv-btn--primary js-assign-submit" disabled>
+            Affecter
+          </button>
+        </form>
+
+        <h3 class="liv-subtitle">Liste des livreurs</h3>
+
+        <div class="liv-livreur-grid">
+          {% for l in filterData.livreurs %}
+            {% set busy = loop.index == 3 %}
+            <article class="liv-livreur-card {{ busy ? 'liv-livreur-card--busy' : 'liv-livreur-card--ok' }}">
+              <div class="liv-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M20 20a8 8 0 1 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="liv-livreur-meta">
+                <div class="liv-livreur-name">{{ l.label }}</div>
+                {% if busy %}
+                  <div class="liv-livreur-status liv-livreur-status--busy">En<br>livraison</div>
+                {% else %}
+                  <div class="liv-livreur-status liv-livreur-status--ok">Disponible</div>
+                {% endif %}
+              </div>
+            </article>
+          {% else %}
+            <div class="liv-empty-mini">Aucun livreur.</div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    (function () {
+      const root = document.querySelector('.liv-board');
+      if (!root) return;
+
+      const panel = document.querySelector('.js-zone-panel');
+      const zoneTitle = document.querySelector('.js-zone-title');
+      const tbody = document.querySelector('.js-zone-tbody');
+
+      const assignForm = document.querySelector('.js-assign-form');
+      const assignZoneSelect = document.querySelector('.js-assign-zone-select');
+      const assignBtn = document.querySelector('.js-assign-submit');
+
+      const urlPattern = root.getAttribute('data-assign-url-pattern');
+      let currentZone = null;
+
+      function openZone(zoneId) {
+        const jsonEl = document.querySelector('.js-zone-data[data-zone="' + zoneId + '"]');
+        if (!jsonEl) return;
+
+        currentZone = JSON.parse(jsonEl.textContent);
+
+        zoneTitle.textContent = currentZone.zoneLibelle || '—';
+        tbody.innerHTML = '';
+
+        if (assignZoneSelect) {
+          assignZoneSelect.value = String(currentZone.zoneId || '');
+        }
+
+        assignBtn.disabled = true;
+        if (urlPattern) assignForm.action = urlPattern;
+
+        (currentZone.commandes || []).forEach(c => {
+          const tr = document.createElement('tr');
+          tr.className = 'liv-row-select';
+          tr.innerHTML = `
+            <td><strong>${escapeHtml(c.reference || '')}</strong></td>
+            <td>
+              ${escapeHtml(c.clientNom || '')}<br>
+              <span style="color:#64748b">${escapeHtml(c.clientTel || '')}</span>
+            </td>
+            <td>${escapeHtml(c.quartier || '')}</td>
+            <td class="liv-money">${escapeHtml(String(c.montant || ''))} FCFA</td>
+            <td><span class="liv-badge">${escapeHtml(String(c.etat || ''))}</span></td>
+          `;
+
+          const detailsPattern = root.getAttribute('data-details-url-pattern');
+
+        tr.addEventListener('click', () => {
+        const id = c.idCommande;
+
+        if (!detailsPattern) return;
+
+        const url = detailsPattern.replace(/\/0$/, '/' + id);
+        window.location.href = url;
+        });
+
+
+          tbody.appendChild(tr);
+        });
+
+        panel.hidden = false;
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function closeZone() {
+        panel.hidden = true;
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      document.querySelectorAll('.js-open-zone').forEach(btn => {
+        btn.addEventListener('click', () => openZone(btn.getAttribute('data-zone')));
+      });
+
+      const closeBtn = document.querySelector('.js-close-zone');
+      if (closeBtn) closeBtn.addEventListener('click', closeZone);
+    })();
+  </script>
+{% endblock %}

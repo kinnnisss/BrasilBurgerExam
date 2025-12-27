@@ -22,7 +22,7 @@
           <span>Dashboard</span>
         </a>
       </li>
-
+{#
       <li class="sidebar__item">
         <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'burger' %}is-active{% endif %}"
            href="{{ path('burger_index') }}">
@@ -58,7 +58,7 @@
         </span>
         <span>Complement</span>
         </a>
-      </li>
+      </li>#}
 
       <li class="sidebar__item">
         <a class="sidebar__link {% if app.request.attributes.get('_route') starts with 'commande' %}is-active{% endif %}"
