@@ -1,5 +1,5 @@
 {# templates/partials/pagination.html.twig #}
-
+{% set routeParams = routeParams ?? {} %}
 {% set page = paged.page ?? 1 %}
 {% set pageSize = paged.pageSize ?? 12 %}
 {% set totalItems = paged.totalItems ?? 0 %}
@@ -13,7 +13,7 @@
 
     {% if page > 1 %}
         <a class="bb-page"
-           href="{{ path(route, query|merge({ page: page - 1 })) }}">
+           href="{{ path(route, routeParams|merge(query)|merge({ page: page - 1 })) }}">
             Précédent
         </a>
     {% else %}
@@ -25,7 +25,7 @@
             <span class="bb-page is-active">{{ p }}</span>
         {% else %}
             <a class="bb-page"
-               href="{{ path(route, query|merge({ page: p })) }}">
+               href="{{ path(route, routeParams|merge(query)|merge({ page: p })) }}">
                 {{ p }}
             </a>
         {% endif %}
@@ -33,7 +33,7 @@
 
     {% if page < totalPages %}
         <a class="bb-page"
-           href="{{ path(route, query|merge({ page: page + 1 })) }}">
+           href="{{ path(route,routeParams|merge(query)|merge({ page: page + 1 })) }}">
             Suivant
         </a>
     {% else %}
