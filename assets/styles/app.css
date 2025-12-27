@@ -6,6 +6,9 @@
 @import "./pages/commande.css";
 @import "./pages/commande-details.css";
 @import "./pages/livraison.css";
+@import "./pages/client.css";
+@import "./pages/client_details.css";
+
 
 /* ===== Layout shell ===== */
 html, body{

@@ -34,7 +34,9 @@ class ClientRepository extends ServiceEntityRepository
         $qb->orderBy('c.nom', 'ASC')->addOrderBy('c.prenom', 'ASC');
 
         $countQb = clone $qb;
-        $totalItems = (int)$countQb->select('COUNT(c.idClient)')
+        $totalItems = (int)$countQb
+            ->resetDQLPart('orderBy')
+            ->select('COUNT(c.idClient)')
             ->getQuery()
             ->getSingleScalarResult();
 

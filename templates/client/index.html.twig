@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block body %}
+  <div class="bb-pagehead">
+    <h1 class="bb-pagehead__title">Clients</h1>
+    <div class="bb-pagehead__sub">Rechercher un client et accéder à ses commandes</div>
+  </div>
+
+  <div class="bb-content cl-page">
+
+    <section class="cl-toolbar">
+      <div class="cl-card">
+        {{ form_start(form, { method: 'get', attr: { class: 'cl-search' } }) }}
+          <div class="cl-search__field">
+            {{ form_widget(form.q, { attr: { class: 'cl-input' } }) }}
+          </div>
+          <button class="cl-btn cl-btn--primary" type="submit">Rechercher</button>
+          <a class="cl-btn cl-btn--ghost" href="{{ path('client_index') }}">Réinitialiser</a>
+        {{ form_end(form) }}
+      </div>
+    </section>
+
+    <section class="cl-list">
+      <div class="cl-grid">
+        {% set items = paged.items is defined ? paged.items : (paged.data is defined ? paged.data : []) %}
+
+        {% for c in items %}
+          {% set id = c.idClient is defined ? c.idClient : (c.id is defined ? c.id : 0) %}
+          {% set nom = c.nomComplet is defined ? c.nomComplet : (
+            (c.nom is defined or c.prenom is defined) ? ((c.nom|default('') ~ ' ' ~ c.prenom|default(''))|trim) : 'Client'
+          ) %}
+          {% set tel = c.telephone is defined ? c.telephone : (c.tel is defined ? c.tel : '') %}
+          {% set login = c.login is defined ? c.login : '' %}
+
+          <a class="cl-item" href="{{ path('client_details', { id: id }) }}">
+            <div class="cl-item__top">
+              <div class="cl-avatar">👤</div>
+              <div class="cl-meta">
+                <div class="cl-name">{{ nom }}</div>
+                <div class="cl-sub">
+                  {% if tel %}{{ tel }}{% else %}Téléphone: —{% endif %}
+                  {% if login %}<span class="cl-dot">•</span>{{ login }}{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="cl-item__cta">
+              <span class="cl-pill">Voir détails</span>
+            </div>
+          </a>
+        {% else %}
+          <div class="cl-empty">
+            <div class="cl-empty__ico">🧾</div>
+            <div class="cl-empty__title">Aucun client trouvé</div>
+            <div class="cl-empty__sub">Essaie un autre mot-clé.</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="cl-pagination">
+        {% include 'partials/pagination.html.twig' with { paged: paged, route: 'client_index' } %}
+      </div>
+    </section>
+
+  </div>
+{% endblock %}
+
+
