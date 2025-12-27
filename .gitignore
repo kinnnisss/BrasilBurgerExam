@@ -18,3 +18,31 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+# BURGER
+/src/Controller/BurgerController.php
+/src/Service/Impl/Burger*
+/src/Repository/BurgerRepository.php
+/src/Form/Catalogue/Burger*
+/src/Dto/Catalogue/Burger*
+/templates/burger/
+
+# COMPLEMENT
+/src/Controller/ComplementController.php
+/src/Service/Impl/Complement*
+/src/Repository/ComplementRepository.php
+/src/Form/Catalogue/Complement*
+/src/Dto/Catalogue/Complement*
+/templates/complement/
+
+# MENU
+/src/Controller/MenuController.php
+/src/Service/Impl/Menu*
+/src/Repository/MenuRepository.php
+/src/Form/Catalogue/Menu*
+/src/Dto/Catalogue/Menu*
+/templates/menu/
+/src/Service/Impl/ImageStorage*
+/src/Service/ImageStorage*
+/src/Service/Menu*
+/src/Service/Burger*
+/src/Service/Complement*
