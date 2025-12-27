@@ -30,8 +30,8 @@ class LivraisonController extends AbstractController
         $form = $this->createForm(LivraisonFilterFormType::class, $filter, [
             'method' => 'GET',
             'csrf_protection' => false,
-            'zones' => $filterData->zones,
-            'livreurs' => $filterData->livreurs,
+            'choices_zones' => $filterData->zones,
+            'choices_livreurs' => $filterData->livreurs,
         ]);
         $form->handleRequest($request);
 
