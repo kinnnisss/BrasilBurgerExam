@@ -1,0 +1,33 @@
+FROM php:8.2-apache
+
+# Apache + rewrite (Symfony)
+RUN a2enmod rewrite
+
+# Extensions PHP souvent nécessaires
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev libicu-dev libpq-dev \
+    && docker-php-ext-install intl zip pdo pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Apache docroot -> /public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+ && sed -ri 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+WORKDIR /var/www/html
+
+# Copier le code
+COPY . .
+
+# Installer deps (prod) + optimiser
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Cache Symfony (prod)
+RUN php bin/console cache:clear --env=prod || true \
+ && php bin/console cache:warmup --env=prod || true
+
+EXPOSE 80
+CMD ["apache2-foreground"]
