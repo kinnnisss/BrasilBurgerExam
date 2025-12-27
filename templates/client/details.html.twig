@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails client{% endblock %}
+
+{% block body %}
+  {% set client = dto.client is defined ? dto.client : (dto.clientInfo is defined ? dto.clientInfo : null) %}
+  {% set commandesPaged = dto.commandes is defined ? dto.commandes : (dto.paged is defined ? dto.paged : null) %}
+  {% set commandes = commandesPaged and commandesPaged.items is defined ? commandesPaged.items : (commandesPaged and commandesPaged.data is defined ? commandesPaged.data : []) %}
+
+  <div class="bb-pagehead">
+    <h1 class="bb-pagehead__title">Détails client</h1>
+    <div class="bb-pagehead__sub">Commandes du client et annulation</div>
+  </div>
+
+  <div class="bb-content cd-page">
+
+    <section class="cd-header">
+      <div class="cd-card">
+        <div class="cd-row">
+          <div class="cd-avatar">👤</div>
+          <div class="cd-info">
+            <div class="cd-name">
+              {{ client ? (client.nomComplet|default('Client')) : 'Client' }}
+            </div>
+            <div class="cd-sub">
+              <span class="cd-k">Téléphone:</span>
+              <span class="cd-v">{{ client ? (client.telephone|default('—')) : '—' }}</span>
+              <span class="cd-dot">•</span>
+              <span class="cd-k">Login:</span>
+              <span class="cd-v">{{ client ? (client.login|default('—')) : '—' }}</span>
+            </div>
+          </div>
+
+          <div class="cd-actions">
+            <a class="cd-btn cd-btn--ghost" href="{{ path('client_index') }}">← Retour</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cd-filters">
+      <div class="cd-card">
+        {{ form_start(filterForm, { method: 'get', attr: { class: 'cd-filterbar' } }) }}
+          <div class="cd-field">
+            <label class="cd-label">Date</label>
+            {{ form_widget(filterForm.date, { attr: { class: 'cd-input' } }) }}
+          </div>
+
+          <div class="cd-field">
+            <label class="cd-label">État</label>
+            {{ form_widget(filterForm.etat, { attr: { class: 'cd-input' } }) }}
+          </div>
+
+          <button type="submit" class="cd-btn cd-btn--primary">Filtrer</button>
+          <a class="cd-btn cd-btn--ghost" href="{{ path('client_details', { id: client.id|default(client.idClient|default(0)) }) }}">Réinitialiser</a>
+        {{ form_end(filterForm) }}
+      </div>
+    </section>
+
+    <section class="cd-table">
+      <div class="cd-card">
+        <h2 class="cd-title">Commandes</h2>
+
+        <div class="cd-table-wrap">
+          <table class="cd-t">
+            <thead>
+              <tr>
+                <th>Référence</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>État</th>
+                <th class="cd-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for c in commandes %}
+                {% set idCommande = c.idCommande is defined ? c.idCommande : (c.id is defined ? c.id : 0) %}
+                {% set ref = c.reference is defined ? c.reference : (c.ref is defined ? c.ref : '—') %}
+                {% set date = c.dateCommande is defined ? c.dateCommande : (c.date is defined ? c.date : null) %}
+                {% set montant = c.montantTotal is defined ? c.montantTotal : (c.montant is defined ? c.montant : '') %}
+                {% set etat = c.etat is defined ? c.etat : null %}
+                {% set etatLabel = etat ? (etat.value is defined ? etat.value : etat) : '—' %}
+
+                <tr>
+                  <td>
+                    <a class="cd-link" href="{{ path('commande_details', { id: idCommande }) }}">
+                      <strong>{{ ref }}</strong>
+                    </a>
+                  </td>
+
+                  <td>
+                    {% if date %}
+                      {{ date|date('d/m/Y H:i') }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+
+                  <td class="cd-money">
+                    {% if montant is not empty %}
+                      {{ montant }} FCFA
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    <span class="cd-badge">{{ etatLabel }}</span>
+                  </td>
+
+                  <td class="cd-right">
+                    <a class="cd-btn cd-btn--mini cd-btn--ghost"
+                href="{{ path('commande_details', { id: idCommande }) }}">
+                Détails
+                </a>
+
+                {% if c.canCancel %}
+            <form method="post"
+                action="{{ path('client_commande_cancel', { idClient: client.id, idCommande: idCommande }) }}"
+                class="cd-inline"
+                data-confirm="cancel"
+                data-confirm-message="Voulez-vous vraiment annuler la commande {{ ref }} ?"
+                data-confirm-meta="Client: {{ client.nomComplet }} • Tél: {{ client.telephone }}">
+                    <button type="submit"
+                            class="cd-btn cd-btn--mini cd-btn--danger">
+                    Annuler
+                    </button>
+                </form>
+                {% else %}
+                <button type="button"
+                        class="cd-btn cd-btn--mini cd-btn--danger cd-btn--disabled"
+                        title="Commande terminée – annulation impossible"
+                        disabled>
+                    Annuler
+                </button>
+                {% endif %}
+
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="5">
+                    <div class="cd-empty">
+                      Aucune commande pour ce client avec ces filtres.
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cd-pagination">
+          {% if commandesPaged %}
+            {% include 'partials/pagination.html.twig' with {
+            paged: commandesPaged,
+            route: 'client_details',
+            routeParams: { id: dto.client.id }
+            } %}
+
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+  </div>
+  {% include 'partials/confirm_modal.html.twig' %}
+{% endblock %}
+
+

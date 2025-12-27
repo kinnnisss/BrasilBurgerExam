@@ -186,11 +186,14 @@
         {% endif %}
 
         {% if dto.actions.canCancel %}
-          <form method="post"
-                action="{{ path('commande_cancel', {id: dto.header.id}) }}"
-                onsubmit="return confirm('Confirmer l\\'annulation de la commande ?');">
-            <button class="bb-act bb-act--red" type="submit">Annuler la commande</button>
-          </form>
+        <form method="post"
+              action="{{ path('commande_cancel', {id: dto.header.id}) }}"
+              data-confirm="cancel"
+              data-confirm-message="Voulez-vous vraiment annuler cette commande ?"
+              data-confirm-meta="Commande {{ dto.header.reference }}">
+          <button class="bb-act bb-act--red" type="submit">Annuler la commande</button>
+        </form>
+
         {% endif %}
       </div>
     </section>
@@ -218,4 +221,5 @@
   </section>
 
 </div>
+{% include 'partials/confirm_modal.html.twig' %}
 {% endblock %}
