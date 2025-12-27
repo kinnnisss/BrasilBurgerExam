@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Dto\Common\SelectItemDto;
 
 class LivraisonFilterFormType extends AbstractType
 {
@@ -18,18 +19,23 @@ class LivraisonFilterFormType extends AbstractType
 
         $builder
             ->setMethod('GET')
+
             ->add('zoneId', ChoiceType::class, [
                 'required' => false,
                 'placeholder' => 'Toutes zones',
                 'choices' => $zones,
-                'choice_value' => fn ($v) => $v === null ? '' : (string) $v,
+                'choice_label' => fn (?SelectItemDto $z) => $z?->label ?? '',
+                'choice_value' => fn (?SelectItemDto $z) => $z?->id !== null ? (string) $z->id : '',
             ])
+
             ->add('livreurId', ChoiceType::class, [
                 'required' => false,
                 'placeholder' => 'Tous livreurs',
                 'choices' => $livreurs,
-                'choice_value' => fn ($v) => $v === null ? '' : (string) $v,
+                'choice_label' => fn (?SelectItemDto $l) => $l?->label ?? '',
+                'choice_value' => fn (?SelectItemDto $l) => $l?->id !== null ? (string) $l->id : '',
             ])
+
             ->add('etat', ChoiceType::class, [
                 'required' => false,
                 'placeholder' => 'Tous états',
