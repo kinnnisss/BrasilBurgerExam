@@ -112,4 +112,32 @@ public function assignLivreur(int $idCommande, int $idLivreur): bool
         return $count === 0;
     }
 
+    public function assignLivreurToZoneValidated(int $idZone, int $idLivreur): int
+    {
+        $em = $this->getEntityManager();
+
+        $cmds = $this->createQueryBuilder('c')
+            ->andWhere('c.typeConsommation = :tc')
+            ->andWhere('c.etat = :etat')
+            ->andWhere('c.zone = :zoneId')
+            ->andWhere('c.livreur IS NULL')
+            ->setParameter('tc', TypeConsommationEnum::LIVRAISON)
+            ->setParameter('etat', EtatCommandeEnum::VALIDEE)
+            ->setParameter('zoneId', $idZone)
+            ->getQuery()
+            ->getResult();
+
+        if (!$cmds) {return 0;
+        }
+
+        $livreurRef = $em->getReference(\App\Entity\Livreur::class, $idLivreur);
+
+        foreach ($cmds as $cmd) {
+            $cmd->setLivreur($livreurRef);
+        }
+
+        $em->flush();
+        return count($cmds);
+    }
+
 }
