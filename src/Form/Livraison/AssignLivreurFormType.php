@@ -13,22 +13,23 @@ class AssignLivreurFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $livreursChoices = $options['choices_livreurs'];
+        /** @var SelectItemDto[] $items */
+        $items = $options['choices_livreurs'] ?? [];
+
+        $choices = [];
+        foreach ($items as $it) {
+            if ($it instanceof SelectItemDto) {
+                $choices[$it->label] = $it->id;
+            }
+        }
 
         $builder
             ->setMethod('POST')
-           ->add('livreurId', ChoiceType::class, [
-            'required' => true,
-            'placeholder' => 'Choisir un livreur',
-            'choices' => $livreursChoices,
-            'choice_label' => function (?SelectItemDto $item) {
-                return $item?->label ?? '';
-            },
-            'choice_value' => function (?SelectItemDto $item) {
-                return $item?->id !== null ? (string) $item->id : '';
-            },
-        ]);
-    }
+            ->add('livreurId', ChoiceType::class, [
+                'required' => true,
+                'placeholder' => 'Choisir un livreur',
+                'choices' => $choices,
+            ]);    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
