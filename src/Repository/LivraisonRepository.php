@@ -88,4 +88,20 @@ class LivraisonRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
         return true;
     }
+    public function isLivreurDisponible(int $idLivreur): bool
+    {
+        $count = (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.idCommande)')
+            ->andWhere('c.typeConsommation = :tc')
+            ->andWhere('c.livreur = :livreurId')
+            ->andWhere('c.etat = :etatActive')
+            ->setParameter('tc', TypeConsommationEnum::LIVRAISON)
+            ->setParameter('livreurId', $idLivreur)
+            ->setParameter('etatActive', EtatCommandeEnum::VALIDEE)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count === 0;
+    }
+
 }
