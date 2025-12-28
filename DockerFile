@@ -15,6 +15,9 @@ RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-avail
 
 WORKDIR /var/www/html
 COPY . .
+RUN mkdir -p var/cache var/log \
+ && chown -R www-data:www-data var \
+ && chmod -R 775 var
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
