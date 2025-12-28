@@ -117,4 +117,25 @@ class LivraisonService implements LivraisonServiceInterface
             ? ActionResultDto::ok("Livreur affecté.")
             : ActionResultDto::fail("Impossible d'affecter ce livreur (commande non affectable).");
     }
+
+    public function assignLivreurToZone(int $idZone, LivraisonAssignDto $dto): ActionResultDto
+    {
+        $livreurId = (int)$dto->livreurId;
+
+        $livreur = $this->livreurRepository->findById($livreurId);
+        if ($livreur === null) {
+            return ActionResultDto::fail("Livreur introuvable.");
+        }
+
+        if (!$this->livraisonRepository->isLivreurDisponible($livreurId)) {
+            return ActionResultDto::fail("Livreur indisponible (déjà affecté à une commande validée).");
+        }
+
+        $nb = $this->livraisonRepository->assignLivreurToZoneValidated($idZone, $livreurId);
+
+        return $nb > 0
+            ? ActionResultDto::ok("Livreur affecté à $nb commande(s) validée(s) de la zone.")
+            : ActionResultDto::fail("Aucune commande validée disponible dans cette zone.");
+    }
+
 }

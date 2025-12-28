@@ -15,4 +15,7 @@ interface LivraisonServiceInterface
     public function getFilterData(): LivraisonFilterDataDto;
 
     public function assignLivreur(int $idCommande, LivraisonAssignDto $dto): ActionResultDto;
+
+    public function assignLivreurToZone(int $idZone, LivraisonAssignDto $dto): ActionResultDto;
+
 }
