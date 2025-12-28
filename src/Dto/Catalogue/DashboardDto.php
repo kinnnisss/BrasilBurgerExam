@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\Dashboard;
+namespace App\Dto\Catalogue;
 
 use App\Dto\Raw\TopBurgerDto;
 

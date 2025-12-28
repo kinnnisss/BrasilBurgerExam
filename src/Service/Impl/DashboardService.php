@@ -2,7 +2,7 @@
 
 namespace App\Service\Impl;
 
-use App\Dto\Dashboard\DashboardDto;
+use App\Dto\Catalogue\DashboardDto;
 use App\Repository\StatistiqueRepository;
 use App\Service\DashboardServiceInterface;
 

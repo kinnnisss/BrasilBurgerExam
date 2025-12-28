@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Dto\Dashboard\DashboardDto;
+use App\Dto\Catalogue\DashboardDto;
 
 interface DashboardServiceInterface
 {
