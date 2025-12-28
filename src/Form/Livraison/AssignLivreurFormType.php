@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Dto\Common\SelectItemDto;
 
 class AssignLivreurFormType extends AbstractType
 {
@@ -16,12 +17,17 @@ class AssignLivreurFormType extends AbstractType
 
         $builder
             ->setMethod('POST')
-            ->add('livreurId', ChoiceType::class, [
-                'required' => true,
-                'placeholder' => 'Choisir un livreur',
-                'choices' => $livreursChoices,
-                'choice_value' => fn ($v) => (string) $v,
-            ]);
+           ->add('livreurId', ChoiceType::class, [
+            'required' => true,
+            'placeholder' => 'Choisir un livreur',
+            'choices' => $livreursChoices,
+            'choice_label' => function (?SelectItemDto $item) {
+                return $item?->label ?? '';
+            },
+            'choice_value' => function (?SelectItemDto $item) {
+                return $item?->id !== null ? (string) $item->id : '';
+            },
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

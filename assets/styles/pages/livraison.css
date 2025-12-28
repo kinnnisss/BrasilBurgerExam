@@ -168,3 +168,76 @@
     .liv-empty__title{ font-weight:900; color:#111827; margin-top: 8px; }
     .liv-empty__sub{ margin-top:4px; font-size:13px; }
     .liv-empty-mini{ color:#6b7280; font-size:13px; padding: 8px 0; }
+
+
+.liv-zone-grid.is-carousel{
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 1fr);
+  gap: 14px;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 10px;
+
+  padding: 2px 4px 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.liv-zone-grid.is-carousel > .liv-zone-card{
+  scroll-snap-align: start;
+}
+
+.liv-livreur-grid.is-carousel{
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
+  gap: 14px;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 10px;
+
+  padding: 2px 4px 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.liv-livreur-grid.is-carousel > .liv-livreur-card{
+  scroll-snap-align: start;
+}
+
+.liv-zone-grid.is-carousel::-webkit-scrollbar,
+.liv-livreur-grid.is-carousel::-webkit-scrollbar{
+  height: 8px;
+}
+
+.liv-zone-grid.is-carousel::-webkit-scrollbar-thumb,
+.liv-livreur-grid.is-carousel::-webkit-scrollbar-thumb{
+  background: rgba(100, 116, 139, .35);
+  border-radius: 999px;
+}
+
+.liv-zone-grid.is-carousel::-webkit-scrollbar-track,
+.liv-livreur-grid.is-carousel::-webkit-scrollbar-track{
+  background: transparent;
+}
+.liv-zone-grid:not(.is-carousel){
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.liv-livreur-grid:not(.is-carousel){
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.liv-zone-title,
+.liv-livreur-name{
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
