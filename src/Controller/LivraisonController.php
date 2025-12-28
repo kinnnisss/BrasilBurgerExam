@@ -79,7 +79,7 @@ public function assignZone(int $idZone, Request $request): Response
     $filterData = $this->livraisonService->getFilterData();
 
     $form = $this->createForm(AssignLivreurFormType::class, $dto, [
-        'livreurs' => $filterData->livreurs,
+        'choices_livreurs' => $filterData->livreurs,
     ]);
     $form->handleRequest($request);
 
