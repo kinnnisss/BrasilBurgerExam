@@ -9,20 +9,22 @@
     <div class="bb-pagehead__sub">Organisez les livraisons par zone et affectez les livreurs</div>
   </div>
 
-  <div class="bb-content liv-board"
-     data-assign-url-pattern="{{ path('livraison_assign', { idCommande: 0 }) }}"
-     data-details-url-pattern="{{ path('commande_details', { id: 0 }) }}">
+  {% set zonesCount = board.zones|length %}
+  {% set livreursCount = filterData.livreurs|length %}
 
+  <div class="bb-content liv-board"
+       data-assign-zone-url-pattern="{{ path('livraison_assign_zone', { idZone: 0 }) }}"
+       data-details-url-pattern="{{ path('commande_details', { id: 0 }) }}">
 
     <section class="liv-zones">
       {% if board.zones is empty %}
         <div class="liv-empty">
           <div class="liv-empty__ico">📦</div>
           <div class="liv-empty__title">Aucune livraison à afficher</div>
-          <div class="liv-empty__sub">Aucune commande en livraison n’a été trouvée.</div>
+          <div class="liv-empty__sub">Aucune commande validée en livraison n’a été trouvée.</div>
         </div>
       {% else %}
-        <div class="liv-zone-grid">
+        <div class="liv-zone-grid {{ zonesCount > 3 ? 'is-carousel' : '' }}">
           {% for zone in board.zones %}
             {% set qMap = {} %}
             {% for c in zone.commandes %}
@@ -108,8 +110,7 @@
                 <th>État</th>
               </tr>
             </thead>
-            <tbody class="js-zone-tbody">
-            </tbody>
+            <tbody class="js-zone-tbody"></tbody>
           </table>
         </div>
 
@@ -135,11 +136,11 @@
 
         <form method="post"
               class="liv-assign-form js-assign-form"
-              action="{{ path('livraison_assign', { idCommande: 0 }) }}">
+              action="{{ path('livraison_assign_zone', { idZone: 0 }) }}">
 
           <div class="liv-field">
             <label class="liv-label">Zone</label>
-            <select class="liv-input js-assign-zone-select" name="zoneUi">
+            <select class="liv-input js-assign-zone-select" name="zoneUi" required>
               <option value="">—</option>
               {% for z in board.zones %}
                 <option value="{{ z.zoneId }}">{{ z.zoneLibelle }}</option>
@@ -149,7 +150,7 @@
 
           <div class="liv-field">
             <label class="liv-label">Livreur</label>
-            <select class="liv-input" name="assign_livreur_form[livreurId]" required>
+            <select class="liv-input js-assign-livreur-select" name="assign_livreur_form[livreurId]" required>
               <option value="">—</option>
               {% for l in filterData.livreurs %}
                 <option value="{{ l.id }}">{{ l.label }}</option>
@@ -164,10 +165,11 @@
 
         <h3 class="liv-subtitle">Liste des livreurs</h3>
 
-        <div class="liv-livreur-grid">
+        <div class="liv-livreur-grid {{ livreursCount > 3 ? 'is-carousel' : '' }}">
           {% for l in filterData.livreurs %}
-            {% set busy = loop.index == 3 %}
-            <article class="liv-livreur-card {{ busy ? 'liv-livreur-card--busy' : 'liv-livreur-card--ok' }}">
+            {# ⚠️ Ici tu mettras ta vraie info "busy" quand tu auras un champ / calcul serveur.
+               Pour l’instant on ne simule plus avec loop.index #}
+            <article class="liv-livreur-card liv-livreur-card--ok">
               <div class="liv-avatar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/>
@@ -176,11 +178,7 @@
               </div>
               <div class="liv-livreur-meta">
                 <div class="liv-livreur-name">{{ l.label }}</div>
-                {% if busy %}
-                  <div class="liv-livreur-status liv-livreur-status--busy">En<br>livraison</div>
-                {% else %}
-                  <div class="liv-livreur-status liv-livreur-status--ok">Disponible</div>
-                {% endif %}
+                <div class="liv-livreur-status liv-livreur-status--ok">Disponible</div>
               </div>
             </article>
           {% else %}
@@ -193,7 +191,6 @@
 
   </div>
 {% endblock %}
-
 
 {% block javascripts %}
   {{ parent() }}
@@ -208,10 +205,35 @@
 
       const assignForm = document.querySelector('.js-assign-form');
       const assignZoneSelect = document.querySelector('.js-assign-zone-select');
+      const livreurSelect = document.querySelector('.js-assign-livreur-select');
       const assignBtn = document.querySelector('.js-assign-submit');
 
-      const urlPattern = root.getAttribute('data-assign-url-pattern');
+      const zonePattern = root.getAttribute('data-assign-zone-url-pattern');
+      const detailsPattern = root.getAttribute('data-details-url-pattern');
+
       let currentZone = null;
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      function updateAssignState() {
+        const zoneId = (assignZoneSelect && assignZoneSelect.value) ? assignZoneSelect.value : '';
+        const livreurId = (livreurSelect && livreurSelect.value) ? livreurSelect.value : '';
+
+        if (assignForm && zonePattern && zoneId) {
+          assignForm.action = zonePattern.replace(/\/0\/assign$/, '/' + zoneId + '/assign');
+        }
+
+        if (assignBtn) {
+          assignBtn.disabled = !(zoneId && livreurId);
+        }
+      }
 
       function openZone(zoneId) {
         const jsonEl = document.querySelector('.js-zone-data[data-zone="' + zoneId + '"]');
@@ -225,13 +247,12 @@
         if (assignZoneSelect) {
           assignZoneSelect.value = String(currentZone.zoneId || '');
         }
-
-        assignBtn.disabled = true;
-        if (urlPattern) assignForm.action = urlPattern;
+        updateAssignState();
 
         (currentZone.commandes || []).forEach(c => {
           const tr = document.createElement('tr');
           tr.className = 'liv-row-select';
+
           tr.innerHTML = `
             <td><strong>${escapeHtml(c.reference || '')}</strong></td>
             <td>
@@ -243,17 +264,12 @@
             <td><span class="liv-badge">${escapeHtml(String(c.etat || ''))}</span></td>
           `;
 
-          const detailsPattern = root.getAttribute('data-details-url-pattern');
-
-        tr.addEventListener('click', () => {
-        const id = c.idCommande;
-
-        if (!detailsPattern) return;
-
-        const url = detailsPattern.replace(/\/0$/, '/' + id);
-        window.location.href = url;
-        });
-
+          tr.addEventListener('click', () => {
+            const id = c.idCommande;
+            if (!detailsPattern) return;
+            const url = detailsPattern.replace(/\/0$/, '/' + id);
+            window.location.href = url;
+          });
 
           tbody.appendChild(tr);
         });
@@ -266,21 +282,17 @@
         panel.hidden = true;
       }
 
-      function escapeHtml(str) {
-        return String(str)
-          .replaceAll('&', '&amp;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;')
-          .replaceAll('"', '&quot;')
-          .replaceAll("'", '&#039;');
-      }
-
       document.querySelectorAll('.js-open-zone').forEach(btn => {
         btn.addEventListener('click', () => openZone(btn.getAttribute('data-zone')));
       });
 
       const closeBtn = document.querySelector('.js-close-zone');
       if (closeBtn) closeBtn.addEventListener('click', closeZone);
+
+      if (assignZoneSelect) assignZoneSelect.addEventListener('change', updateAssignState);
+      if (livreurSelect) livreurSelect.addEventListener('change', updateAssignState);
+
+      updateAssignState();
     })();
   </script>
 {% endblock %}
