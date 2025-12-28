@@ -65,29 +65,37 @@ class LivraisonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function assignLivreur(int $idCommande, int $idLivreur): bool
-    {
-        /** @var Commande|null $cmd */
-        $cmd = $this->find($idCommande);
-        if (!$cmd){ return false;
-        }
-
-        if ($cmd->getTypeConsommation() !== TypeConsommationEnum::LIVRAISON){
-             return false;
-        }
-        if ($cmd->getEtat() !== EtatCommandeEnum::VALIDEE)
-            { return false;
-            }
-        if ($cmd->getLivreur() !== null){
-            return false;
-        }
-
-        $livreurRef = $this->getEntityManager()->getReference(\App\Entity\Livreur::class, $idLivreur);
-        $cmd->setLivreur($livreurRef);
-
-        $this->getEntityManager()->flush();
-        return true;
+public function assignLivreur(int $idCommande, int $idLivreur): bool
+{
+    /** @var Commande|null $cmd */
+    $cmd = $this->find($idCommande);
+    if (!$cmd) {
+        return false;
     }
+
+    if ($cmd->getTypeConsommation() !== TypeConsommationEnum::LIVRAISON) {
+        return false;
+    }
+
+    if ($cmd->getEtat() !== EtatCommandeEnum::VALIDEE) {
+        return false;
+    }
+
+    if ($cmd->getLivreur() !== null) {
+        return false;
+    }
+
+    if (!$this->isLivreurDisponible($idLivreur)) {
+        return false;
+    }
+
+    $livreurRef = $this->getEntityManager()->getReference(\App\Entity\Livreur::class, $idLivreur);
+    $cmd->setLivreur($livreurRef);
+
+    $this->getEntityManager()->flush();
+    return true;
+}
+
     public function isLivreurDisponible(int $idLivreur): bool
     {
         $count = (int) $this->createQueryBuilder('c')
