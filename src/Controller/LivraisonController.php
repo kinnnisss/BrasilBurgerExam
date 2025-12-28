@@ -65,4 +65,32 @@ class LivraisonController extends AbstractController
 
         return $this->redirectToRoute('livraison_board');
     }
+
+#[Route(
+    '/gestionnaire/livraisons/zone/{idZone}/assign',
+    name: 'livraison_assign_zone',
+    requirements: ['idZone' => '\d+'],
+    methods: ['POST']
+)]
+public function assignZone(int $idZone, Request $request): Response
+{
+    $dto = new LivraisonAssignDto();
+
+    $filterData = $this->livraisonService->getFilterData();
+
+    $form = $this->createForm(AssignLivreurFormType::class, $dto, [
+        'livreurs' => $filterData->livreurs,
+    ]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $res = $this->livraisonService->assignLivreurToZone($idZone, $dto);
+        $this->addFlash($res->success ? 'success' : 'danger', $res->message);
+    } else {
+        $this->addFlash('danger', 'Formulaire invalide.');
+    }
+
+    return $this->redirectToRoute('livraison_board');
+}
+
 }
