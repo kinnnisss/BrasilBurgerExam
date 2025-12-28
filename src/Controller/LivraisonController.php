@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 class LivraisonController extends AbstractController
 {
@@ -91,6 +93,24 @@ public function assignZone(int $idZone, Request $request): Response
     }
 
     return $this->redirectToRoute('livraison_board');
+}
+
+
+#[Route('/gestionnaire/livraisons/{idCommande}/terminer', name: 'livraison_terminer', requirements: ['idCommande' => '\d+'], methods: ['POST'])]
+public function terminer(int $idCommande, Request $request): Response
+{
+    $token = (string) $request->request->get('_token');
+
+    if (!$this->isCsrfTokenValid('livraison_terminer', $token)) {
+        return new JsonResponse(['success' => false, 'message' => 'CSRF invalide.'], 400);
+    }
+
+    $res = $this->livraisonService->terminerCommande($idCommande);
+
+    return new JsonResponse([
+        'success' => $res->success,
+        'message' => $res->message,
+    ], $res->success ? 200 : 400);
 }
 
 }
