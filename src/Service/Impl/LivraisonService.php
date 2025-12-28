@@ -138,4 +138,14 @@ class LivraisonService implements LivraisonServiceInterface
             : ActionResultDto::fail("Aucune commande validée disponible dans cette zone.");
     }
 
+    public function terminerCommande(int $idCommande): ActionResultDto
+    {
+        $ok = $this->livraisonRepository->terminerCommande($idCommande);
+
+        return $ok
+            ? ActionResultDto::ok("Commande marquée TERMINÉE.")
+            : ActionResultDto::fail("Impossible de terminer cette commande (non affectée / mauvais état / pas une livraison).");
+}
+
+
 }

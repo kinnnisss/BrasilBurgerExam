@@ -18,4 +18,7 @@ interface LivraisonServiceInterface
 
     public function assignLivreurToZone(int $idZone, LivraisonAssignDto $dto): ActionResultDto;
 
+    public function terminerCommande(int $idCommande): ActionResultDto;
+
+
 }
