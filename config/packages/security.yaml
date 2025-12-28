@@ -24,7 +24,8 @@ security:
 
   access_control:
     - { path: ^/login$, roles: PUBLIC_ACCESS }
-    - { path: ^/, roles: ROLE_GESTIONNAIRE }
+    - { path: ^/gestionnaire, roles: ROLE_GESTIONNAIRE }
+    - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
   security:
