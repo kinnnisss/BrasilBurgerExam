@@ -23,6 +23,7 @@ services:
       - '../src/DependencyInjection/'
       - '../src/Entity/'
       - '../src/Kernel.php'
+      - '../src/Dto/'
 
   App\Controller\:
     resource: '../src/Controller/'
