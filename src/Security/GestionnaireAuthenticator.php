@@ -42,16 +42,25 @@ class GestionnaireAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+{
+    $session = $request->getSession();
+
+    if ($session) {
+        $targetPath = $this->getTargetPath($session, $firewallName);
+
+        $loginUrl = $this->urlGenerator->generate(self::LOGIN_ROUTE);
+
+        if ($targetPath && !str_starts_with($targetPath, $loginUrl)) {
             return new RedirectResponse($targetPath);
         }
 
-    return new RedirectResponse(
-        $this->urlGenerator->generate('dashboard_index')
-    );
+        $session->remove('_security.' . $firewallName . '.target_path');
     }
+
+    return new RedirectResponse($this->urlGenerator->generate('dashboard_index'));
+}
+
 
     protected function getLoginUrl(Request $request): string
     {
