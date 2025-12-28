@@ -41,6 +41,9 @@ class LivraisonRepository extends ServiceEntityRepository
 
         if ($filter->etat !== null) {
             $qb->andWhere('c.etat = :etat')->setParameter('etat', $filter->etat);
+        }else{
+            $qb->andWhere('c.etat = :etat')
+            ->setParameter('etat', EtatCommandeEnum::VALIDEE);
         }
 
         $qb->orderBy('c.dateCommande', 'DESC');
