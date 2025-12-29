@@ -130,7 +130,13 @@ class LivraisonService implements LivraisonServiceInterface
         if (!$this->livraisonRepository->isLivreurDisponible($livreurId)) {
             return ActionResultDto::fail("Livreur indisponible (déjà affecté à une commande validée).");
         }
+        if (!$this->livraisonRepository->isZoneAvailableForLivreur($idZone, $livreurId)) {
+            return ActionResultDto::fail("Zone indisponible : déjà affectée à un autre livreur (commandes validées en cours).");
+        }
 
+        if (!$this->livraisonRepository->isLivreurDisponible($livreurId)) {
+            return ActionResultDto::fail("Livreur indisponible (déjà affecté à une commande validée).");
+        }
         $nb = $this->livraisonRepository->assignLivreurToZoneValidated($idZone, $livreurId);
 
         return $nb > 0
