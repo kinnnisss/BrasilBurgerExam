@@ -88,6 +88,13 @@ public function assignLivreur(int $idCommande, int $idLivreur): bool
     if (!$this->isLivreurDisponible($idLivreur)) {
         return false;
     }
+    $zone = $cmd->getZone();
+    if ($zone !== null) {
+        $zoneId = (int) $zone->getIdZone();
+        if (!$this->isZoneAvailableForLivreur($zoneId, $idLivreur)) {
+            return false;
+        }
+    }
 
     $livreurRef = $this->getEntityManager()->getReference(\App\Entity\Livreur::class, $idLivreur);
     $cmd->setLivreur($livreurRef);
