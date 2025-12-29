@@ -81,7 +81,7 @@ class LivraisonController extends AbstractController
         $filterData = $this->livraisonService->getFilterData();
 
         $form = $this->createForm(AssignLivreurFormType::class, $dto, [
-            'livreurs' => $filterData->livreurs,
+            'choices_livreurs' => $filterData->livreurs,
         ]);
         $form->handleRequest($request);
 
