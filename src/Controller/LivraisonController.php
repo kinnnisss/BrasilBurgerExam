@@ -38,11 +38,38 @@ class LivraisonController extends AbstractController
         $form->handleRequest($request);
 
         $board = $this->livraisonService->getBoard($filter);
+        $lockedZones = [];
+        $busyLivreurs = [];
+
+        foreach ($board->zones as $zone) {
+            $zoneId = (int) $zone->zoneId;
+
+            foreach ($zone->commandes as $c) {
+                $etat = is_object($c->etat) ? $c->etat->value : (string) $c->etat;
+
+                if ($etat !== \App\Enum\EtatCommandeEnum::VALIDEE->value) {
+                    continue;
+                }
+
+                if (!empty($c->livreur) && !empty($c->livreur->id)) {
+                    $livreurId = (int) $c->livreur->id;
+                    $busyLivreurs[$livreurId] = true;
+
+                    if (!isset($lockedZones[$zoneId])) {
+                        $lockedZones[$zoneId] = $livreurId;
+                    } elseif ($lockedZones[$zoneId] !== $livreurId) {
+                        $lockedZones[$zoneId] = -1;
+                    }
+                }
+            }
+        }
 
         return $this->render('livraison/board.html.twig', [
             'form' => $form->createView(),
             'board' => $board,
             'filterData' => $filterData,
+            'lockedZones' => $lockedZones,
+            'busyLivreurs' => $busyLivreurs,
         ]);
     }
 
