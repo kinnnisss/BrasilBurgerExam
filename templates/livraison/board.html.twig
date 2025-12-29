@@ -137,13 +137,18 @@
         <form method="post"
               class="liv-assign-form js-assign-form"
               action="{{ path('livraison_assign_zone', { idZone: 0 }) }}">
-
+          <input type="hidden" name="assign_livreur_form[_token]" value="{{ csrf_token('assign_livreur_form') }}">
           <div class="liv-field">
             <label class="liv-label">Zone</label>
-            <select class="liv-input js-assign-zone-select" name="zoneUi" required>
+            <select class="liv-input js-assign-zone-select" name="zoneUi" required data-role="zone-picker">
               <option value="">—</option>
               {% for z in board.zones %}
-                <option value="{{ z.zoneId }}">{{ z.zoneLibelle }}</option>
+                {% set lock = lockedZones[z.zoneId] ?? null %}
+                <option value="{{ z.zoneId }}"
+                        data-lock="{{ lock is null ? '' : lock }}"
+                        {% if lock == -1 %}disabled{% endif %}>
+                  {{ z.zoneLibelle }}{% if lock == -1 %} (incohérence){% endif %}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -153,7 +158,12 @@
             <select class="liv-input js-assign-livreur-select" name="assign_livreur_form[livreurId]" required>
               <option value="">—</option>
               {% for l in filterData.livreurs %}
-                <option value="{{ l.id }}">{{ l.label }}</option>
+                {% set isBusy = busyLivreurs[l.id] is defined %}
+                <option value="{{ l.id }}"
+                        data-busy="{{ isBusy ? '1' : '0' }}"
+                        {% if isBusy %}disabled{% endif %}>
+                  {{ l.label }}{% if isBusy %} (indisponible){% endif %}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -161,23 +171,29 @@
           <button type="submit" class="liv-btn liv-btn--primary js-assign-submit" disabled>
             Affecter
           </button>
+
+          <p class="liv-hint js-assign-hint" hidden></p>
         </form>
 
         <h3 class="liv-subtitle">Liste des livreurs</h3>
 
         <div class="liv-livreur-grid {{ livreursCount > 3 ? 'is-carousel' : '' }}">
           {% for l in filterData.livreurs %}
-            {# a voir  #}
-            <article class="liv-livreur-card liv-livreur-card--ok">
+            {% set isBusy = busyLivreurs[l.id] is defined %}
+
+            <article class="liv-livreur-card {{ isBusy ? 'liv-livreur-card--busy' : 'liv-livreur-card--ok' }}">
               <div class="liv-avatar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/>
                   <path d="M20 20a8 8 0 1 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </div>
+
               <div class="liv-livreur-meta">
                 <div class="liv-livreur-name">{{ l.label }}</div>
-                <div class="liv-livreur-status liv-livreur-status--ok">Disponible</div>
+                <div class="liv-livreur-status {{ isBusy ? 'liv-livreur-status--busy' : 'liv-livreur-status--ok' }}">
+                  {{ isBusy ? 'Indisponible' : 'Disponible' }}
+                </div>
               </div>
             </article>
           {% else %}
@@ -206,6 +222,7 @@
       const assignZoneSelect = document.querySelector('.js-assign-zone-select');
       const livreurSelect = document.querySelector('.js-assign-livreur-select');
       const assignBtn = document.querySelector('.js-assign-submit');
+      const hint = document.querySelector('.js-assign-hint');
 
       const zonePattern = root.getAttribute('data-assign-zone-url-pattern');
       const detailsPattern = root.getAttribute('data-details-url-pattern');
@@ -221,6 +238,17 @@
           .replaceAll("'", '&#039;');
       }
 
+      function setHint(msg) {
+        if (!hint) return;
+        if (!msg) {
+          hint.hidden = true;
+          hint.textContent = '';
+          return;
+        }
+        hint.hidden = false;
+        hint.textContent = msg;
+      }
+
       function updateAssignState() {
         const zoneId = (assignZoneSelect && assignZoneSelect.value) ? assignZoneSelect.value : '';
         const livreurId = (livreurSelect && livreurSelect.value) ? livreurSelect.value : '';
@@ -229,8 +257,57 @@
           assignForm.action = zonePattern.replace(/\/0\/assign$/, '/' + zoneId + '/assign');
         }
 
+        let canSubmit = !!(zoneId && livreurId);
+        setHint('');
+
+        if (canSubmit) {
+          const selectedLivreurOption = livreurSelect.options[livreurSelect.selectedIndex];
+          const isBusy = selectedLivreurOption && selectedLivreurOption.getAttribute('data-busy') === '1';
+          if (isBusy) {
+            canSubmit = false;
+            setHint("Livreur indisponible : il a déjà des commandes validées en cours.");
+          }
+        }
+
+        if (canSubmit) {
+          const selectedZoneOption = assignZoneSelect.options[assignZoneSelect.selectedIndex];
+          const lock = selectedZoneOption ? selectedZoneOption.getAttribute('data-lock') : '';
+
+          if (lock === '-1') {
+            canSubmit = false;
+            setHint("Zone bloquée : incohérence (plusieurs livreurs actifs).");
+          } else if (lock && lock !== livreurId) {
+            canSubmit = false;
+            setHint("Zone indisponible : déjà affectée à un autre livreur (commandes validées en cours).");
+          }
+        }
+
+        if (assignZoneSelect) {
+          Array.from(assignZoneSelect.options).forEach(opt => {
+            if (!opt.value) return;
+
+            const lock = opt.getAttribute('data-lock');
+
+            if (lock === '-1') {
+              opt.disabled = true;
+              return;
+            }
+
+            if (livreurId && lock && lock !== livreurId) {
+              opt.disabled = true;
+              return;
+            }
+
+            opt.disabled = false;
+          });
+
+          Array.from(assignZoneSelect.options).forEach(opt => {
+            if (opt.getAttribute('data-lock') === '-1') opt.disabled = true;
+          });
+        }
+
         if (assignBtn) {
-          assignBtn.disabled = !(zoneId && livreurId);
+          assignBtn.disabled = !canSubmit;
         }
       }
 
@@ -294,4 +371,13 @@
       updateAssignState();
     })();
   </script>
+
+  <style>
+    .liv-hint{
+      margin: 10px 0 0;
+      font-size: 12px;
+      font-weight: 900;
+      color: #b45309;
+    }
+  </style>
 {% endblock %}
