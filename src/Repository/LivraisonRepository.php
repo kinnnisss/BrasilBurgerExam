@@ -121,6 +121,13 @@ public function assignLivreur(int $idCommande, int $idLivreur): bool
 
     public function assignLivreurToZoneValidated(int $idZone, int $idLivreur): int
     {
+        if (!$this->isZoneAvailableForLivreur($idZone, $idLivreur)) {
+            return 0;
+        }
+
+        if (!$this->isLivreurDisponible($idLivreur)) {
+            return 0;
+        }
         $em = $this->getEntityManager();
 
         $cmds = $this->createQueryBuilder('c')
