@@ -162,5 +162,35 @@ public function assignLivreur(int $idCommande, int $idLivreur): bool
         return true;
     }
 
+    public function getLockedLivreurIdForZone(int $idZone): ?int
+    {
+        $row = $this->createQueryBuilder('c')
+            ->select('COUNT(DISTINCT l.idLivreur) AS nb', 'MIN(l.idLivreur) AS livreurId')
+            ->innerJoin('c.livreur', 'l')
+            ->andWhere('c.typeConsommation = :tc')
+            ->andWhere('c.etat = :etat')
+            ->andWhere('c.zone = :zoneId')
+            ->setParameter('tc', TypeConsommationEnum::LIVRAISON)
+            ->setParameter('etat', EtatCommandeEnum::VALIDEE)
+            ->setParameter('zoneId', $idZone)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$row) {
+            return null;
+        }
+
+        $nb = (int) ($row['nb'] ?? 0);
+        if ($nb === 0) {
+            return null;
+        }
+
+        if ($nb > 1) {
+            return -1;
+        }
+
+        return (int) $row['livreurId'];
+    }
+
 
 }
