@@ -192,5 +192,19 @@ public function assignLivreur(int $idCommande, int $idLivreur): bool
         return (int) $row['livreurId'];
     }
 
+    public function isZoneAvailableForLivreur(int $idZone, int $idLivreur): bool
+    {
+        $lockedTo = $this->getLockedLivreurIdForZone($idZone);
+
+        if ($lockedTo === null) {
+            return true;
+        }
+
+        if ($lockedTo === -1) {
+            return false;
+        }
+
+        return $lockedTo === $idLivreur;
+    }
 
 }
