@@ -5,6 +5,7 @@
     ViewData["Title"] = "Mon panier";
 
     var isAuth = ClientSession.GetClientId(Context) != null;
+    var isReadonly = Model.ReadonlyMode;
 
     var type = (Model.TypeConsommation ?? "SUR_PLACE").Trim().ToUpperInvariant();
     bool isDelivery = type == "LIVRAISON";
@@ -104,46 +105,60 @@
 
                                     <div class="bb-cart-item__price">@($"{it.PrixTotal:0} FCFA")</div>
 
-                                    <div class="bb-qty">
-                                        <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
-                                            <input type="hidden" name="articleId" value="@it.ArticleId" />
-                                            <input type="hidden" name="quantite" value="@(it.Quantite - 1)" />
-                                            <button class="bb-qty__btn" type="submit" aria-label="Diminuer">−</button>
-                                        </form>
+                                    @if (!isReadonly)
+                                    {
+                                        <div class="bb-qty">
+                                            <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
+                                                <input type="hidden" name="articleId" value="@it.ArticleId" />
+                                                <input type="hidden" name="quantite" value="@(it.Quantite - 1)" />
+                                                <button class="bb-qty__btn" type="submit" aria-label="Diminuer">−</button>
+                                            </form>
 
-                                        <div class="bb-qty__value">@it.Quantite</div>
+                                            <div class="bb-qty__value">@it.Quantite</div>
 
-                                        <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
-                                            <input type="hidden" name="articleId" value="@it.ArticleId" />
-                                            <input type="hidden" name="quantite" value="@(it.Quantite + 1)" />
-                                            <button class="bb-qty__btn bb-qty__btn--plus" type="submit" aria-label="Augmenter">+</button>
-                                        </form>
-                                    </div>
+                                            <form asp-controller="Commande" asp-action="UpdateQuantity" method="post" class="bb-qty__form">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
+                                                <input type="hidden" name="articleId" value="@it.ArticleId" />
+                                                <input type="hidden" name="quantite" value="@(it.Quantite + 1)" />
+                                                <button class="bb-qty__btn bb-qty__btn--plus" type="submit" aria-label="Augmenter">+</button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="bb-cart-item__meta">Quantité : <strong>@it.Quantite</strong></div>
+                                    }
+
                                 </div>
-
+                                @if (!isReadonly)
+                                {
                                 <form asp-controller="Commande" asp-action="Remove" method="post" class="bb-cart-item__remove">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="typeArticle" value="@it.TypeArticle" />
                                     <input type="hidden" name="articleId" value="@it.ArticleId" />
                                     <button type="submit" class="bb-trash" aria-label="Supprimer">🗑</button>
                                 </form>
+                                }
                             </div>
                         }
                     </div>
 
                     @* option “vider panier” *@
                     <div class="bb-cart-actions">
+                        @if (!isReadonly)
+                        {
                         <form asp-controller="Commande" asp-action="Clear" method="post">
                             @Html.AntiForgeryToken()
                             <button class="bb-link-danger" type="submit">Vider le panier</button>
                         </form>
+                        }
                     </div>
                 </div>
-
+                @if (!isReadonly)
+{
                 <div class="bb-cardbox">
                     <div class="bb-cardbox__title">Type de consommation</div>
 
@@ -170,15 +185,23 @@
                         </a>
                     </div>
                 </div>
+            }else
+            {
+            <div class="bb-cardbox">
+                <div class="bb-cardbox__title">Type de consommation</div>
+                <div class="bb-alert">Type choisi : <strong>@type</strong></div>
+            </div>
+            }
+            @if (isDelivery)
+            {
+                <div class="bb-cardbox">
+                    <div class="bb-cardbox__title bb-cardbox__title--withicon">
+                        <span class="bb-pin">📍</span>
+                        <span>Informations de livraison</span>
+                    </div>
 
-                @if (isDelivery)
-                {
-                    <div class="bb-cardbox">
-                        <div class="bb-cardbox__title bb-cardbox__title--withicon">
-                            <span class="bb-pin">📍</span>
-                            <span>Informations de livraison</span>
-                        </div>
-
+                    @if (!isReadonly)
+                    {
                         <form class="bb-delivery" method="get" asp-controller="Commande" asp-action="Panier">
                             <input type="hidden" name="type" value="LIVRAISON" />
 
@@ -214,8 +237,20 @@
 
                             <button type="submit" class="bb-btn bb-btn--ghost">Mettre à jour</button>
                         </form>
-                    </div>
-                }
+                    }
+                    else
+                    {
+                        <div class="bb-alert">
+                            Zone : <strong>@(selectedZone?.Libelle ?? "—")</strong><br />
+                            Quartier : <strong>@(Model.Quartiers.FirstOrDefault(q => q.Id == Model.QuartierId)?.Libelle ?? "—")</strong>
+                        </div>
+
+                        <div class="bb-fee">
+                            Frais de livraison: <strong>@($"{fraisLivraison:0} FCFA")</strong>
+                        </div>
+                    }
+                </div>
+            }
 
                 <!-- CARD: Totaux -->
                 <div class="bb-cardbox bb-totals">
@@ -258,22 +293,22 @@
     }
 
 </section>
-
 <script>
-  // UX : si zone change en livraison => on auto-submit le GET pour charger les quartiers
-  (function () {
-    const zone = document.getElementById("bbZone");
-    if (!zone) return;
+(function () {
+  const isReadonly = @Model.ReadonlyMode.ToString().ToLowerInvariant();
+  if (isReadonly) return;
 
-    zone.addEventListener("change", function () {
-      const form = zone.closest("form");
-      if (!form) return;
+  const zone = document.getElementById("bbZone");
+  if (!zone) return;
 
-      // reset quartier quand zone change
-      const q = document.getElementById("bbQuartier");
-      if (q) q.value = "";
+  zone.addEventListener("change", function () {
+    const form = zone.closest("form");
+    if (!form) return;
 
-      form.submit();
-    });
-  })();
+    const q = document.getElementById("bbQuartier");
+    if (q) q.value = "";
+
+    form.submit();
+  });
+})();
 </script>

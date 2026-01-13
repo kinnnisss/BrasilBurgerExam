@@ -24,7 +24,7 @@ public sealed class CommandeController : Controller
         _livraisonRepo = livraisonRepo;
     }
     [HttpGet]
-    public async Task<IActionResult> Panier(string? type = null, int? zoneId = null, int? quartierId = null, CancellationToken ct = default)
+    public async Task<IActionResult> Panier(string? type = null, int? zoneId = null, int? quartierId = null,bool readonlyMode = false, CancellationToken ct = default)
     {
         var panier = ClientSession.GetPanier(HttpContext);
 
@@ -49,6 +49,8 @@ public sealed class CommandeController : Controller
             vm.Quartiers = new();
         }
         ViewBag.MinimalHeader = true;
+        vm.ReadonlyMode = readonlyMode;
+
         return View(vm);
     }
 

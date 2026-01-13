@@ -134,3 +134,18 @@
   align-items:center;
   gap: 8px;
 }
+.cmd-alert{
+  display:flex;
+  gap:12px;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.08);
+}
+
+.cmd-alert__ico{ font-size:20px; line-height:1; }
+.cmd-alert__title{ font-weight:700; margin-bottom:4px; }
+.cmd-alert__text{ opacity:.85; }
+
+.cmd-alert--cancel{
+  background: rgba(0,0,0,.03);
+}

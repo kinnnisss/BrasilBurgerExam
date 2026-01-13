@@ -1,0 +1,511 @@
+<?php
+
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Extension\CoreExtension;
+use Twig\Extension\SandboxExtension;
+use Twig\Markup;
+use Twig\Sandbox\SecurityError;
+use Twig\Sandbox\SecurityNotAllowedTagError;
+use Twig\Sandbox\SecurityNotAllowedFilterError;
+use Twig\Sandbox\SecurityNotAllowedFunctionError;
+use Twig\Source;
+use Twig\Template;
+use Twig\TemplateWrapper;
+
+/* partials/confirm_modal.html.twig */
+class __TwigTemplate_31b3f93863c7031766daa967a49d8769 extends Template
+{
+    private Source $source;
+    /**
+     * @var array<string, Template>
+     */
+    private array $macros = [];
+
+    public function __construct(Environment $env)
+    {
+        parent::__construct($env);
+
+        $this->source = $this->getSourceContext();
+
+        $this->parent = false;
+
+        $this->blocks = [
+        ];
+    }
+
+    protected function doDisplay(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2 = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->enter($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "partials/confirm_modal.html.twig"));
+
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "partials/confirm_modal.html.twig"));
+
+        // line 2
+        yield "<div class=\"bb-modal\" id=\"bbConfirmModal\" aria-hidden=\"true\">
+  <div class=\"bb-modal__backdrop\" data-modal-close></div>
+
+  <div class=\"bb-modal__panel\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"bbConfirmTitle\">
+    <div class=\"bb-modal__head\">
+      <div class=\"bb-modal__ico\">⚠️</div>
+      <div class=\"bb-modal__titles\">
+        <div class=\"bb-modal__title\" id=\"bbConfirmTitle\">Confirmer l’annulation</div>
+        <div class=\"bb-modal__sub\" id=\"bbConfirmSub\">Voulez-vous vraiment annuler cette commande ?</div>
+      </div>
+      <button type=\"button\" class=\"bb-modal__x\" aria-label=\"Fermer\" data-modal-close>✕</button>
+    </div>
+
+    <div class=\"bb-modal__body\">
+      <div class=\"bb-modal__hint\">
+        Cette action est <strong>irréversible</strong>.
+      </div>
+
+      <div class=\"bb-modal__meta\" id=\"bbConfirmMeta\" style=\"display:none;\"></div>
+    </div>
+
+    <div class=\"bb-modal__foot\">
+      <button type=\"button\" class=\"bb-modal__btn bb-modal__btn--ghost\" data-modal-close>Retour</button>
+      <button type=\"button\" class=\"bb-modal__btn bb-modal__btn--danger\" id=\"bbConfirmOk\">Oui, annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const modal = document.getElementById('bbConfirmModal');
+  if(!modal) return;
+
+  const btnOk = document.getElementById('bbConfirmOk');
+  const elSub = document.getElementById('bbConfirmSub');
+  const elMeta = document.getElementById('bbConfirmMeta');
+
+  let pendingForm = null;
+
+  function openModal(form, message, meta){
+    pendingForm = form;
+
+    elSub.textContent = message || 'Voulez-vous vraiment annuler cette commande ?';
+
+    if(meta){
+      elMeta.style.display = 'block';
+      elMeta.textContent = meta;
+    } else {
+      elMeta.style.display = 'none';
+      elMeta.textContent = '';
+    }
+
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('bb-modal-open');
+    btnOk.focus();
+  }
+
+  function closeModal(){
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('bb-modal-open');
+    pendingForm = null;
+  }
+
+  document.addEventListener('submit', function(e){
+    const form = e.target;
+    if(!(form instanceof HTMLFormElement)) return;
+
+    if(form.dataset.confirm !== 'cancel') return;
+
+    e.preventDefault();
+
+    const msg = form.dataset.confirmMessage || 'Voulez-vous vraiment annuler cette commande ?';
+    const meta = form.dataset.confirmMeta || '';
+    openModal(form, msg, meta);
+  }, true);
+
+  btnOk.addEventListener('click', function(){
+    if(pendingForm) pendingForm.submit();
+  });
+
+  modal.addEventListener('click', function(e){
+    const t = e.target;
+    if(t && t.hasAttribute && t.hasAttribute('data-modal-close')) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(modal.getAttribute('aria-hidden') === 'true') return;
+    if(e.key === 'Escape') closeModal();
+  });
+})();
+</script>
+
+<style>
+  .bb-modal-open{ overflow:hidden; }
+
+  .bb-modal{
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 2000;
+  }
+  .bb-modal[aria-hidden=\"true\"]{ display:none; }
+
+  .bb-modal__backdrop{
+    position:absolute;
+    inset:0;
+    background: rgba(15, 23, 42, .55);
+    backdrop-filter: blur(6px);
+  }
+
+  .bb-modal__panel{
+    position: relative;
+    width: min(520px, calc(100vw - 24px));
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+    box-shadow: 0 25px 70px rgba(2, 6, 23, .25);
+    overflow: hidden;
+  }
+
+  .bb-modal__head{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding: 16px 16px 10px;
+  }
+
+  .bb-modal__ico{
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: #ffe6e6;
+    color:#b91c1c;
+    font-size: 18px;
+    flex:0 0 auto;
+  }
+
+  .bb-modal__titles{ flex:1; }
+  .bb-modal__title{
+    font-weight: 950;
+    font-size: 16px;
+    color:#0f172a;
+    letter-spacing: .2px;
+  }
+  .bb-modal__sub{
+    margin-top: 3px;
+    font-size: 13px;
+    color:#64748b;
+    line-height: 1.3;
+  }
+
+  .bb-modal__x{
+    border:0;
+    background: transparent;
+    cursor:pointer;
+    color:#475569;
+    font-weight: 900;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+  .bb-modal__x:hover{ background:#f1f5f9; }
+
+  .bb-modal__body{
+    padding: 0 16px 14px;
+  }
+  .bb-modal__hint{
+    background:#f8fafc;
+    border:1px solid rgba(15,23,42,.06);
+    border-radius: 14px;
+    padding: 12px;
+    color:#0f172a;
+    font-size: 13px;
+  }
+  .bb-modal__meta{
+    margin-top: 10px;
+    font-size: 12px;
+    color:#64748b;
+    padding: 0 4px;
+  }
+
+  .bb-modal__foot{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    padding: 12px 16px 16px;
+    border-top: 1px solid rgba(15,23,42,.06);
+    background: #fff;
+  }
+
+  .bb-modal__btn{
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-weight: 950;
+    border:0;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    white-space: nowrap;
+  }
+  .bb-modal__btn--ghost{
+    background:#e5e7eb;
+    color:#111827;
+  }
+  .bb-modal__btn--danger{
+    background:#dc2626;
+    color:#fff;
+  }
+  .bb-modal__btn--danger:hover{ filter: brightness(.95); }
+</style>
+";
+        
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->leave($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof);
+
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getTemplateName(): string
+    {
+        return "partials/confirm_modal.html.twig";
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getDebugInfo(): array
+    {
+        return array (  48 => 2,);
+    }
+
+    public function getSourceContext(): Source
+    {
+        return new Source("{# templates/partials/confirm_modal.html.twig #}
+<div class=\"bb-modal\" id=\"bbConfirmModal\" aria-hidden=\"true\">
+  <div class=\"bb-modal__backdrop\" data-modal-close></div>
+
+  <div class=\"bb-modal__panel\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"bbConfirmTitle\">
+    <div class=\"bb-modal__head\">
+      <div class=\"bb-modal__ico\">⚠️</div>
+      <div class=\"bb-modal__titles\">
+        <div class=\"bb-modal__title\" id=\"bbConfirmTitle\">Confirmer l’annulation</div>
+        <div class=\"bb-modal__sub\" id=\"bbConfirmSub\">Voulez-vous vraiment annuler cette commande ?</div>
+      </div>
+      <button type=\"button\" class=\"bb-modal__x\" aria-label=\"Fermer\" data-modal-close>✕</button>
+    </div>
+
+    <div class=\"bb-modal__body\">
+      <div class=\"bb-modal__hint\">
+        Cette action est <strong>irréversible</strong>.
+      </div>
+
+      <div class=\"bb-modal__meta\" id=\"bbConfirmMeta\" style=\"display:none;\"></div>
+    </div>
+
+    <div class=\"bb-modal__foot\">
+      <button type=\"button\" class=\"bb-modal__btn bb-modal__btn--ghost\" data-modal-close>Retour</button>
+      <button type=\"button\" class=\"bb-modal__btn bb-modal__btn--danger\" id=\"bbConfirmOk\">Oui, annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const modal = document.getElementById('bbConfirmModal');
+  if(!modal) return;
+
+  const btnOk = document.getElementById('bbConfirmOk');
+  const elSub = document.getElementById('bbConfirmSub');
+  const elMeta = document.getElementById('bbConfirmMeta');
+
+  let pendingForm = null;
+
+  function openModal(form, message, meta){
+    pendingForm = form;
+
+    elSub.textContent = message || 'Voulez-vous vraiment annuler cette commande ?';
+
+    if(meta){
+      elMeta.style.display = 'block';
+      elMeta.textContent = meta;
+    } else {
+      elMeta.style.display = 'none';
+      elMeta.textContent = '';
+    }
+
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('bb-modal-open');
+    btnOk.focus();
+  }
+
+  function closeModal(){
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('bb-modal-open');
+    pendingForm = null;
+  }
+
+  document.addEventListener('submit', function(e){
+    const form = e.target;
+    if(!(form instanceof HTMLFormElement)) return;
+
+    if(form.dataset.confirm !== 'cancel') return;
+
+    e.preventDefault();
+
+    const msg = form.dataset.confirmMessage || 'Voulez-vous vraiment annuler cette commande ?';
+    const meta = form.dataset.confirmMeta || '';
+    openModal(form, msg, meta);
+  }, true);
+
+  btnOk.addEventListener('click', function(){
+    if(pendingForm) pendingForm.submit();
+  });
+
+  modal.addEventListener('click', function(e){
+    const t = e.target;
+    if(t && t.hasAttribute && t.hasAttribute('data-modal-close')) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(modal.getAttribute('aria-hidden') === 'true') return;
+    if(e.key === 'Escape') closeModal();
+  });
+})();
+</script>
+
+<style>
+  .bb-modal-open{ overflow:hidden; }
+
+  .bb-modal{
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 2000;
+  }
+  .bb-modal[aria-hidden=\"true\"]{ display:none; }
+
+  .bb-modal__backdrop{
+    position:absolute;
+    inset:0;
+    background: rgba(15, 23, 42, .55);
+    backdrop-filter: blur(6px);
+  }
+
+  .bb-modal__panel{
+    position: relative;
+    width: min(520px, calc(100vw - 24px));
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+    box-shadow: 0 25px 70px rgba(2, 6, 23, .25);
+    overflow: hidden;
+  }
+
+  .bb-modal__head{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding: 16px 16px 10px;
+  }
+
+  .bb-modal__ico{
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: #ffe6e6;
+    color:#b91c1c;
+    font-size: 18px;
+    flex:0 0 auto;
+  }
+
+  .bb-modal__titles{ flex:1; }
+  .bb-modal__title{
+    font-weight: 950;
+    font-size: 16px;
+    color:#0f172a;
+    letter-spacing: .2px;
+  }
+  .bb-modal__sub{
+    margin-top: 3px;
+    font-size: 13px;
+    color:#64748b;
+    line-height: 1.3;
+  }
+
+  .bb-modal__x{
+    border:0;
+    background: transparent;
+    cursor:pointer;
+    color:#475569;
+    font-weight: 900;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+  .bb-modal__x:hover{ background:#f1f5f9; }
+
+  .bb-modal__body{
+    padding: 0 16px 14px;
+  }
+  .bb-modal__hint{
+    background:#f8fafc;
+    border:1px solid rgba(15,23,42,.06);
+    border-radius: 14px;
+    padding: 12px;
+    color:#0f172a;
+    font-size: 13px;
+  }
+  .bb-modal__meta{
+    margin-top: 10px;
+    font-size: 12px;
+    color:#64748b;
+    padding: 0 4px;
+  }
+
+  .bb-modal__foot{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    padding: 12px 16px 16px;
+    border-top: 1px solid rgba(15,23,42,.06);
+    background: #fff;
+  }
+
+  .bb-modal__btn{
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-weight: 950;
+    border:0;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    white-space: nowrap;
+  }
+  .bb-modal__btn--ghost{
+    background:#e5e7eb;
+    color:#111827;
+  }
+  .bb-modal__btn--danger{
+    background:#dc2626;
+    color:#fff;
+  }
+  .bb-modal__btn--danger:hover{ filter: brightness(.95); }
+</style>
+", "partials/confirm_modal.html.twig", "C:\\Users\\oper\\Desktop\\L3_GLRS_COURS\\SEM1\\BrasilBurgerExam\\BrasilBurgerExam\\templates\\partials\\confirm_modal.html.twig");
+    }
+}

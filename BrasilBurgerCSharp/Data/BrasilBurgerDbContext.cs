@@ -127,6 +127,11 @@ private static void ConfigureCommande(ModelBuilder modelBuilder)
         e.Property(c => c.IdCommande).HasColumnName("id_commande");
         e.Property(c => c.Reference).HasColumnName("reference").HasMaxLength(50);
         e.Property(c => c.DateCommande).HasColumnName("date_commande");
+        e.Property(c => c.DateValidation).HasColumnName("date_validation");
+        e.Property(c => c.DateTerminaison).HasColumnName("date_terminaison");
+        e.Property(c => c.DateAnnulation).HasColumnName("date_annulation");
+        e.Property(c => c.DateMajEtat).HasColumnName("date_maj_etat");
+
         e.Property(c => c.Etat).HasColumnName("etat").HasColumnType("etat_commande_enum");
         e.Property(c => c.TypeConsommation)
             .HasColumnName("type_consommation")

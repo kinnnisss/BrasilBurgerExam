@@ -18,4 +18,5 @@ public class CheckoutVm
     public List<QuartierOptionVm> Quartiers { get; set; } = new();
 
     public string? ErrorMessage { get; set; }
+    public bool ReadonlyMode { get; set; }
 }

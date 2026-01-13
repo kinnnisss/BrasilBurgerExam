@@ -1,0 +1,3 @@
+<?php //83506d3293ad42aab0abfbabc945b39f
+
+return [PHP_INT_MAX, 'styles/pages/client_details.css'];

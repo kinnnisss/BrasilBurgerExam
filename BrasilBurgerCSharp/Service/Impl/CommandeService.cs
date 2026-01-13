@@ -177,15 +177,21 @@ public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
 
             await trx.CommitAsync(ct);
 
-            var dtoResult = new CommandeDto(
-                created.IdCommande,
-                created.Reference,
-                created.DateCommande,
-                created.Etat.ToString(),
-                created.TypeConsommation.ToString(),
-                created.MontantTotal,
-                EstPayee: false
-            );
+        var dtoResult = new CommandeDto(
+            Id: created.IdCommande,
+            Reference: created.Reference,
+            DateCommande: created.DateCommande,
+            Etat: created.Etat.ToString(),
+            TypeConsommation: created.TypeConsommation.ToString(),
+            MontantTotal: created.MontantTotal,
+            EstPayee: false,
+
+            DateValidation: created.DateValidation,
+            DateTerminaison: created.DateTerminaison,
+            DateAnnulation: created.DateAnnulation,
+            DateMajEtat: created.DateMajEtat
+        );
+
 
             return ServiceResult<CommandeDto>.Ok(dtoResult);
         }
@@ -211,16 +217,22 @@ public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
     public async Task<ServiceResult<CommandeDetailsDto>> GetCommandeDetailsAsync(int commandeId, int clientId, CancellationToken ct = default)
     {
         var cmd = await _commandeRepo.GetCommandeDetailsAsync(commandeId, clientId, ct);
-        if (cmd is null) return ServiceResult<CommandeDetailsDto>.Fail(ServiceError.NotFound, "Commande introuvable.");
+        if (cmd is null)
+            return ServiceResult<CommandeDetailsDto>.Fail(ServiceError.NotFound, "Commande introuvable.");
 
         var commandeDto = new CommandeDto(
-            cmd.IdCommande,
-            cmd.Reference,
-            cmd.DateCommande,
-            cmd.Etat.ToString(),
-            cmd.TypeConsommation.ToString(),
-            cmd.MontantTotal,
-            EstPayee: cmd.Paiement is not null
+            Id: cmd.IdCommande,
+            Reference: cmd.Reference,
+            DateCommande: cmd.DateCommande,
+            Etat: cmd.Etat.ToString(),
+            TypeConsommation: cmd.TypeConsommation.ToString(),
+            MontantTotal: cmd.MontantTotal,
+            EstPayee: cmd.Paiement is not null,
+
+            DateValidation: cmd.DateValidation,
+            DateTerminaison: cmd.DateTerminaison,
+            DateAnnulation: cmd.DateAnnulation,
+            DateMajEtat: cmd.DateMajEtat
         );
 
         var lignes = cmd.Lignes.Select(l =>
@@ -240,31 +252,54 @@ public async Task<ServiceResult<CommandeDto>> CreerCommandeAsync(
         var quartier = cmd.Quartier?.Libelle;
         var livreur = cmd.Livreur is null ? null : $"{cmd.Livreur.Prenom} {cmd.Livreur.Nom} ({cmd.Livreur.Telephone})";
         var modePaiement = cmd.Paiement?.ModePaiement.ToString();
+
         return ServiceResult<CommandeDetailsDto>.Ok(
             new CommandeDetailsDto(commandeDto, lignes, zone, quartier, livreur, modePaiement)
         );
     }
-    public async Task<ServiceResult<List<CommandeDto>>> GetCommandesEnCoursAsync(int clientId, CancellationToken ct = default)
-    {
-        var list = await _commandeRepo.GetEnCoursByClientAsync(clientId, ct);
-        var dto = list.Select(c => new CommandeDto(
-            c.IdCommande, c.Reference, c.DateCommande,
-            c.Etat.ToString(), c.TypeConsommation.ToString(),
-            c.MontantTotal, c.Paiement is not null
-        )).ToList();
+public async Task<ServiceResult<List<CommandeDto>>> GetCommandesEnCoursAsync(int clientId, CancellationToken ct = default)
+{
+    var list = await _commandeRepo.GetEnCoursByClientAsync(clientId, ct);
 
-        return ServiceResult<List<CommandeDto>>.Ok(dto);
-    }
+    var dto = list.Select(c => new CommandeDto(
+        Id: c.IdCommande,
+        Reference: c.Reference,
+        DateCommande: c.DateCommande,
+        Etat: c.Etat.ToString(),
+        TypeConsommation: c.TypeConsommation.ToString(),
+        MontantTotal: c.MontantTotal,
+        EstPayee: c.Paiement is not null,
+
+        DateValidation: c.DateValidation,
+        DateTerminaison: c.DateTerminaison,
+        DateAnnulation: c.DateAnnulation,
+        DateMajEtat: c.DateMajEtat
+    )).ToList();
+
+    return ServiceResult<List<CommandeDto>>.Ok(dto);
+}
+
 
     public async Task<ServiceResult<List<CommandeDto>>> GetHistoriqueAsync(int clientId, CancellationToken ct = default)
     {
         var list = await _commandeRepo.GetHistoriqueByClientAsync(clientId, ct);
+
         var dto = list.Select(c => new CommandeDto(
-            c.IdCommande, c.Reference, c.DateCommande,
-            c.Etat.ToString(), c.TypeConsommation.ToString(),
-            c.MontantTotal, c.Paiement is not null
+            Id: c.IdCommande,
+            Reference: c.Reference,
+            DateCommande: c.DateCommande,
+            Etat: c.Etat.ToString(),
+            TypeConsommation: c.TypeConsommation.ToString(),
+            MontantTotal: c.MontantTotal,
+            EstPayee: c.Paiement is not null,
+
+            DateValidation: c.DateValidation,
+            DateTerminaison: c.DateTerminaison,
+            DateAnnulation: c.DateAnnulation,
+            DateMajEtat: c.DateMajEtat
         )).ToList();
 
         return ServiceResult<List<CommandeDto>>.Ok(dto);
     }
+
 }

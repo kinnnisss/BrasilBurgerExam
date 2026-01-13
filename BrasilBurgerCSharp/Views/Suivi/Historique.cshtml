@@ -4,6 +4,17 @@
     ViewData["Title"] = "Mes commandes";
     ViewBag.MinimalHeader = false;
     var selectedDate = Context.Request.Query["date"].ToString();
+    var selectedEtat = Context.Request.Query["etat"].ToString();
+        string NormalizeEtat(string etat)
+    {
+        etat = (etat ?? "").Trim().ToUpperInvariant();
+        return etat switch
+        {
+            "TERMINER" => "TERMINEE",
+            _ => etat
+        };
+    }
+
     string EtatLabel(string etat)
     {
         etat = (etat ?? "").Trim().ToUpperInvariant();
@@ -55,6 +66,15 @@
     }
 
     string FormatDate(DateTime d) => d.ToString("d MMMM 'à' HH:mm", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
+        var etatOptions = new[]
+    {
+        "ENCOURS",
+        "VALIDEE",
+        "TERMINEE",
+        "ANNULEE"
+    };
+
+    bool hasFilters = !string.IsNullOrWhiteSpace(selectedDate) || !string.IsNullOrWhiteSpace(selectedEtat);
 }
 
 @section Styles{
@@ -75,26 +95,32 @@
         <div class="hist-filter__card">
             <div class="hist-filter__label">
                 <span class="hist-filter__ico">📅</span>
-                <span>Filtrer par date</span>
+                <span>Filtrer</span>
             </div>
 
             <div class="hist-filter__row">
                 <input class="hist-filter__input"
-                       type="date"
-                       name="date"
-                       value="@selectedDate" />
+                    type="date"
+                    name="date"
+                    value="@selectedDate" />
 
-                @* bouton optionnel (sur mobile c’est clean) *@
+                <select class="hist-filter__input" name="etat">
+                    <option value="">Tous les états</option>
+                    <option value="ENCOURS" selected="@(selectedEtat?.Trim().ToUpper() == "ENCOURS" ? "selected" : null)">En cours</option>
+                    <option value="VALIDEE" selected="@(selectedEtat?.Trim().ToUpper() == "VALIDEE" ? "selected" : null)">Validée</option>
+                    <option value="ANNULEE" selected="@(selectedEtat?.Trim().ToUpper() == "ANNULEE" ? "selected" : null)">Annulée</option>
+                    <option value="TERMINEE" selected="@(selectedEtat?.Trim().ToUpper() == "TERMINEE" || selectedEtat?.Trim().ToUpper() == "TERMINER" ? "selected" : null)">Terminée</option>
+                </select>
+
                 <button type="submit" class="hist-filter__btn">Filtrer</button>
 
-                @if (!string.IsNullOrWhiteSpace(selectedDate))
+                @if (!string.IsNullOrWhiteSpace(selectedDate) || !string.IsNullOrWhiteSpace(selectedEtat))
                 {
                     <a class="hist-filter__clear" asp-controller="Suivi" asp-action="Historique">Réinitialiser</a>
                 }
             </div>
         </div>
     </form>
-
     @if (Model.Commandes == null || Model.Commandes.Count == 0)
     {
         <div class="suivi-empty">

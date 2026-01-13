@@ -4,29 +4,55 @@
     ViewData["Title"] = "Détails de la commande";
     ViewBag.MinimalHeader = true;
 
-    var cmd = Model.Commande;
+        var cmd = Model.Commande;
 
     string Etat = (cmd.Etat ?? "").Trim().ToUpperInvariant();
-    int step = Etat switch
-    {
-        "ENCOURS" => 1,
-        "VALIDEE" => 2,
-        "TERMINEE" => 3,
-        "TERMINER" => 3,
-        _ => 1
-    };
 
-
-    string BadgeClass(string? e)
+    string NormalizeEtat(string? e)
     {
         var v = (e ?? "").Trim().ToUpperInvariant();
         return v switch
         {
+            "TERMINER" => "TERMINEE",
+            _ => v
+        };
+    }
+
+    var etatNorm = NormalizeEtat(cmd.Etat);
+    bool isAnnulee = etatNorm == "ANNULEE";
+
+    int step = etatNorm switch
+    {
+        "ENCOURS" => 1,
+        "VALIDEE" => 2,
+        "TERMINEE" => 3,
+        "ANNULEE" => 0,
+        _ => 1
+    };
+
+    string BadgeClass(string? e)
+    {
+        var v = NormalizeEtat(e);
+        return v switch
+        {
             "ENCOURS" => "badge badge--encours",
             "VALIDEE" => "badge badge--validee",
-            "TERMINER" => "badge badge--terminee",
+            "TERMINEE" => "badge badge--terminee",
             "ANNULEE" => "badge badge--annulee",
             _ => "badge"
+        };
+    }
+
+    string EtatBadge(string? e)
+    {
+        var v = NormalizeEtat(e);
+        return v switch
+        {
+            "ENCOURS" => "En cours",
+            "VALIDEE" => "Validée",
+            "TERMINEE" => "Terminée",
+            "ANNULEE" => "Annulée",
+            _ => string.IsNullOrWhiteSpace(v) ? "—" : v
         };
     }
 
@@ -56,29 +82,14 @@
         };
     }
 
-
-    string EtatBadge(string? e)
-    {
-        var v = (e ?? "").Trim().ToUpperInvariant();
-        return v switch
-        {
-            "ENCOURS" => "En cours",
-            "VALIDEE" => "Validée",
-            "TERMINEE" => "Terminée",
-            "TERMINER" => "Terminée",
-            _ => string.IsNullOrWhiteSpace(v) ? "—" : v
-        };
-    }
-
-
-
-
     string FormatDate(DateTime d) => d.ToString("d MMMM yyyy 'à' HH:mm", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
 
     var sousTotal = (Model.Lignes ?? new List<BrasilBurgerCSharp.DTOs.LigneCommandeDto>()).Sum(x => x.PrixTotal);
     var typeCons = (cmd.TypeConsommation ?? "").Trim().ToUpperInvariant();
     var fraisLivraison = typeCons == "LIVRAISON" ? (cmd.MontantTotal - sousTotal) : 0m;
     if (fraisLivraison < 0) fraisLivraison = 0m; 
+    string? TimeOrDash(DateTime? d) => d is null ? null : d.Value.ToString("HH:mm");
+
 }
 
 @section Styles{
@@ -104,40 +115,56 @@
     <div class="cmd-card">
         <div class="cmd-card__title">État de la commande</div>
 
-        <div class="timeline">
-            <div class="tl-step @(step>=1 ? "is-done" : "") @(step==1 ? "is-current" : "")">
-                <div class="tl-dot">@(step==1 ? "✓" : "1")</div>
-                <div class="tl-body">
-                    <div class="tl-title">En cours</div>
-                    @if (step == 1)
-                    {
-                        <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
-                    }
-                </div>
-            </div>
+        @if (isAnnulee)
+        {
+            <div class="cmd-alert cmd-alert--cancel">
+                <div class="cmd-alert__ico">⛔</div>
+                <div class="cmd-alert__body">
+                    <div class="cmd-alert__title">Commande annulée</div>
+                    <div class="cmd-alert__text">
+                        Cette commande a été annulée @(cmd.DateAnnulation is null ? "" : $"à {cmd.DateAnnulation.Value:HH:mm}"). La progression n’est plus applicable.
+                    </div>
 
-            <div class="tl-step @(step>=2 ? "is-done" : "") @(step==2 ? "is-current" : "")">
-                <div class="tl-dot">@(step>=2 ? "✓" : "2")</div>
-                <div class="tl-body">
-                    <div class="tl-title">Validée</div>
-                    @if (step == 2)
-                    {
-                        <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
-                    }
                 </div>
             </div>
+        }
+        else
+        {
+            <div class="timeline">
+                <div class="tl-step @(step>=1 ? "is-done" : "") @(step==1 ? "is-current" : "")">
+                    <div class="tl-dot">@(step==1 ? "✓" : "1")</div>
+                    <div class="tl-body">
+                        <div class="tl-title">En cours</div>
+                        @if (step == 1)
+                        {
+                            <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
+                        }
+                    </div>
+                </div>
 
-            <div class="tl-step @(step>=3 ? "is-done" : "") @(step==3 ? "is-current" : "")">
-                <div class="tl-dot">@(step>=3 ? "✓" : "3")</div>
-                <div class="tl-body">
-                    <div class="tl-title">Terminée</div>
-                    @if (step == 3)
-                    {
-                        <div class="tl-time">@cmd.DateCommande.ToString("HH:mm")</div>
-                    }
+                <div class="tl-step @(step>=2 ? "is-done" : "") @(step==2 ? "is-current" : "")">
+                    <div class="tl-dot">@(step>=2 ? "✓" : "2")</div>
+                    <div class="tl-body">
+                        <div class="tl-title">Validée</div>
+                        @if (step == 2)
+                        {
+                            <div class="tl-time">@(TimeOrDash(cmd.DateValidation) ?? "—")</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="tl-step @(step>=3 ? "is-done" : "") @(step==3 ? "is-current" : "")">
+                    <div class="tl-dot">@(step>=3 ? "✓" : "3")</div>
+                    <div class="tl-body">
+                        <div class="tl-title">Terminée</div>
+                        @if (step == 3)
+                        {
+                            <div class="tl-time">@(TimeOrDash(cmd.DateTerminaison) ?? "—")</div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 
     <div class="cmd-card">

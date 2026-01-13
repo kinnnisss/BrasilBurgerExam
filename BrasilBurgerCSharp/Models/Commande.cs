@@ -8,7 +8,10 @@ public class Commande
     public EtatCommande Etat { get; set; }
     public TypeConsommation TypeConsommation { get; set; }
     public decimal MontantTotal { get; set; }
-
+    public DateTime? DateValidation { get; set; }
+    public DateTime? DateTerminaison { get; set; }
+    public DateTime? DateAnnulation { get; set; }
+    public DateTime? DateMajEtat { get; set; } 
     public int IdClient { get; set; }
     public Client? Client { get; set; }
 
