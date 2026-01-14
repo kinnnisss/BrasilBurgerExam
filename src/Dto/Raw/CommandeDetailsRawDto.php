@@ -37,6 +37,11 @@ class CommandeDetailsRawDto
     public ?string $montantPaiement;
     public ?ModePaiementEnum $modePaiement;
 
+    public ?\DateTimeInterface $dateValidation;
+    public ?\DateTimeInterface $dateAnnulation;
+    public ?\DateTimeInterface $dateMajEtat;
+    public ?\DateTimeInterface $dateTerminaison;
+
     public function __construct(
         int $idCommande,
         string $reference,
@@ -63,7 +68,12 @@ class CommandeDetailsRawDto
         ?int $idPaiement,
         ?\DateTimeInterface $datePaiement,
         ?string $montantPaiement,
-        ?ModePaiementEnum $modePaiement
+        ?ModePaiementEnum $modePaiement,
+        ?\DateTimeInterface $dateValidation,
+        ?\DateTimeInterface $dateAnnulation,
+        ?\DateTimeInterface $dateMajEtat,
+        ?\DateTimeInterface $dateTerminaison
+
     ) {
         $this->idCommande = $idCommande;
         $this->reference = $reference;
@@ -93,6 +103,12 @@ class CommandeDetailsRawDto
         $this->datePaiement = $datePaiement;
         $this->montantPaiement = $montantPaiement;
         $this->modePaiement = $modePaiement;
+
+        $this->dateValidation = $dateValidation;
+        $this->dateAnnulation = $dateAnnulation;
+        $this->dateMajEtat = $dateMajEtat;
+        $this->dateTerminaison = $dateTerminaison;
+
     }
 
     public function getClientNomComplet(): string

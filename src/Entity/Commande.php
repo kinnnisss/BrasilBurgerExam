@@ -57,6 +57,15 @@ class Commande
     #[ORM\Column(name: 'date_terminaison', type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $dateTerminaison = null;
 
+    #[ORM\Column(name: 'date_validation', type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $dateValidation = null;
+
+    #[ORM\Column(name: 'date_annulation', type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $dateAnnulation = null;
+
+    #[ORM\Column(name: 'date_maj_etat', type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $dateMajEtat = null;
+
     public function __construct()
     {
         $this->lignes = new ArrayCollection();
@@ -102,4 +111,13 @@ class Commande
         $this->dateTerminaison = $dateTerminaison;
         return $this;
     }
+    public function getDateValidation(): ?\DateTimeImmutable { return $this->dateValidation; }
+    public function setDateValidation(?\DateTimeImmutable $d): self { $this->dateValidation = $d; return $this; }
+
+    public function getDateAnnulation(): ?\DateTimeImmutable { return $this->dateAnnulation; }
+    public function setDateAnnulation(?\DateTimeImmutable $d): self { $this->dateAnnulation = $d; return $this; }
+
+    public function getDateMajEtat(): ?\DateTimeImmutable { return $this->dateMajEtat; }
+    public function setDateMajEtat(?\DateTimeImmutable $d): self { $this->dateMajEtat = $d; return $this; }
+
 }

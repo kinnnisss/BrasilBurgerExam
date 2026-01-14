@@ -105,7 +105,8 @@ class CommandeRepository extends ServiceEntityRepository
                 z.idZone, z.libelle,
                 q.idQuartier, q.libelle,
                 l.idLivreur, l.nom, l.prenom, l.telephone,
-                p.idPaiement, p.datePaiement, p.montant, p.modePaiement
+                p.idPaiement, p.datePaiement, p.montant, p.modePaiement,
+                c.dateValidation, c.dateAnnulation, c.dateMajEtat, c.dateTerminaison
             )',
             CommandeDetailsRawDto::class
         ));
@@ -152,22 +153,28 @@ class CommandeRepository extends ServiceEntityRepository
         return $items;
     }
 
-    public function updateEtat(int $idCommande, $newEtat): bool
+    public function updateEtat(int $idCommande, EtatCommandeEnum $newEtat): bool
     {
         $cmd = $this->find($idCommande);
-        if (!$cmd) {
-            return false;
-        }
+        if (!$cmd) return false;
 
         $cmd->setEtat($newEtat);
 
-        if ($newEtat === EtatCommandeEnum::TERMINER && $cmd->getDateTerminaison() === null) {
-            $cmd->setDateTerminaison(new \DateTimeImmutable());
+        $now = new \DateTimeImmutable();
+
+        if ($newEtat === EtatCommandeEnum::VALIDEE && $cmd->getDateValidation() === null) {
+            $cmd->setDateValidation($now);
         }
 
-        if ($newEtat === EtatCommandeEnum::ANNULEE && $cmd->getDateTerminaison() === null) {
-            $cmd->setDateTerminaison(new \DateTimeImmutable());
+        if ($newEtat === EtatCommandeEnum::TERMINER && $cmd->getDateTerminaison() === null) {
+            $cmd->setDateTerminaison($now);
         }
+
+        if ($newEtat === EtatCommandeEnum::ANNULEE && $cmd->getDateAnnulation() === null) {
+            $cmd->setDateAnnulation($now);
+        }
+
+        $cmd->setDateMajEtat($now);
 
         $this->getEntityManager()->flush();
         return true;
