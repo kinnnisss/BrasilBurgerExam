@@ -80,7 +80,7 @@ public class ComplementRepositoryJdbc implements IComplementRepository{
     private Complement insert(Complement complement) {
         String sql = """
                 INSERT INTO COMPLEMENT(nom, type_complement, prix, image, is_archived)
-                VALUES (?, ?, ?, ?, FALSE)
+                VALUES (?, ?::type_complement_enum, ?, ?, FALSE)
                 RETURNING id_complement
                 """;
 
